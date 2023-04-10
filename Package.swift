@@ -28,7 +28,7 @@ import PackageDescription
 
 let package = Package(
     name: "AptosKit",
-    platforms: [.iOS(.v13), .macOS(.v10_15), .watchOS(.v6), .tvOS(.v13)],
+    platforms: [.iOS(.v13), .macOS(.v13), .watchOS(.v6), .tvOS(.v13)],
     products: [
         .library(
             name: "AptosKit",
