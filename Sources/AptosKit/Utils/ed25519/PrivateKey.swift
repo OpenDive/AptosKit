@@ -26,7 +26,7 @@
 import Foundation
 import TweetNacl
 
-public struct PrivateKey: Equatable {
+public struct PrivateKey: Equatable, KeyProtocol {
     public static let LENGTH: Int = 32
     
     public let key: Data
@@ -39,11 +39,11 @@ public struct PrivateKey: Equatable {
         return lhs.key == rhs.key
     }
     
-    func description() -> String {
+    public func description() -> String {
         return self.hex()
     }
     
-    func hex() -> String {
+    public func hex() -> String {
         return "0x" + self.key.toHexString()
     }
     
@@ -58,17 +58,28 @@ public struct PrivateKey: Equatable {
         return PrivateKey(key: hexData)
     }
     
-    func publicKey() throws -> PublicKey {
+    public func publicKey() throws -> PublicKey {
         let keys = try NaclSign.KeyPair.keyPair(fromSecretKey: self.key)
         return try PublicKey(data: keys.publicKey)
     }
     
-    // TODO: Write function
-    func random() {
-        
+    public static func random() throws -> PrivateKey {
+        return PrivateKey(key: try NaclSign.KeyPair.keyPair().secretKey)
     }
     
-    func sign(data: Data) throws -> Signature {
+    public func sign(data: Data) throws -> Signature {
         return try Signature(signature: NaclSign.sign(message: data, secretKey: self.key))
+    }
+    
+    public static func deserialize(from deserializer: Deserializer) throws -> PrivateKey {
+        let key = try deserializer.toBytes()
+        if key.count != PrivateKey.LENGTH {
+            throw NSError(domain: "Length mismatch", code: -1)
+        }
+        return PrivateKey(key: key)
+    }
+    
+    public func serialize(_ serializer: Serializer) {
+        serializer.toBytes(self.key)
     }
 }

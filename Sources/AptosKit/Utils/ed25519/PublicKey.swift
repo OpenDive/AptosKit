@@ -8,7 +8,7 @@
 import Foundation
 import TweetNacl
 
-public struct PublicKey: Equatable {
+public struct PublicKey: Equatable, KeyProtocol {
     public static let LENGTH: Int = 32
     
     let key: [UInt8]
@@ -52,7 +52,7 @@ public struct PublicKey: Equatable {
         }
     }
     
-    public func deserializer(deserializer: Deserializer) throws -> PublicKey {
+    public static func deserialize(from deserializer: Deserializer) throws -> PublicKey {
         let key = try deserializer.toBytes()
         if key.count != PublicKey.LENGTH {
             throw NSError(domain: "Length Mismatch", code: -1)
@@ -60,7 +60,7 @@ public struct PublicKey: Equatable {
         return try PublicKey(data: key)
     }
     
-    public func serializer(serializer: Serializer) {
+    public func serialize(_ serializer: Serializer) {
         serializer.toBytes(Data(fromUInt8Array: self.key))
     }
 }

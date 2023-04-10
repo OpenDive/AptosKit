@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class Signature: Equatable {
+public struct Signature: Equatable, KeyProtocol {
     static let LENGTH: Int = 64
 
     var signature: Data
@@ -24,18 +24,15 @@ public class Signature: Equatable {
         return self.signature
     }
 
-    static func deserialize(deserializer: inout Data) -> Signature? {
-        let signatureBytes = deserializer.prefix(LENGTH)
-        deserializer.removeFirst(LENGTH)
-
+    public static func deserialize(from deserializer: Deserializer) throws -> Signature {
+        let signatureBytes = try deserializer.toBytes()
         if signatureBytes.count != LENGTH {
-            return nil
+            throw NSError(domain: "Invalid Length", code: -1)
         }
-
         return Signature(signature: signatureBytes)
     }
 
-    func serialize(serializer: inout Data) {
-        serializer.append(contentsOf: self.signature)
+    public func serialize(_ serializer: Serializer) {
+        serializer.toBytes(self.signature)
     }
 }

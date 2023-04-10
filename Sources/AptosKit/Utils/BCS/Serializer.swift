@@ -31,6 +31,10 @@ public class Serializer {
     func fixedBytes(_ value: Data) {
         self._output.append(value)
     }
+    
+    public func _struct<T: KeyProtocol>(value: T) {
+        value.serialize(self)
+    }
 
     func map<T, U>(
         _ values: [T: U],
