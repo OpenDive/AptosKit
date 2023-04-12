@@ -74,4 +74,15 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
+    
+    func testThatSequenceSerializerSerializationAndDeserializationWorksWithArrays() throws {
+        let input: [String] = ["a", "abc", "def", "ghi"]
+        let ser = Serializer()
+        let seqSer = Serializer.sequenceSerializer(Serializer.str)
+        seqSer(ser, input)
+        let der = Deserializer(data: ser.output())
+        let output = try der.sequence(valueDecoder: Deserializer.string)
+        
+        XCTAssertEqual(input, output)
+    }
 }
