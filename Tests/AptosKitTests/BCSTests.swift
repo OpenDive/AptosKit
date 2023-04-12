@@ -85,4 +85,14 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
+    
+    func testThatStringSerializationAndDeserializationWorksWithStrings() throws {
+        let input: String = "1234567890"
+        let ser = Serializer()
+        Serializer.str(ser, input)
+        let der = Deserializer(data: ser.output())
+        let output = try Deserializer.string(der)
+        
+        XCTAssertEqual(input, output)
+    }
 }
