@@ -57,7 +57,7 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
 
     public static func fromKey(_ key: PublicKey) -> AccountAddress {
         var input = Data()
-        input.append(contentsOf: Data(fromUInt8Array: key.key))
+        input.append(contentsOf: [UInt8](key.key))
         input.append(contentsOf: AuthKeyScheme.ed25519)
         let digest = sha256(data: input)
         return try! AccountAddress(address: digest)

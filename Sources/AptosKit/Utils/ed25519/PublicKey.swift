@@ -8,36 +8,24 @@
 import Foundation
 import TweetNacl
 
-public struct PublicKey: Equatable, KeyProtocol {
+public struct PublicKey: Equatable, KeyProtocol, CustomStringConvertible {
     public static let LENGTH: Int = 32
     
-    let key: [UInt8]
-    
-    public init(string: String?) throws {
-        guard let string = string, string.utf8.count >= PublicKey.LENGTH
-        else {
-            throw AptosError.other("Invalid public key input")
-        }
-        let bytes = Base58.decode(string)
-        self.key = bytes
-    }
+    let key: Data
 
     public init(data: Data) throws {
         guard data.count <= PublicKey.LENGTH else {
             throw AptosError.other("Invalid public key input")
         }
-        self.key = [UInt8](data)
-    }
-
-    public init(bytes: [UInt8]?) throws {
-        guard let bytes = bytes, bytes.count <= PublicKey.LENGTH else {
-            throw AptosError.other("Invalid public key input")
-        }
-        self.key = bytes
+        self.key = data
     }
     
     public static func == (lhs: PublicKey, rhs: PublicKey) -> Bool {
         return lhs.key == rhs.key
+    }
+    
+    public var description: String {
+        return "0x\(key.hexEncodedString())"
     }
     
     public func verify(data: Data, signature: Signature) throws -> Bool {
@@ -45,7 +33,7 @@ public struct PublicKey: Equatable, KeyProtocol {
             return try NaclSign.signDetachedVerify(
                 message: data,
                 sig: signature.data(),
-                publicKey: Data(fromUInt8Array: self.key)
+                publicKey: self.key
             )
         } catch {
             return false
@@ -61,6 +49,6 @@ public struct PublicKey: Equatable, KeyProtocol {
     }
     
     public func serialize(_ serializer: Serializer) {
-        Serializer.toBytes(serializer, Data(fromUInt8Array: self.key))
+        Serializer.toBytes(serializer, self.key)
     }
 }

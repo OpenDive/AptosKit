@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Signature: Equatable, KeyProtocol {
+public struct Signature: Equatable, KeyProtocol, CustomStringConvertible {
     static let LENGTH: Int = 64
 
     var signature: Data
@@ -18,6 +18,10 @@ public struct Signature: Equatable, KeyProtocol {
 
     public static func == (lhs: Signature, rhs: Signature) -> Bool {
         return lhs.signature == rhs.signature
+    }
+    
+    public var description: String {
+        return "0x\(signature.hexEncodedString())"
     }
 
     func data() -> Data {

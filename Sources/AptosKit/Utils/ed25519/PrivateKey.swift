@@ -26,7 +26,7 @@
 import Foundation
 import TweetNacl
 
-public struct PrivateKey: Equatable, KeyProtocol {
+public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
     public static let LENGTH: Int = 32
     
     public let key: Data
@@ -39,12 +39,12 @@ public struct PrivateKey: Equatable, KeyProtocol {
         return lhs.key == rhs.key
     }
     
-    public func description() -> String {
+    public var description: String {
         return self.hex()
     }
     
     public func hex() -> String {
-        return "0x" + self.key.toHexString()
+        return "0x" + self.key.hexEncodedString()
     }
     
     public static func fromHex(_ value: String) -> PrivateKey {
@@ -68,7 +68,10 @@ public struct PrivateKey: Equatable, KeyProtocol {
     }
     
     public func sign(data: Data) throws -> Signature {
-        return try Signature(signature: NaclSign.sign(message: data, secretKey: self.key))
+        let signedMessage = try NaclSign.sign(message: data, secretKey: self.key)
+        let signatureBytes = signedMessage.prefix(64)
+        
+        return Signature(signature: Data(signatureBytes))
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> PrivateKey {
