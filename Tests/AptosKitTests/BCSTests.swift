@@ -95,4 +95,14 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
+    
+    func testThatU8SerializationAndDeserializationWorksWithUInt8s() throws {
+        let input: UInt8 = 15
+        let ser = Serializer()
+        Serializer.u8(ser, input)
+        let der = Deserializer(data: ser.output())
+        let output = try Deserializer.u8(der)
+        
+        XCTAssertEqual(input, output)
+    }
 }
