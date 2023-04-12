@@ -101,7 +101,10 @@ public class Deserializer {
     }
 
     public static func u256(_ deserializer: Deserializer) throws -> UInt256 {
-        return UInt256(try deserializer.readInt(length: 32))
+        guard let result = UInt256(String(try deserializer.readInt(length: 32))) else {
+            throw NSError(domain: "Invalid Input", code: -1)
+        }
+        return result
     }
 
     public func uleb128() throws -> Int {

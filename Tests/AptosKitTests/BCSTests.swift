@@ -146,4 +146,14 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
+    
+    func testThatU256SerializationAndDeserializationWorksWithUInt256s() throws {
+        let input: UInt256 = UInt256("111111111111111111111111111111111111111111111111111111111111111111111111111115")!
+        let ser = Serializer()
+        Serializer.u256(ser, input)
+        let der = Deserializer(data: ser.output())
+        let output = try Deserializer.u256(der)
+        
+        XCTAssertEqual(input, output)
+    }
 }
