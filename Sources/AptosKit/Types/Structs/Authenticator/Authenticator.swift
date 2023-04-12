@@ -55,7 +55,7 @@ public struct Authenticator: Equatable, KeyProtocol {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        serializer.uleb128(UInt32(variant))
+        serializer.uleb128(UInt(variant))
         try Serializer._struct(serializer, value: self.authenticator)
     }
 }

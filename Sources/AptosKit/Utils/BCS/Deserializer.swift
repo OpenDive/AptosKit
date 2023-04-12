@@ -41,7 +41,7 @@ public class Deserializer {
 
     public static func toBytes(_ deserializer: Deserializer) throws -> Data {
         let length = try deserializer.uleb128()
-        return try deserializer.read(length: length)
+        return try deserializer.read(length: Int(length))
     }
 
     public func fixedBytes(length: Int) throws -> Data {
@@ -107,7 +107,7 @@ public class Deserializer {
         return result
     }
 
-    public func uleb128() throws -> Int {
+    public func uleb128() throws -> UInt {
         var value: UInt = 0
         var shift: UInt = 0
 
@@ -124,7 +124,7 @@ public class Deserializer {
             throw NSError(domain: "Unexpectedly large uleb128 value", code: -1, userInfo: nil)
         }
 
-        return Int(value)
+        return value
     }
 
     private func read(length: Int) throws -> Data {

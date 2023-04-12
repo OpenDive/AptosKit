@@ -53,7 +53,7 @@ public struct TypeTag: KeyProtocol, Equatable {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        serializer.uleb128(UInt32(self.value.variant()))
+        serializer.uleb128(UInt(self.value.variant()))
         try Serializer._struct(serializer, value: self.value)
     }
 }

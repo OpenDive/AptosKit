@@ -156,4 +156,14 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
+    
+    func testThatULeb128SerializationAndDeserializationWorksWithUInt32s() throws {
+        let input: UInt = 1_111_111_115
+        let ser = Serializer()
+        ser.uleb128(input)
+        let der = Deserializer(data: ser.output())
+        let output = try der.uleb128()
+        
+        XCTAssertEqual(input, output)
+    }
 }

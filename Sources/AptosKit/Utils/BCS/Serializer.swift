@@ -25,7 +25,7 @@ public class Serializer {
     }
 
     static func toBytes(_ serializer: Serializer, _ value: Data) {
-        serializer.uleb128(UInt32(value.count))
+        serializer.uleb128(UInt(value.count))
         serializer._output.append(value)
     }
 
@@ -54,7 +54,7 @@ public class Serializer {
         }
         encodedValues.sort(by: { $0.0 < $1.0 })
 
-        self.uleb128(UInt32(encodedValues.count))
+        self.uleb128(UInt(encodedValues.count))
         for (key, value) in encodedValues {
             self.fixedBytes(key)
             self.fixedBytes(value)
@@ -71,7 +71,7 @@ public class Serializer {
         _ values: [T],
         _ valueEncoder: (Serializer, T) throws -> ()
     ) {
-        self.uleb128(UInt32(values.count))
+        self.uleb128(UInt(values.count))
         for value in values {
             do {
                 let bytes = try encoder(value, valueEncoder)
@@ -110,7 +110,7 @@ public class Serializer {
         serializer.writeInt(value, length: 32)
     }
 
-    func uleb128(_ value: UInt32) {
+    func uleb128(_ value: UInt) {
         var _value = value
         while _value >= 0x80 {
             let byte = _value & 0x7F
