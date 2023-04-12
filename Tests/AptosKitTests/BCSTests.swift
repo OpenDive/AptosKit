@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import UInt256
 @testable import AptosKit
 
 final class BCSTests: XCTestCase {
@@ -106,12 +107,32 @@ final class BCSTests: XCTestCase {
         XCTAssertEqual(input, output)
     }
     
-    func testThatU16SerializationAndDeserializationWorksWithUInt8s() throws {
-        let input: UInt16 = 11115
+    func testThatU16SerializationAndDeserializationWorksWithUInt16s() throws {
+        let input: UInt16 = 111_15
         let ser = Serializer()
         Serializer.u16(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u16(der)
+        
+        XCTAssertEqual(input, output)
+    }
+    
+    func testThatU32SerializationAndDeserializationWorksWithUInt32s() throws {
+        let input: UInt32 = 1_111_111_115
+        let ser = Serializer()
+        Serializer.u32(ser, input)
+        let der = Deserializer(data: ser.output())
+        let output = try Deserializer.u32(der)
+        
+        XCTAssertEqual(input, output)
+    }
+    
+    func testThatU64SerializationAndDeserializationWorksWithUInt64s() throws {
+        let input: UInt64 = 1_111_111_111_111_111_115
+        let ser = Serializer()
+        Serializer.u64(ser, input)
+        let der = Deserializer(data: ser.output())
+        let output = try Deserializer.u64(der)
         
         XCTAssertEqual(input, output)
     }
