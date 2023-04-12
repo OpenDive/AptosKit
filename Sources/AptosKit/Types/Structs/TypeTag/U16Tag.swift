@@ -19,10 +19,10 @@ public struct U16Tag: TypeProtcol, Equatable {
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> U16Tag {
-        return try U16Tag(value: Int(deserializer.u16()))
+        return try U16Tag(value: Int(Deserializer.u16(deserializer)))
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        serializer.u16(UInt16(self.value))
+        Serializer.u16(serializer, UInt16(self.value))
     }
 }

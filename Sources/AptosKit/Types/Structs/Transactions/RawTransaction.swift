@@ -42,22 +42,22 @@ public struct RawTransaction: KeyProtocol {
     public static func deserialize(from deserializer: Deserializer) throws -> RawTransaction {
         return RawTransaction(
             sender: try AccountAddress.deserialize(from: deserializer),
-            sequenceNumber: Int(try deserializer.u64()),
+            sequenceNumber: Int(try Deserializer.u64(deserializer)),
             payload: try TransactionPayload.deserialize(from: deserializer),
-            maxGasAmount: Int(try deserializer.u64()),
-            gasUnitPrice: Int(try deserializer.u64()),
-            expirationTimestampSecs: Int(try deserializer.u64()),
-            chainId: Int(try deserializer.u8())
+            maxGasAmount: Int(try Deserializer.u64(deserializer)),
+            gasUnitPrice: Int(try Deserializer.u64(deserializer)),
+            expirationTimestampSecs: Int(try Deserializer.u64(deserializer)),
+            chainId: Int(try Deserializer.u8(deserializer))
         )
     }
     
     public func serialize(_ serializer: Serializer) throws {
         try self.sender.serialize(serializer)
-        serializer.u64(UInt64(self.sequenceNumber))
+        Serializer.u64(serializer, UInt64(self.sequenceNumber))
         try self.payload.serialize(serializer)
-        serializer.u64(UInt64(self.maxGasAmount))
-        serializer.u64(UInt64(self.gasUnitPrice))
-        serializer.u64(UInt64(self.expirationTimestampSecs))
-        serializer.u8(UInt8(self.chainId))
+        Serializer.u64(serializer, UInt64(self.maxGasAmount))
+        Serializer.u64(serializer, UInt64(self.gasUnitPrice))
+        Serializer.u64(serializer, UInt64(self.expirationTimestampSecs))
+        Serializer.u8(serializer, UInt8(self.chainId))
     }
 }

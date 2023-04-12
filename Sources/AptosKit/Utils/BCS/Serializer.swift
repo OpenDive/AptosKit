@@ -81,42 +81,42 @@ public class Serializer {
         }
     }
 
-    func str(_ value: String) {
-        Serializer.toBytes(self, value.data(using: .utf8)!)
+    public static func str(_ serializer: Serializer, _ value: String) {
+        Serializer.toBytes(serializer, value.data(using: .utf8)!)
     }
 
-    func u8(_ value: UInt8) {
-        self.writeInt(Int(value), length: 1)
+    public static func u8(_ serializer: Serializer, _ value: UInt8) {
+        serializer.writeInt(Int(value), length: 1)
     }
 
-    func u16(_ value: UInt16) {
-        self.writeInt(Int(value), length: 2)
+    public static func u16(_ serializer: Serializer, _ value: UInt16) {
+        serializer.writeInt(Int(value), length: 2)
     }
 
-    func u32(_ value: UInt32) {
-        self.writeInt(Int(value), length: 4)
+    public static func u32(_ serializer: Serializer, _ value: UInt32) {
+        serializer.writeInt(Int(value), length: 4)
     }
 
-    func u64(_ value: UInt64) {
-        self.writeInt(Int(value), length: 8)
+    public static func u64(_ serializer: Serializer, _ value: UInt64) {
+        serializer.writeInt(Int(value), length: 8)
     }
 
-    func u128(_ value: UInt128) {
-        self.writeInt(Int(value), length: 16)
+    public static func u128(_ serializer: Serializer, _ value: UInt128) {
+        serializer.writeInt(Int(value), length: 16)
     }
 
-    func u256(_ value: UInt256) {
-        self.writeInt(Int(value), length: 32)
+    public static func u256(_ serializer: Serializer, _ value: UInt256) {
+        serializer.writeInt(Int(value), length: 32)
     }
 
     func uleb128(_ value: UInt32) {
         var _value = value
         while _value >= 0x80 {
             let byte = _value & 0x7F
-            self.u8(UInt8(byte | 0x80))
+            Serializer.u8(self, UInt8(byte | 0x80))
             _value >>= 7
         }
-        self.u8(UInt8(_value & 0x7F))
+        Serializer.u8(self, UInt8(_value & 0x7F))
     }
 
     private func writeInt(_ value: Int, length: Int) {

@@ -32,21 +32,21 @@ public struct ScriptArgument: KeyProtocol {
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> ScriptArgument {
-        let variant = Int(try deserializer.u8())
+        let variant = Int(try Deserializer.u8(deserializer))
         let value: Any
         
         if variant == ScriptArgument.u8 {
-            value = try deserializer.u8()
+            value = try Deserializer.u8(deserializer)
         } else if variant == ScriptArgument.u16 {
-            value = try deserializer.u16()
+            value = try Deserializer.u16(deserializer)
         } else if variant == ScriptArgument.u32 {
-            value = try deserializer.u32()
+            value = try Deserializer.u32(deserializer)
         } else if variant == ScriptArgument.u64 {
-            value = try deserializer.u64()
+            value = try Deserializer.u64(deserializer)
         } else if variant == ScriptArgument.u128 {
-            value = try deserializer.u128()
+            value = try Deserializer.u128(deserializer)
         } else if variant == ScriptArgument.u256 {
-            value = try deserializer.u256()
+            value = try Deserializer.u256(deserializer)
         } else if variant == ScriptArgument.address {
             value = try AccountAddress.deserialize(from: deserializer)
         } else if variant == ScriptArgument.u8Vector {
@@ -61,20 +61,20 @@ public struct ScriptArgument: KeyProtocol {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        serializer.u8(UInt8(self.variant))
+        Serializer.u8(serializer, UInt8(self.variant))
         
         if self.variant == ScriptArgument.u8 {
-            serializer.u8(self.value as! UInt8)
+            Serializer.u8(serializer, self.value as! UInt8)
         } else if self.variant == ScriptArgument.u16 {
-            serializer.u16(self.value as! UInt16)
+            Serializer.u16(serializer, self.value as! UInt16)
         } else if self.variant == ScriptArgument.u32 {
-            serializer.u32(self.value as! UInt32)
+            Serializer.u32(serializer, self.value as! UInt32)
         } else if self.variant == ScriptArgument.u64 {
-            serializer.u64(self.value as! UInt64)
+            Serializer.u64(serializer, self.value as! UInt64)
         } else if self.variant == ScriptArgument.u128 {
-            serializer.u128(self.value as! UInt128)
+            Serializer.u128(serializer, self.value as! UInt128)
         } else if self.variant == ScriptArgument.u256 {
-            serializer.u256(self.value as! UInt256)
+            Serializer.u256(serializer, self.value as! UInt256)
         } else if self.variant == ScriptArgument.address && self.value.self is KeyProtocol.Type {
              try Serializer._struct(serializer, value: self.value as! KeyProtocol)
         } else if self.variant == ScriptArgument.u8Vector {

@@ -28,7 +28,7 @@ public class Deserializer {
     }
 
     public func bool() throws -> Bool {
-        let value = try readInt(length: 1)
+        let value = Int(try readInt(length: 1))
         switch value {
         case 0:
             return false
@@ -68,8 +68,8 @@ public class Deserializer {
         return values
     }
 
-    public func string() throws -> String {
-        let data = try Deserializer.toBytes(self)
+    public static func string(_ deserializer: Deserializer) throws -> String {
+        let data = try Deserializer.toBytes(deserializer)
         guard let result = String(data: data, encoding: .utf8) else {
             throw NSError(domain: "Failed to decode string from data", code: -1, userInfo: nil)
         }
@@ -80,28 +80,28 @@ public class Deserializer {
         return try T.deserialize(from: self)
     }
 
-    public func u8() throws -> UInt8 {
-        return UInt8(try readInt(length: 1))
+    public static func u8(_ deserializer: Deserializer) throws -> UInt8 {
+        return UInt8(try deserializer.readInt(length: 1))
     }
 
-    public func u16() throws -> UInt16 {
-        return UInt16(try readInt(length: 2))
+    public static func u16(_ deserializer: Deserializer) throws -> UInt16 {
+        return UInt16(try deserializer.readInt(length: 2))
     }
 
-    public func u32() throws -> UInt32 {
-        return UInt32(try readInt(length: 4))
+    public static func u32(_ deserializer: Deserializer) throws -> UInt32 {
+        return UInt32(try deserializer.readInt(length: 4))
     }
 
-    public func u64() throws -> UInt64 {
-        return UInt64(try readInt(length: 8))
+    public static func u64(_ deserializer: Deserializer) throws -> UInt64 {
+        return UInt64(try deserializer.readInt(length: 8))
     }
 
-    public func u128() throws -> UInt128 {
-        return UInt128(try readInt(length: 16))
+    public static func u128(_ deserializer: Deserializer) throws -> UInt128 {
+        return UInt128(try deserializer.readInt(length: 16))
     }
 
-    public func u256() throws -> UInt256 {
-        return UInt256(try readInt(length: 32))
+    public static func u256(_ deserializer: Deserializer) throws -> UInt256 {
+        return UInt256(try deserializer.readInt(length: 32))
     }
 
     public func uleb128() throws -> Int {
@@ -111,13 +111,13 @@ public class Deserializer {
         while value <= UInt(MAX_U32) {
             let byte = try readInt(length: 1)
             value |= (UInt(byte) & 0x7F) << shift
-            if byte & 0x80 == 0 {
+            if Int(byte) & 0x80 == 0 {
                 break
             }
             shift += 7
         }
 
-        if value > UInt(MAX_U128) {
+        if value > UInt128(MAX_U128) {
             throw NSError(domain: "Unexpectedly large uleb128 value", code: -1, userInfo: nil)
         }
 
@@ -134,8 +134,23 @@ public class Deserializer {
         return value
     }
 
-    private func readInt(length: Int) throws -> UInt {
+    private func readInt(length: Int) throws -> any UnsignedInteger {
         let data = try read(length: length)
-        return data.withUnsafeBytes { $0.load(as: UInt.self) }
+        
+        if length == 1 {
+            return data.withUnsafeBytes { $0.load(as: UInt8.self) }
+        } else if length == 2 {
+            return data.withUnsafeBytes { $0.load(as: UInt16.self) }
+        } else if length == 4 {
+            return data.withUnsafeBytes { $0.load(as: UInt32.self) }
+        } else if length == 8 {
+            return data.withUnsafeBytes { $0.load(as: UInt64.self) }
+        } else if length == 16 {
+            return data.withUnsafeBytes { $0.load(as: UInt128.self) }
+        } else if length == 32 {
+            return data.withUnsafeBytes { $0.load(as: UInt256.self) }
+        } else {
+            throw NSError(domain: "Invalid Length", code: -1)
+        }
     }
 }

@@ -21,12 +21,12 @@ public struct ModuleId: KeyProtocol {
     
     public static func deserialize(from deserializer: Deserializer) throws -> ModuleId {
         let address = try AccountAddress.deserialize(from: deserializer)
-        let name = try deserializer.string()
+        let name = try Deserializer.string(deserializer)
         return ModuleId(address: address, name: name)
     }
     
     public func serialize(_ serializer: Serializer) throws {
         try self.address.serialize(serializer)
-        serializer.str(self.name)
+        Serializer.str(serializer, self.name)
     }
 }

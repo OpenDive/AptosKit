@@ -19,10 +19,10 @@ public struct U8Tag: TypeProtcol, Equatable {
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> U8Tag {
-        return try U8Tag(value: Int(deserializer.u8()))
+        return try U8Tag(value: Int(Deserializer.u8(deserializer)))
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        serializer.u8(UInt8(self.value))
+        Serializer.u8(serializer, UInt8(self.value))
     }
 }

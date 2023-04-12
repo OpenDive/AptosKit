@@ -16,8 +16,7 @@ enum AuthKeyScheme {
     static let deriveResourceAccountAddress: Data = Data([0xFF])
 }
 
-
-public struct AccountAddress: KeyProtocol, Equatable {
+public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
     public let address: Data
     static let length: Int = 32
 
@@ -31,6 +30,10 @@ public struct AccountAddress: KeyProtocol, Equatable {
 
     public func hex() -> String {
         return "0x\(address.hexEncodedString())"
+    }
+    
+    public var description: String {
+        return self.hex()
     }
 
     public static func fromHex(_ address: String) throws -> AccountAddress {
@@ -104,7 +107,7 @@ public struct AccountAddress: KeyProtocol, Equatable {
         return try AccountAddress(address: deserializer.fixedBytes(length: AccountAddress.length))
     }
     
-    public func serialize(_ serializer: Serializer) {
+    public func serialize(_ serializer: Serializer) throws {
         serializer.fixedBytes(self.address)
     }
 }

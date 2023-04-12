@@ -20,10 +20,10 @@ public struct U256Tag: TypeProtcol, Equatable {
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> U256Tag {
-        return try U256Tag(value: Int(deserializer.u256()))
+        return try U256Tag(value: Int(Deserializer.u256(deserializer)))
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        serializer.u256(UInt256(self.value))
+        Serializer.u256(serializer, UInt256(self.value))
     }
 }

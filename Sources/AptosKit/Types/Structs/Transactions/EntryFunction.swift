@@ -35,7 +35,7 @@ public struct EntryFunction: TransactionProtocol {
     
     public static func deserialize(from deserializer: Deserializer) throws -> EntryFunction {
         let module = try ModuleId.deserialize(from: deserializer)
-        let function = try deserializer.string()
+        let function = try Deserializer.string(deserializer)
         let tyArgs = try deserializer.sequence(valueDecoder: TypeTag.deserialize)
         let args: [Data] = try deserializer.sequence(valueDecoder: Deserializer.toBytes)
 
@@ -44,7 +44,7 @@ public struct EntryFunction: TransactionProtocol {
     
     public func serialize(_ serializer: Serializer) throws {
         try self.module.serialize(serializer)
-        serializer.str(self.function)
+        Serializer.str(serializer, self.function)
         serializer.sequence(self.tyArgs, Serializer._struct)
         serializer.sequence(self.args, Serializer.toBytes)
     }

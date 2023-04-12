@@ -48,8 +48,8 @@ public struct StructTag: TypeProtcol, Equatable {
     
     public static func deserialize(from deserializer: Deserializer) throws -> StructTag {
         let address = try deserializer._struct(type: AccountAddress.self)
-        let module = try deserializer.string()
-        let name = try deserializer.string()
+        let module = try Deserializer.string(deserializer)
+        let name = try Deserializer.string(deserializer)
         let typeArgs: [TypeTag] = try deserializer.sequence(valueDecoder: TypeTag.deserialize)
         
         return StructTag(
@@ -64,8 +64,8 @@ public struct StructTag: TypeProtcol, Equatable {
     
     public func serialize(_ serializer: Serializer) throws {
         try self.value.address.serialize(serializer)
-        serializer.str(self.value.module)
-        serializer.str(self.value.name)
+        Serializer.str(serializer, self.value.module)
+        Serializer.str(serializer, self.value.name)
         serializer.sequence(self.value.typeArgs, Serializer._struct)
     }
 }
