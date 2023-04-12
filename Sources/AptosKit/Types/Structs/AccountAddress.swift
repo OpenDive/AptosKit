@@ -17,7 +17,7 @@ enum AuthKeyScheme {
 }
 
 
-public struct AccountAddress: Equatable {
+public struct AccountAddress: KeyProtocol, Equatable {
     public let address: Data
     static let length: Int = 32
 
@@ -100,11 +100,11 @@ public struct AccountAddress: Equatable {
         return AccountAddress.forNamedObject(creator, seed: collectionData)
     }
     
-    public static func deserialize(deserializer: Deserializer) throws -> AccountAddress {
+    public static func deserialize(from deserializer: Deserializer) throws -> AccountAddress {
         return try AccountAddress(address: deserializer.fixedBytes(length: AccountAddress.length))
     }
     
-    public func serialize(serializer: Serializer) throws {
+    public func serialize(_ serializer: Serializer) {
         serializer.fixedBytes(self.address)
     }
 }
