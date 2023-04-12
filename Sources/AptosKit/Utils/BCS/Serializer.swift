@@ -20,7 +20,8 @@ public class Serializer {
     }
 
     func bool(_ value: Bool) {
-        self.writeInt(value ? 1 : 0, length: 1)
+        let result: UInt8 = value ? UInt8(1) : UInt8(0)
+        self.writeInt(result, length: 1)
     }
 
     static func toBytes(_ serializer: Serializer, _ value: Data) {
@@ -86,27 +87,27 @@ public class Serializer {
     }
 
     public static func u8(_ serializer: Serializer, _ value: UInt8) {
-        serializer.writeInt(Int(value), length: 1)
+        serializer.writeInt(value, length: 1)
     }
 
     public static func u16(_ serializer: Serializer, _ value: UInt16) {
-        serializer.writeInt(Int(value), length: 2)
+        serializer.writeInt(value, length: 2)
     }
 
     public static func u32(_ serializer: Serializer, _ value: UInt32) {
-        serializer.writeInt(Int(value), length: 4)
+        serializer.writeInt(value, length: 4)
     }
 
     public static func u64(_ serializer: Serializer, _ value: UInt64) {
-        serializer.writeInt(Int(value), length: 8)
+        serializer.writeInt(value, length: 8)
     }
 
     public static func u128(_ serializer: Serializer, _ value: UInt128) {
-        serializer.writeInt(Int(value), length: 16)
+        serializer.writeInt(value, length: 16)
     }
 
     public static func u256(_ serializer: Serializer, _ value: UInt256) {
-        serializer.writeInt(Int(value), length: 32)
+        serializer.writeInt(value, length: 32)
     }
 
     func uleb128(_ value: UInt32) {
@@ -119,7 +120,7 @@ public class Serializer {
         Serializer.u8(self, UInt8(_value & 0x7F))
     }
 
-    private func writeInt(_ value: Int, length: Int) {
+    private func writeInt(_ value: any UnsignedInteger, length: Int) {
         var _value = value
         let valueData = withUnsafeBytes(of: &_value) { Data($0) }
         self._output.append(valueData.prefix(length))
