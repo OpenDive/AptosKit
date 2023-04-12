@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Authenticator: Equatable {
+public struct Authenticator: Equatable, KeyProtocol {
     public static let ed25519: Int = 0
     public static let multiEd25519: Int = 1
     public static let multiAgent: Int = 2
@@ -28,7 +28,6 @@ public struct Authenticator: Equatable {
         self.authenticator = authenticator
     }
     
-    // TODO: Implement equatable
     public static func == (lhs: Authenticator, rhs: Authenticator) -> Bool {
         return lhs.variant == rhs.variant && lhs.authenticator.isEqualTo(rhs.authenticator)
     }
@@ -37,7 +36,7 @@ public struct Authenticator: Equatable {
         return try self.authenticator.verify(data)
     }
     
-    public static func deserializ(_ deserializer: Deserializer) throws -> Authenticator {
+    public static func deserialize(from deserializer: Deserializer) throws -> Authenticator {
         let variant = try deserializer.uleb128()
         
         var authenticator: any AuthenticatorProtocol
@@ -55,8 +54,8 @@ public struct Authenticator: Equatable {
         return Authenticator(authenticator: authenticator)
     }
     
-    public func serialize(_ serializer: Serializer) {
+    public func serialize(_ serializer: Serializer) throws {
         serializer.uleb128(UInt32(variant))
-        serializer._struct(value: self.authenticator)
+        try Serializer._struct(serializer, value: self.authenticator)
     }
 }

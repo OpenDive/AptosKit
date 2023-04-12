@@ -22,7 +22,7 @@ public struct U128Tag: TypeProtcol, Equatable {
         return try U128Tag(value: Int(deserializer.u128()))
     }
     
-    public func serialize(_ serializer: Serializer) {
+    public func serialize(_ serializer: Serializer) throws {
         serializer.u128(UInt128(self.value))
     }
 }

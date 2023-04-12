@@ -62,14 +62,11 @@ public struct StructTag: TypeProtcol, Equatable {
         )
     }
     
-    public func serialize(_ serializer: Serializer) {
-        self.value.address.serialize(serializer)
+    public func serialize(_ serializer: Serializer) throws {
+        try self.value.address.serialize(serializer)
         serializer.str(self.value.module)
         serializer.str(self.value.name)
-        // TODO: Make this line work properly
-        // Why is it calling for a Data return function?
-        // https://github.com/aptos-labs/aptos-core/blob/a4157263aad89dbccd53e8bff3c4440bd1855515/ecosystem/python/sdk/aptos_sdk/bcs.py#L169
-        // serializer.sequence(self.value.typeArgs, Serializer._struct)
+        serializer.sequence(self.value.typeArgs, Serializer._struct)
     }
 }
 

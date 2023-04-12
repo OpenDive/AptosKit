@@ -39,9 +39,9 @@ public class Deserializer {
         }
     }
 
-    public func toBytes() throws -> Data {
-        let length = try uleb128()
-        return try read(length: length)
+    public static func toBytes(_ deserializer: Deserializer) throws -> Data {
+        let length = try deserializer.uleb128()
+        return try deserializer.read(length: length)
     }
 
     public func fixedBytes(length: Int) throws -> Data {
@@ -69,7 +69,7 @@ public class Deserializer {
     }
 
     public func string() throws -> String {
-        let data = try toBytes()
+        let data = try Deserializer.toBytes(self)
         guard let result = String(data: data, encoding: .utf8) else {
             throw NSError(domain: "Failed to decode string from data", code: -1, userInfo: nil)
         }

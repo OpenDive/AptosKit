@@ -53,7 +53,7 @@ public struct PublicKey: Equatable, KeyProtocol {
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> PublicKey {
-        let key = try deserializer.toBytes()
+        let key = try Deserializer.toBytes(deserializer)
         if key.count != PublicKey.LENGTH {
             throw NSError(domain: "Length Mismatch", code: -1)
         }
@@ -61,6 +61,6 @@ public struct PublicKey: Equatable, KeyProtocol {
     }
     
     public func serialize(_ serializer: Serializer) {
-        serializer.toBytes(Data(fromUInt8Array: self.key))
+        Serializer.toBytes(serializer, Data(fromUInt8Array: self.key))
     }
 }

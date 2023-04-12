@@ -72,14 +72,14 @@ public struct PrivateKey: Equatable, KeyProtocol {
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> PrivateKey {
-        let key = try deserializer.toBytes()
+        let key = try Deserializer.toBytes(deserializer)
         if key.count != PrivateKey.LENGTH {
             throw NSError(domain: "Length mismatch", code: -1)
         }
         return PrivateKey(key: key)
     }
     
-    public func serialize(_ serializer: Serializer) {
-        serializer.toBytes(self.key)
+    public func serialize(_ serializer: Serializer) throws {
+        Serializer.toBytes(serializer, self.key)
     }
 }

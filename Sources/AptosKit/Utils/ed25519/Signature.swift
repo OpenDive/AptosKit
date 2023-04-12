@@ -25,7 +25,7 @@ public struct Signature: Equatable, KeyProtocol {
     }
 
     public static func deserialize(from deserializer: Deserializer) throws -> Signature {
-        let signatureBytes = try deserializer.toBytes()
+        let signatureBytes = try Deserializer.toBytes(deserializer)
         if signatureBytes.count != LENGTH {
             throw NSError(domain: "Invalid Length", code: -1)
         }
@@ -33,6 +33,6 @@ public struct Signature: Equatable, KeyProtocol {
     }
 
     public func serialize(_ serializer: Serializer) {
-        serializer.toBytes(self.signature)
+        Serializer.toBytes(serializer, self.signature)
     }
 }

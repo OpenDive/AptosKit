@@ -21,9 +21,9 @@ public struct Ed25519Authenticator: AuthenticatorProtocol {
         return Ed25519Authenticator(publicKey: key, signature: signature)
     }
     
-    public func serialize(_ serializer: Serializer) {
-        serializer._struct(value: self.publicKey)
-        serializer._struct(value: self.signature)
+    public func serialize(_ serializer: Serializer) throws {
+        try Serializer._struct(serializer, value: self.publicKey)
+        try Serializer._struct(serializer, value: self.signature)
     }
     
     public func isEqualTo(_ rhs: any AuthenticatorProtocol) -> Bool {

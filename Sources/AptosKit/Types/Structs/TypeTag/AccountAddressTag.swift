@@ -22,7 +22,7 @@ public struct AccountAddressTag: TypeProtcol, Equatable {
         return try AccountAddressTag(value: deserializer._struct(type: AccountAddress.self))
     }
     
-    public func serialize(_ serializer: Serializer) {
-        serializer._struct(value: self.value)
+    public func serialize(_ serializer: Serializer) throws {
+        try Serializer._struct(serializer, value: self.value)
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol KeyProtocol {
-    func serialize(_ serializer: Serializer)
+    func serialize(_ serializer: Serializer) throws
     
     static func deserialize(from deserializer: Deserializer) throws -> Self
 }

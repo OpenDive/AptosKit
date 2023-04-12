@@ -23,27 +23,33 @@ public class Serializer {
         self.writeInt(value ? 1 : 0, length: 1)
     }
 
-    func toBytes(_ value: Data) {
-        self.uleb128(UInt32(value.count))
-        self._output.append(value)
+    static func toBytes(_ serializer: Serializer, _ value: Data) {
+        serializer.uleb128(UInt32(value.count))
+        serializer._output.append(value)
     }
 
     func fixedBytes(_ value: Data) {
         self._output.append(value)
     }
     
-    public func _struct<T: KeyProtocol>(value: T) {
-        value.serialize(self)
+    public static func _struct(_ serializer: Serializer, value: Any & KeyProtocol) throws {
+        try value.serialize(serializer)
     }
 
     func map<T, U>(
         _ values: [T: U],
-        keyEncoder: (Serializer, T) -> Data,
-        valueEncoder: (Serializer, U) -> Data
+        keyEncoder: (Serializer, T) -> (),
+        valueEncoder: (Serializer, U) -> ()
     ) {
         var encodedValues: [(Data, Data)] = []
         for (key, value) in values {
-            encodedValues.append((encoder(key, keyEncoder), encoder(value, valueEncoder)))
+            do {
+                let key = try encoder(key, keyEncoder)
+                let value = try encoder(value, valueEncoder)
+                encodedValues.append((key, value))
+            } catch {
+                continue
+            }
         }
         encodedValues.sort(by: { $0.0 < $1.0 })
 
@@ -55,23 +61,28 @@ public class Serializer {
     }
 
     static func sequenceSerializer<T>(
-        _ valueEncoder: @escaping (Serializer, T) -> Data
+        _ valueEncoder: @escaping (Serializer, T) -> ()
     ) -> (Serializer, [T]) -> Void {
         return { (self, values) in self.sequence(values, valueEncoder) }
     }
 
     func sequence<T>(
         _ values: [T],
-        _ valueEncoder: (Serializer, T) -> Data
+        _ valueEncoder: (Serializer, T) throws -> ()
     ) {
         self.uleb128(UInt32(values.count))
         for value in values {
-            self.fixedBytes(encoder(value, valueEncoder))
+            do {
+                let bytes = try encoder(value, valueEncoder)
+                self.fixedBytes(bytes)
+            } catch {
+                continue
+            }
         }
     }
 
     func str(_ value: String) {
-        self.toBytes(value.data(using: .utf8)!)
+        Serializer.toBytes(self, value.data(using: .utf8)!)
     }
 
     func u8(_ value: UInt8) {
@@ -117,10 +128,10 @@ public class Serializer {
 
 func encoder<T>(
     _ value: T,
-    _ encoder: (Serializer, T) -> Data
-) -> Data {
+    _ encoder: (Serializer, T) throws -> ()
+) throws -> Data {
     let ser = Serializer()
-    encoder(ser, value)
+    try encoder(ser, value)
     return ser.output()
 }
 
