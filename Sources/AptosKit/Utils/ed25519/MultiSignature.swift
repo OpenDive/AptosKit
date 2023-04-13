@@ -23,6 +23,14 @@ public struct MultiSignature {
             }
         }
         
-        self.bitmap = withUnsafeBytes(of: bitmap) { Data($0) }
+        self.bitmap = withUnsafeBytes(of: (bitmap.bigEndian, UInt32.self)) { Data($0) }
+    }
+    
+    public func toBytes() -> Data {
+        var concatenatedSignatures: Data = Data()
+        for signature in self.signatures {
+            concatenatedSignatures += signature.data()
+        }
+        return concatenatedSignatures + self.bitmap
     }
 }
