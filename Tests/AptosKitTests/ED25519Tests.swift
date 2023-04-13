@@ -21,4 +21,13 @@ final class ED25519Tests: XCTestCase {
         let signature = try privateKey.sign(data: input)
         XCTAssertTrue(try publicKey.verify(data: input, signature: signature))
     }
+    
+    func testThatPrivateKeySerializationWorksAsIntended() throws {
+        let privateKey = try PrivateKey.random()
+        let ser = Serializer()
+        
+        try privateKey.serialize(ser)
+        let serPrivateKey = try PrivateKey.deserialize(from: Deserializer(data: ser.output()))
+        XCTAssertEqual(privateKey, serPrivateKey)
+    }
 }

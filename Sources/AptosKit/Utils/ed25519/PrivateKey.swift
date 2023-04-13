@@ -27,7 +27,7 @@ import Foundation
 import TweetNacl
 
 public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
-    public static let LENGTH: Int = 32
+    public static let LENGTH: Int = 64
     
     public let key: Data
     
