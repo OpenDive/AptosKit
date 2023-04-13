@@ -40,4 +40,19 @@ final class ED25519Tests: XCTestCase {
         let serPublicKey = try PublicKey.deserialize(from: Deserializer(data: ser.output()))
         XCTAssertEqual(publicKey, serPublicKey)
     }
+    
+    func testThatSignatureSerializationWorksAsIntended() throws {
+        let privateKey = try PrivateKey.random()
+        guard let input: Data = "another_message".data(using: .utf8) else {
+            XCTFail("Invalid Input")
+            return
+        }
+        let signature = try privateKey.sign(data: input)
+        
+        let ser = Serializer()
+        signature.serialize(ser)
+        let serSignature = try Signature.deserialize(from: Deserializer(data: ser.output()))
+        
+        XCTAssertEqual(signature, serSignature)
+    }
 }
