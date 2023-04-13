@@ -32,4 +32,12 @@ public struct MultiPublicKey: CustomStringConvertible {
     public var description: String {
         return "\(self.threshold)-of-\(self.keys.count) Multi-Ed25519 public key"
     }
+    
+    public func toBytes() -> Data {
+        var concatenatedKeys: Data = Data()
+        for key in self.keys {
+            concatenatedKeys += key.key
+        }
+        return concatenatedKeys + Data([UInt8(self.threshold)])
+    }
 }
