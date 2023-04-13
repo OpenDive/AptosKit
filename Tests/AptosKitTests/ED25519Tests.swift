@@ -97,4 +97,85 @@ final class ED25519Tests: XCTestCase {
                 "4402e90d8f300d79963cb7159ffa6f620f5bba4af5d32a7176bfb5480b43897cf4886bbb4042182f4647c9b04f02dbf989966f0facceec52d22bdcc7ce631bfc0c40000000"
         XCTAssertEqual(multisigSignatureBcs, expectedMultisigSignatureBcs)
     }
+    
+    func testThatMultisigRangeFunctionsAsIntended() throws {
+        let keys: [PublicKey] = try (0..<MultiPublicKey.maxKeys + 1).map { _ in try PrivateKey.random().publicKey() }
+        
+        do {
+            _ = try MultiPublicKey(keys: [keys[0]], threshold: 1)
+            XCTFail("Key index is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+        
+        do {
+            _ = try MultiPublicKey(keys: keys, threshold: 1)
+            XCTFail("Key index is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+        
+        do {
+            _ = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 0)
+            XCTFail("Key threshold is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+        
+        do {
+            _ = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 5)
+            XCTFail("Key threshold is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+        
+        do {
+            let error = try MultiPublicKey(keys: [keys[0]], threshold: 1, checked: false)
+            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            XCTFail("Key index is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+        
+        do {
+            let error = try MultiPublicKey(keys: keys, threshold: 1, checked: false)
+            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            XCTFail("Key index is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+        
+        do {
+            let error = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 0, checked: false)
+            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            XCTFail("Key threshold is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+        
+        do {
+            let error = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 5, checked: false)
+            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            XCTFail("Key threshold is out of range.")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch {
+            XCTFail("Error is not NSError type.")
+        }
+    }
 }
+
