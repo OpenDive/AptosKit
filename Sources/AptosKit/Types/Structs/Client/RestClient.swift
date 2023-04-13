@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public struct RestClient {
     public var chainId: Int?
@@ -42,7 +43,7 @@ public struct RestClient {
         _ accountAddress: AccountAddress,
         _ resourceType: String,
         _ ledgerVersion: Int? = nil
-    ) async throws -> [String: String] {
+    ) async throws -> JSON {
         var request: String = ""
         if ledgerVersion == nil {
             request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType)"
@@ -50,8 +51,7 @@ public struct RestClient {
             request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType)?ledger_version=\(ledgerVersion!)"
         }
         guard let url = URL(string: request) else { throw NSError(domain: "Invalid URL", code: -1) }
-        let response = try await self.client.asyncData(with: url)
-        return try await self.client.decodeData(with: response)
+        return try await self.client.decodeUrl(with: url)
     }
     
     public func accountBalance(
@@ -63,6 +63,6 @@ public struct RestClient {
             "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
             ledgerVersion
         )
-        return 0
+        return resource["data"]["coin"]["value"].intValue
     }
 }

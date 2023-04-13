@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 // Extensions used to help better streamline the main Holodex class.
 // Most are private to help with having better Access Control.
@@ -130,5 +131,10 @@ extension URLSession {
             from: url,
             keyDecodingStrategy: .convertFromSnakeCase
         )
+    }
+    
+    public func decodeUrl(with url: URL) async throws -> JSON {
+        let result = try await self.asyncData(with: url)
+        return JSON(result)
     }
 }

@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftyJSON/SwiftyJSON.git",
+      "state" : {
+        "revision" : "2b6054efa051565954e1d2b9da831680026cd768",
+        "version" : "4.3.0"
+      }
+    },
+    {
       "identity" : "uint256",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hyugit/UInt256.git",

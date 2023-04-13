@@ -36,14 +36,16 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/hyugit/UInt256.git", from: "0.2.2"),
-        .package(url: "https://github.com/pebble8888/ed25519swift.git", from: "1.2.7")
+        .package(url: "https://github.com/pebble8888/ed25519swift.git", from: "1.2.7"),
+        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "4.0.0")
     ],
     targets: [
         .target(
             name: "AptosKit",
             dependencies: [
                 .product(name: "UInt256", package: "UInt256"),
-                .product(name: "ed25519swift", package: "ed25519swift")
+                .product(name: "ed25519swift", package: "ed25519swift"),
+                .product(name: "SwiftyJSON", package: "swiftyjson")
             ],
             path: "Sources"
         ),

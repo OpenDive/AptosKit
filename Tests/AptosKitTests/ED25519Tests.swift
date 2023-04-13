@@ -94,7 +94,7 @@ final class ED25519Tests: XCTestCase {
         multisigSignature.serialize(ser)
         let multisigSignatureBcs = ser.output().hexEncodedString()
         let expectedMultisigSignatureBcs: String =
-                "4402e90d8f300d79963cb7159ffa6f620f5bba4af5d32a7176bfb5480b43897cf4886bbb4042182f4647c9b04f02dbf989966f0facceec52d22bdcc7ce631bfc0c40000000"
+            "4402e90d8f300d79963cb7159ffa6f620f5bba4af5d32a7176bfb5480b43897cf4886bbb4042182f4647c9b04f02dbf989966f0facceec52d22bdcc7ce631bfc0c40000000"
         XCTAssertEqual(multisigSignatureBcs, expectedMultisigSignatureBcs)
     }
     
