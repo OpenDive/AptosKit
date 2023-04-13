@@ -13,7 +13,7 @@ public struct MultiSignature {
     
     init(publicKey: MultiPublicKey, signatureMap: [(PublicKey, Signature)]) {
         self.signatures = []
-        var bitmap = 0
+        var bitmap: UInt32 = 0
         
         for entry in signatureMap {
             self.signatures.append(entry.1)
@@ -23,7 +23,7 @@ public struct MultiSignature {
             }
         }
         
-        self.bitmap = withUnsafeBytes(of: (bitmap.bigEndian, UInt32.self)) { Data($0) }
+        self.bitmap = withUnsafeBytes(of: (bitmap.bigEndian, UInt32.self)) { Data($0) }.prefix(4)
     }
     
     public func toBytes() -> Data {

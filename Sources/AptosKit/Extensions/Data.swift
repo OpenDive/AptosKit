@@ -36,28 +36,11 @@ public extension Data {
         self = data
     }
     
-    init(fromUInt8Array array: [UInt8]) {
-        self.init()
-        self.append(contentsOf: array)
-    }
-    
     var bytes: [UInt8] {
         Array(self)
     }
     
-    func toHexString() -> String {
-        bytes.toHexString()
-    }
-    
     func hexEncodedString() -> String {
         return map { String(format: "%02hhx", $0) }.joined()
-    }
-    
-    func sha256() -> Data {
-        var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-        withUnsafeBytes {
-            _ = CC_SHA256($0.baseAddress, CC_LONG(count), &hash)
-        }
-        return Data(hash)
     }
 }

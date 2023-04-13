@@ -52,9 +52,7 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
         if value.hasPrefix("0x") {
             hexValue = String(value.dropFirst(2))
         }
-        guard let hexData = Data(hexString: hexValue) else {
-            fatalError("Invalid hex string.")
-        }
+        let hexData = Data(hex: hexValue)
         return PrivateKey(key: hexData)
     }
     

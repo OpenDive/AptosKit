@@ -52,7 +52,11 @@ public struct MultiPublicKey: CustomStringConvertible {
             throw NSError(domain: "Must have between \(minKeys) and \(maxKeys) keys.", code: -1)
         }
         
-        let threshold = Int(key[-1])
+        guard let keyThreshold = key.last else {
+            throw NSError(domain: "Key must have content.", code: -1)
+        }
+        
+        let threshold = Int(keyThreshold)
         
         if minThreshold > threshold || threshold > nSigners {
             throw NSError(domain: "Threshold must be between \(minThreshold) and \(nSigners).", code: -1)
