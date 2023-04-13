@@ -33,4 +33,8 @@ public struct MultiSignature {
         }
         return concatenatedSignatures + self.bitmap
     }
+    
+    public func serialize(_ serializer: Serializer) {
+        Serializer.toBytes(serializer, self.toBytes())
+    }
 }
