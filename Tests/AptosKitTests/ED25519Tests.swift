@@ -30,4 +30,14 @@ final class ED25519Tests: XCTestCase {
         let serPrivateKey = try PrivateKey.deserialize(from: Deserializer(data: ser.output()))
         XCTAssertEqual(privateKey, serPrivateKey)
     }
+    
+    func testThatPublicKeySerializationWorksAsIntended() throws {
+        let privateKey = try PrivateKey.random()
+        let publicKey = try privateKey.publicKey()
+        
+        let ser = Serializer()
+        try publicKey.serialize(ser)
+        let serPublicKey = try PublicKey.deserialize(from: Deserializer(data: ser.output()))
+        XCTAssertEqual(publicKey, serPublicKey)
+    }
 }
