@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import TweetNacl
 
 enum AuthKeyScheme {
     static let ed25519: Data = Data([0x00])

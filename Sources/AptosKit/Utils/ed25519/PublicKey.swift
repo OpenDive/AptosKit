@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TweetNacl
+import ed25519swift
 
 public struct PublicKey: Equatable, KeyProtocol, CustomStringConvertible {
     public static let LENGTH: Int = 32
@@ -29,15 +29,11 @@ public struct PublicKey: Equatable, KeyProtocol, CustomStringConvertible {
     }
     
     public func verify(data: Data, signature: Signature) throws -> Bool {
-        do {
-            return try NaclSign.signDetachedVerify(
-                message: data,
-                sig: signature.data(),
-                publicKey: self.key
-            )
-        } catch {
-            return false
-        }
+        return Ed25519.verify(
+            signature: [UInt8](signature.signature),
+            message: [UInt8](data),
+            publicKey: [UInt8](self.key)
+        )
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> PublicKey {

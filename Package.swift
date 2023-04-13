@@ -35,15 +35,15 @@ let package = Package(
             targets: ["AptosKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git", from: "1.0.2"),
-        .package(url: "https://github.com/hyugit/UInt256.git", from: "0.2.2")
+        .package(url: "https://github.com/hyugit/UInt256.git", from: "0.2.2"),
+        .package(url: "https://github.com/pebble8888/ed25519swift.git", from: "1.2.7")
     ],
     targets: [
         .target(
             name: "AptosKit",
             dependencies: [
-                .product(name: "TweetNacl", package: "tweetnacl-swiftwrap"),
-                .product(name: "UInt256", package: "UInt256")
+                .product(name: "UInt256", package: "UInt256"),
+                .product(name: "ed25519swift", package: "ed25519swift")
             ],
             path: "Sources"
         ),

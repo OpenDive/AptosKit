@@ -55,4 +55,16 @@ final class ED25519Tests: XCTestCase {
         
         XCTAssertEqual(signature, serSignature)
     }
+    
+    func testThatMultiSignatureWorksAsIntended() throws {
+//        let privateKey1 = PrivateKey.fromHex("4e5e3be60f4bbd5e98d086d932f3ce779ff4b58da99bf9e5241ae1212a29e5fe")
+//        let privateKey2 = PrivateKey.fromHex("1e70e49b78f976644e2c51754a2f049d3ff041869c669523ba95b172c7329901")
+//
+//        let publicKey1 = try privateKey1.publicKey()
+//        let publicKey2 = try privateKey2.publicKey()
+//
+//        let multisigPublicKey = try MultiPublicKey(
+//            keys: [publicKey1, publicKey2], threshold: 1
+//        )
+    }
 }

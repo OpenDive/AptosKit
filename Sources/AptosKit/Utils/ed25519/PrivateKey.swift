@@ -24,10 +24,10 @@
 //
 
 import Foundation
-import TweetNacl
+import ed25519swift
 
 public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
-    public static let LENGTH: Int = 64
+    public static let LENGTH: Int = 32
     
     public let key: Data
     
@@ -59,19 +59,18 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
     }
     
     public func publicKey() throws -> PublicKey {
-        let keys = try NaclSign.KeyPair.keyPair(fromSecretKey: self.key)
-        return try PublicKey(data: keys.publicKey)
+        let key = Ed25519.calcPublicKey(secretKey: [UInt8](self.key))
+        return try PublicKey(data: Data(key))
     }
     
     public static func random() throws -> PrivateKey {
-        return PrivateKey(key: try NaclSign.KeyPair.keyPair().secretKey)
+        let privateKeyArray = Ed25519.generateKeyPair().secretKey
+        return PrivateKey(key: Data(privateKeyArray))
     }
     
     public func sign(data: Data) throws -> Signature {
-        let signedMessage = try NaclSign.sign(message: data, secretKey: self.key)
-        let signatureBytes = signedMessage.prefix(64)
-        
-        return Signature(signature: Data(signatureBytes))
+        let signedMessage = Ed25519.sign(message: [UInt8](data), secretKey: [UInt8](self.key))
+        return Signature(signature: Data(signedMessage))
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> PrivateKey {
