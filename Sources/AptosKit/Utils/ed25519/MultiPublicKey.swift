@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct MultiPublicKey {
+public struct MultiPublicKey: CustomStringConvertible {
     public var keys: [PublicKey]
     public var threshold: Int
     
@@ -27,5 +27,9 @@ public struct MultiPublicKey {
         
         self.keys = keys
         self.threshold = threshold
+    }
+    
+    public var description: String {
+        return "\(self.threshold)-of-\(self.keys.count) Multi-Ed25519 public key"
     }
 }
