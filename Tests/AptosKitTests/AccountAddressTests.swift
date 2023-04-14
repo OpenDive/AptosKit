@@ -62,5 +62,12 @@ final class AccountAddressTests: XCTestCase {
         let actual = try AccountAddress.forNamedCollection(baseAddress, "bob's collection")
         XCTAssertEqual(expected, actual)
     }
+    
+    func testThatNamedTokensWillCreateTheProperNamedTokenForTheAccount() throws {
+        let baseAddress = try AccountAddress.fromHex("b0b")
+        let expected = try AccountAddress.fromHex("e20d1f22a5400ba7be0f515b7cbd00edc42dbcc31acc01e31128b2b5ddb3c56e")
+        let actual = try AccountAddress.forNamedToken(baseAddress, "bob's collection", "bob's token")
+        XCTAssertEqual(expected, actual)
+    }
 }
 
