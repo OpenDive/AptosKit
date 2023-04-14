@@ -57,7 +57,6 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
     }
     
     public func publicKey() throws -> PublicKey {
-        print([UInt8](self.key).count)
         let key = Ed25519.calcPublicKey(secretKey: [UInt8](self.key))
         return try PublicKey(data: Data(key))
     }
