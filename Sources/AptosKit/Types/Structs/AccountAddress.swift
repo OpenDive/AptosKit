@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import CryptoSwift
 
 enum AuthKeyScheme {
-    static let ed25519: Data = Data([0x00])
+    static let ed25519: UInt8 = 0x00
     static let multiEd25519: Data = Data([0x01])
     static let deriveObjectAddressFromGuid: Data = Data([0xFD])
     static let deriveObjectAddressFromSeed: Data = Data([0xFE])
@@ -55,11 +56,12 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
     }
 
     public static func fromKey(_ key: PublicKey) -> AccountAddress {
-        var input = Data()
-        input.append(contentsOf: [UInt8](key.key))
-        input.append(contentsOf: AuthKeyScheme.ed25519)
-        let digest = sha256(data: input)
-        return try! AccountAddress(address: digest)
+        var addressBytes = Data(count: key.key.count + 1)
+        addressBytes[0..<key.key.count] = key.key[0..<key.key.count]
+        addressBytes[key.key.count] = AuthKeyScheme.ed25519
+        let result = addressBytes.sha3(.sha256)
+        
+        return try! AccountAddress(address: Data(result))
     }
     
 //    public static func fromMultiEd25519(keys: )

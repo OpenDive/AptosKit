@@ -33,6 +33,8 @@ extension URLSession {
         dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate
     ) async throws -> T {
         let decoder = JSONDecoder()
+        
+        print(String(data: data, encoding: .utf8))
 
         decoder.keyDecodingStrategy = keyDecodingStrategy
         decoder.dataDecodingStrategy = dataDecodingStrategy

@@ -36,7 +36,11 @@ public struct RestClient {
             request = "\(self.baseUrl)/accounts/\(accountAddress)?ledger_version=\(ledgerVersion!)"
         }
         guard let url = URL(string: request) else { throw NSError(domain: "Invalid URL", code: -1) }
-        return try await self.client.decodeUrl(with: url)
+        let result: JSON = try await self.client.decodeUrl(with: url)
+        return AccountResponse(
+            sequenceNumber: result["sequence_number"].stringValue,
+            authenticationKey: result["authentication_key"].stringValue
+        )
     }
     
     public func accountResource(
