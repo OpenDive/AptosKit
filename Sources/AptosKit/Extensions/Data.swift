@@ -23,19 +23,6 @@ public extension Data {
         self.init([UInt8](hex: hex))
     }
     
-    init?(hexString: String) {
-        let length = hexString.count / 2
-        var data = Data(capacity: length)
-        var hexIndex = hexString.startIndex
-        for _ in 0..<length {
-            let byteString = hexString[hexIndex..<hexString.index(after: hexIndex)]
-            hexIndex = hexString.index(after: hexIndex)
-            guard let byte = UInt8(byteString, radix: 16) else { return nil }
-            data.append(byte)
-        }
-        self = data
-    }
-    
     var bytes: [UInt8] {
         Array(self)
     }

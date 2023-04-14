@@ -10,7 +10,7 @@ import CryptoSwift
 
 enum AuthKeyScheme {
     static let ed25519: UInt8 = 0x00
-    static let multiEd25519: Data = Data([0x01])
+    static let multiEd25519: UInt8 = 0x01
     static let deriveObjectAddressFromGuid: Data = Data([0xFD])
     static let deriveObjectAddressFromSeed: Data = Data([0xFE])
     static let deriveResourceAccountAddress: Data = Data([0xFF])
@@ -48,40 +48,44 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
             addr = pad + addr
         }
 
-        guard let data = Data(hexString: addr) else {
-            throw NSError(domain: "Invalid hex string", code: -1)
-        }
-
-        return try AccountAddress(address: data)
+        return try AccountAddress(address: Data(hex: addr))
     }
 
-    public static func fromKey(_ key: PublicKey) -> AccountAddress {
+    public static func fromKey(_ key: PublicKey) throws -> AccountAddress {
         var addressBytes = Data(count: key.key.count + 1)
         addressBytes[0..<key.key.count] = key.key[0..<key.key.count]
         addressBytes[key.key.count] = AuthKeyScheme.ed25519
         let result = addressBytes.sha3(.sha256)
         
-        return try! AccountAddress(address: Data(result))
+        return try AccountAddress(address: Data(result))
     }
     
-//    public static func fromMultiEd25519(keys: )
+    public static func fromMultiEd25519(keys: MultiPublicKey) throws -> AccountAddress {
+        let keysBytes = keys.toBytes()
+        var addressBytes = Data(count: keysBytes.count + 1)
+        addressBytes[0..<keysBytes.count] = keysBytes[0..<keysBytes.count]
+        addressBytes[keysBytes.count] = AuthKeyScheme.multiEd25519
+        let result = addressBytes.sha3(.sha256)
+        
+        return try AccountAddress(address: Data(result))
+    }
     
-    public static func forResourceAccount(_ creator: AccountAddress, seed: Data) -> AccountAddress {
+    public static func forResourceAccount(_ creator: AccountAddress, seed: Data) throws -> AccountAddress {
         var input = Data()
         input.append(contentsOf: creator.address)
         input.append(contentsOf: seed)
         input.append(contentsOf: AuthKeyScheme.deriveResourceAccountAddress)
         let digest = sha256(data: input)
-        return try! AccountAddress(address: digest)
+        return try AccountAddress(address: digest)
     }
     
-    public static func forNamedObject(_ creator: AccountAddress, seed: Data) -> AccountAddress {
+    public static func forNamedObject(_ creator: AccountAddress, seed: Data) throws -> AccountAddress {
         var input = Data()
         input.append(contentsOf: creator.address)
         input.append(contentsOf: seed)
         input.append(contentsOf: AuthKeyScheme.deriveObjectAddressFromSeed)
         let digest = sha256(data: input)
-        return try! AccountAddress(address: digest)
+        return try AccountAddress(address: digest)
     }
     
     public static func forNamedToken(_ creator: AccountAddress, _ collectionName: String, _ tokenName: String) throws -> AccountAddress {
@@ -94,14 +98,14 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
         guard let seperatorData = "::".data(using: .utf8) else {
             throw NSError(domain: "Unable to unwrap seperator", code: -1)
         }
-        return AccountAddress.forNamedObject(creator, seed: collectionData + seperatorData + tokenData)
+        return try AccountAddress.forNamedObject(creator, seed: collectionData + seperatorData + tokenData)
     }
     
     public static func forNamedCollection(_ creator: AccountAddress, _ collectionName: String) throws -> AccountAddress {
         guard let collectionData = collectionName.data(using: .utf8) else {
             throw NSError(domain: "Unable to unwrap collection", code: -1)
         }
-        return AccountAddress.forNamedObject(creator, seed: collectionData)
+        return try AccountAddress.forNamedObject(creator, seed: collectionData)
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> AccountAddress {
