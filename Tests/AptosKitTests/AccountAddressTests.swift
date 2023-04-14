@@ -44,5 +44,16 @@ final class AccountAddressTests: XCTestCase {
         let actual = try AccountAddress.forResourceAccount(baseAddress, seed: seed)
         XCTAssertEqual(expected, actual)
     }
+    
+    func testThatNamedObjectsWillCreateTheProperNamedCollectionForTheAccount() throws {
+        let baseAddress = try AccountAddress.fromHex("b0b")
+        let expected = try AccountAddress.fromHex("f417184602a828a3819edf5e36285ebef5e4db1ba36270be580d6fd2d7bcc321")
+        guard let seed = "bob's collection".data(using: .utf8) else {
+            XCTFail("Invalid data")
+            return
+        }
+        let actual = try AccountAddress.forNamedObject(baseAddress, seed: seed)
+        XCTAssertEqual(expected, actual)
+    }
 }
 

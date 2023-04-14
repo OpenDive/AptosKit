@@ -12,7 +12,7 @@ enum AuthKeyScheme {
     static let ed25519: UInt8 = 0x00
     static let multiEd25519: UInt8 = 0x01
     static let deriveObjectAddressFromGuid: Data = Data([0xFD])
-    static let deriveObjectAddressFromSeed: Data = Data([0xFE])
+    static let deriveObjectAddressFromSeed: UInt8 = 0xFE
     static let deriveResourceAccountAddress: UInt8 = 0xFF
 }
 
@@ -81,12 +81,13 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
     }
     
     public static func forNamedObject(_ creator: AccountAddress, seed: Data) throws -> AccountAddress {
-        var input = Data()
-        input.append(contentsOf: creator.address)
-        input.append(contentsOf: seed)
-        input.append(contentsOf: AuthKeyScheme.deriveObjectAddressFromSeed)
-        let digest = sha256(data: input)
-        return try AccountAddress(address: digest)
+        var addressBytes = Data(count: creator.address.count + seed.count + 1)
+        addressBytes[0..<creator.address.count] = creator.address[0..<creator.address.count]
+        addressBytes[creator.address.count..<creator.address.count + seed.count] = seed[0..<seed.count]
+        addressBytes[creator.address.count + seed.count] = AuthKeyScheme.deriveObjectAddressFromSeed
+        let result = addressBytes.sha3(.sha256)
+        
+        return try AccountAddress(address: result)
     }
     
     public static func forNamedToken(_ creator: AccountAddress, _ collectionName: String, _ tokenName: String) throws -> AccountAddress {
