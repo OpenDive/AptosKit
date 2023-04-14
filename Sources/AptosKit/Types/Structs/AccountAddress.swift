@@ -13,7 +13,7 @@ enum AuthKeyScheme {
     static let multiEd25519: UInt8 = 0x01
     static let deriveObjectAddressFromGuid: Data = Data([0xFD])
     static let deriveObjectAddressFromSeed: Data = Data([0xFE])
-    static let deriveResourceAccountAddress: Data = Data([0xFF])
+    static let deriveResourceAccountAddress: UInt8 = 0xFF
 }
 
 public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
@@ -57,7 +57,7 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
         addressBytes[key.key.count] = AuthKeyScheme.ed25519
         let result = addressBytes.sha3(.sha256)
         
-        return try AccountAddress(address: Data(result))
+        return try AccountAddress(address: result)
     }
     
     public static func fromMultiEd25519(keys: MultiPublicKey) throws -> AccountAddress {
@@ -67,16 +67,17 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
         addressBytes[keysBytes.count] = AuthKeyScheme.multiEd25519
         let result = addressBytes.sha3(.sha256)
         
-        return try AccountAddress(address: Data(result))
+        return try AccountAddress(address: result)
     }
     
     public static func forResourceAccount(_ creator: AccountAddress, seed: Data) throws -> AccountAddress {
-        var input = Data()
-        input.append(contentsOf: creator.address)
-        input.append(contentsOf: seed)
-        input.append(contentsOf: AuthKeyScheme.deriveResourceAccountAddress)
-        let digest = sha256(data: input)
-        return try AccountAddress(address: digest)
+        var addressBytes = Data(count: creator.address.count + seed.count + 1)
+        addressBytes[0..<creator.address.count] = creator.address[0..<creator.address.count]
+        addressBytes[creator.address.count..<creator.address.count + seed.count] = seed[0..<seed.count]
+        addressBytes[creator.address.count + seed.count] = AuthKeyScheme.deriveResourceAccountAddress
+        let result = addressBytes.sha3(.sha256)
+        
+        return try AccountAddress(address: result)
     }
     
     public static func forNamedObject(_ creator: AccountAddress, seed: Data) throws -> AccountAddress {

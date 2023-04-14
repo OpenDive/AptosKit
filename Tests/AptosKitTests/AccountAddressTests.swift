@@ -36,5 +36,13 @@ final class AccountAddressTests: XCTestCase {
         let actualAccountAddress = try AccountAddress.fromMultiEd25519(keys: multisigPublicKey)
         XCTAssertEqual(expectedAccountAddress, actualAccountAddress)
     }
+    
+    func testThatResourceAccountWillCreateTheProperResourcesForTheAccount() throws {
+        let baseAddress = try AccountAddress.fromHex("b0b")
+        let expected = try AccountAddress.fromHex("ee89f8c763c27f9d942d496c1a0dcf32d5eacfe78416f9486b8db66155b163b0")
+        let seed = Data([0x0b, 0x00, 0x0b])
+        let actual = try AccountAddress.forResourceAccount(baseAddress, seed: seed)
+        XCTAssertEqual(expected, actual)
+    }
 }
 
