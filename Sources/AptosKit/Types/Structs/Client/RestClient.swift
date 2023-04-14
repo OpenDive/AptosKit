@@ -50,9 +50,9 @@ public struct RestClient {
     ) async throws -> JSON {
         var request: String = ""
         if ledgerVersion == nil {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType)"
+            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)"
         } else {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType)?ledger_version=\(ledgerVersion!)"
+            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)?ledger_version=\(ledgerVersion!)"
         }
         guard let url = URL(string: request) else { throw NSError(domain: "Invalid URL", code: -1) }
         return try await self.client.decodeUrl(with: url)
