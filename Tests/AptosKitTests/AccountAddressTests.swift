@@ -24,5 +24,17 @@ final class AccountAddressTests: XCTestCase {
         
         XCTAssertEqual(account.hex(), "0x9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d")
     }
+    
+    func testThatMultiED25519WillCreateTheProperKeysForTheAccount() throws {
+        let privateKey1 = PrivateKey.fromHex("4e5e3be60f4bbd5e98d086d932f3ce779ff4b58da99bf9e5241ae1212a29e5fe")
+        let privateKey2 = PrivateKey.fromHex("1e70e49b78f976644e2c51754a2f049d3ff041869c669523ba95b172c7329901")
+        let multisigPublicKey = try MultiPublicKey(
+            keys: [try privateKey1.publicKey(), try privateKey2.publicKey()],
+            threshold: 1
+        )
+        let expectedAccountAddress = try AccountAddress.fromHex("835bb8c5ee481062946b18bbb3b42a40b998d6bf5316ca63834c959dc739acf0")
+        let actualAccountAddress = try AccountAddress.fromMultiEd25519(keys: multisigPublicKey)
+        XCTAssertEqual(expectedAccountAddress, actualAccountAddress)
+    }
 }
 
