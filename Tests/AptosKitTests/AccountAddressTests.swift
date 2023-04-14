@@ -69,5 +69,15 @@ final class AccountAddressTests: XCTestCase {
         let actual = try AccountAddress.forNamedToken(baseAddress, "bob's collection", "bob's token")
         XCTAssertEqual(expected, actual)
     }
+    
+    func testThatAccountAddressSerializationAndDeserializationWorksAsIntended() throws {
+        let baseAddress = try AccountAddress.fromHex("b0b")
+        let ser = Serializer()
+        try baseAddress.serialize(ser)
+        let der = Deserializer(data: ser.output())
+        let output = try AccountAddress.deserialize(from: der)
+        
+        XCTAssertEqual(baseAddress, output)
+    }
 }
 
