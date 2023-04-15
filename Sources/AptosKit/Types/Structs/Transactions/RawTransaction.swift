@@ -9,12 +9,12 @@ import Foundation
 
 public struct RawTransaction: KeyProtocol {
     public var sender: AccountAddress
-    public var sequenceNumber: Int
+    public var sequenceNumber: UInt64
     public var payload: TransactionPayload
-    public var maxGasAmount: Int
-    public var gasUnitPrice: Int
-    public var expirationTimestampSecs: Int
-    public var chainId: Int
+    public var maxGasAmount: UInt64
+    public var gasUnitPrice: UInt64
+    public var expirationTimestampSecs: UInt64
+    public var chainId: UInt8
     
     public func prehash() throws -> Data {
         guard let data = "APTOS::RawTransaction".data(using: .utf8) else {
@@ -42,22 +42,22 @@ public struct RawTransaction: KeyProtocol {
     public static func deserialize(from deserializer: Deserializer) throws -> RawTransaction {
         return RawTransaction(
             sender: try AccountAddress.deserialize(from: deserializer),
-            sequenceNumber: Int(try Deserializer.u64(deserializer)),
+            sequenceNumber: UInt64(try Deserializer.u64(deserializer)),
             payload: try TransactionPayload.deserialize(from: deserializer),
-            maxGasAmount: Int(try Deserializer.u64(deserializer)),
-            gasUnitPrice: Int(try Deserializer.u64(deserializer)),
-            expirationTimestampSecs: Int(try Deserializer.u64(deserializer)),
-            chainId: Int(try Deserializer.u8(deserializer))
+            maxGasAmount: UInt64(try Deserializer.u64(deserializer)),
+            gasUnitPrice: UInt64(try Deserializer.u64(deserializer)),
+            expirationTimestampSecs: UInt64(try Deserializer.u64(deserializer)),
+            chainId: UInt8(try Deserializer.u8(deserializer))
         )
     }
     
     public func serialize(_ serializer: Serializer) throws {
         try self.sender.serialize(serializer)
-        Serializer.u64(serializer, UInt64(self.sequenceNumber))
+        try Serializer.u64(serializer, UInt64(self.sequenceNumber))
         try self.payload.serialize(serializer)
-        Serializer.u64(serializer, UInt64(self.maxGasAmount))
-        Serializer.u64(serializer, UInt64(self.gasUnitPrice))
-        Serializer.u64(serializer, UInt64(self.expirationTimestampSecs))
-        Serializer.u8(serializer, UInt8(self.chainId))
+        try Serializer.u64(serializer, UInt64(self.maxGasAmount))
+        try Serializer.u64(serializer, UInt64(self.gasUnitPrice))
+        try Serializer.u64(serializer, UInt64(self.expirationTimestampSecs))
+        try Serializer.u8(serializer, UInt8(self.chainId))
     }
 }

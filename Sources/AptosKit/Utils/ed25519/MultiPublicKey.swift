@@ -73,7 +73,7 @@ public struct MultiPublicKey: CustomStringConvertible {
         return try MultiPublicKey(keys: keys, threshold: threshold)
     }
     
-    public func serialize(_ serializer: Serializer) {
-        Serializer.toBytes(serializer, self.toBytes())
+    public func serialize(_ serializer: Serializer) throws {
+        try Serializer.toBytes(serializer, self.toBytes())
     }
 }

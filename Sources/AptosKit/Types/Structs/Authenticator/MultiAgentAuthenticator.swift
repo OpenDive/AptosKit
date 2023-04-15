@@ -32,8 +32,8 @@ public struct MultiAgentAuthenticator: AuthenticatorProtocol {
     
     public func serialize(_ serializer: Serializer) throws {
         try Serializer._struct(serializer, value: self.sender)
-        serializer.sequence(self.secondarySigner.map { $0.0 }, Serializer._struct)
-        serializer.sequence(self.secondarySigner.map { $0.1 }, Serializer._struct)
+        try serializer.sequence(self.secondarySigner.map { $0.0 }, Serializer._struct)
+        try serializer.sequence(self.secondarySigner.map { $0.1 }, Serializer._struct)
     }
     
     public func isEqualTo(_ rhs: AuthenticatorProtocol) -> Bool {

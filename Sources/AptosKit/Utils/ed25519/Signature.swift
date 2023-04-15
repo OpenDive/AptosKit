@@ -36,7 +36,7 @@ public struct Signature: Equatable, KeyProtocol, CustomStringConvertible {
         return Signature(signature: signatureBytes)
     }
 
-    public func serialize(_ serializer: Serializer) {
-        Serializer.toBytes(serializer, self.signature)
+    public func serialize(_ serializer: Serializer) throws {
+        try Serializer.toBytes(serializer, self.signature)
     }
 }

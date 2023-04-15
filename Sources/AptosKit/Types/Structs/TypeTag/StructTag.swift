@@ -15,20 +15,16 @@ public struct StructTag: TypeProtcol, Equatable {
     }
     
     public static func fromStr(_ typeTag: String) throws -> StructTag {
-        let name = ""
-        let index = 0
+        var name = ""
+        var index = 0
         
         while index < typeTag.count {
-            var name = ""
-            var index = 0
-            while index < typeTag.count {
-                let letter = typeTag[typeTag.index(typeTag.startIndex, offsetBy: index)]
-                index += 1
-                if letter == "<" {
-                    throw NSError(domain: "Not Implemented", code: -1)
-                } else {
-                    name.append(letter)
-                }
+            let letter = typeTag[typeTag.index(typeTag.startIndex, offsetBy: index)]
+            index += 1
+            if letter == "<" {
+                throw NSError(domain: "Not Implemented", code: -1)
+            } else {
+                name.append(letter)
             }
         }
         let split = name.split(separator: "::")
@@ -64,13 +60,13 @@ public struct StructTag: TypeProtcol, Equatable {
     
     public func serialize(_ serializer: Serializer) throws {
         try self.value.address.serialize(serializer)
-        Serializer.str(serializer, self.value.module)
-        Serializer.str(serializer, self.value.name)
-        serializer.sequence(self.value.typeArgs, Serializer._struct)
+        try Serializer.str(serializer, self.value.module)
+        try Serializer.str(serializer, self.value.name)
+        try serializer.sequence(self.value.typeArgs, Serializer._struct)
     }
 }
 
-public struct StructTagValue: Equatable {
+public struct StructTagValue: Equatable, EncodingProtocol {
     let address: AccountAddress
     let module: String
     let name: String

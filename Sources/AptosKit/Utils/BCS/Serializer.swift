@@ -24,8 +24,8 @@ public class Serializer {
         self.writeInt(result, length: 1)
     }
 
-    static func toBytes(_ serializer: Serializer, _ value: Data) {
-        serializer.uleb128(UInt(value.count))
+    static func toBytes(_ serializer: Serializer, _ value: Data) throws {
+        try serializer.uleb128(UInt(value.count))
         serializer._output.append(value)
     }
 
@@ -33,15 +33,19 @@ public class Serializer {
         self._output.append(value)
     }
     
-    public static func _struct(_ serializer: Serializer, value: Any & KeyProtocol) throws {
-        try value.serialize(serializer)
+    public static func _struct(_ serializer: Serializer, value: EncodingProtocol) throws {
+        if let keyProtocolValue = value as? KeyProtocol {
+            try keyProtocolValue.serialize(serializer)
+        } else {
+            throw NSError(domain: "This function does not conform to KeyProtocol", code: -1)
+        }
     }
 
     func map<T, U>(
         _ values: [T: U],
-        keyEncoder: (Serializer, T) -> (),
-        valueEncoder: (Serializer, U) -> ()
-    ) {
+        keyEncoder: (Serializer, T) throws -> (),
+        valueEncoder: (Serializer, U) throws -> ()
+    ) throws {
         var encodedValues: [(Data, Data)] = []
         for (key, value) in values {
             do {
@@ -54,7 +58,7 @@ public class Serializer {
         }
         encodedValues.sort(by: { $0.0 < $1.0 })
 
-        self.uleb128(UInt(encodedValues.count))
+        try self.uleb128(UInt(encodedValues.count))
         for (key, value) in encodedValues {
             self.fixedBytes(key)
             self.fixedBytes(value)
@@ -62,16 +66,16 @@ public class Serializer {
     }
 
     static func sequenceSerializer<T>(
-        _ valueEncoder: @escaping (Serializer, T) -> ()
-    ) -> (Serializer, [T]) -> Void {
-        return { (self, values) in self.sequence(values, valueEncoder) }
+        _ valueEncoder: @escaping (Serializer, T) throws -> ()
+    ) -> (Serializer, [T]) throws -> Void {
+        return { (self, values) in try self.sequence(values, valueEncoder) }
     }
 
     func sequence<T>(
         _ values: [T],
         _ valueEncoder: (Serializer, T) throws -> ()
-    ) {
-        self.uleb128(UInt(values.count))
+    ) throws {
+        try self.uleb128(UInt(values.count))
         for value in values {
             do {
                 let bytes = try encoder(value, valueEncoder)
@@ -82,42 +86,70 @@ public class Serializer {
         }
     }
 
-    public static func str(_ serializer: Serializer, _ value: String) {
-        Serializer.toBytes(serializer, value.data(using: .utf8)!)
+    public static func str(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+        if let str = value as? String {
+            try Serializer.toBytes(serializer, String(str).data(using: .utf8)!)
+        } else {
+            throw NSError(domain: "Value is not String.", code: -1)
+        }
     }
 
-    public static func u8(_ serializer: Serializer, _ value: UInt8) {
-        serializer.writeInt(value, length: 1)
+    public static func u8(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+        if let uint8 = value as? UInt8 {
+            serializer.writeInt(UInt8(uint8), length: 1)
+        } else {
+            throw NSError(domain: "Value is not UInt8.", code: -1)
+        }
     }
 
-    public static func u16(_ serializer: Serializer, _ value: UInt16) {
-        serializer.writeInt(value, length: 2)
+    public static func u16(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+        if let uint16 = value as? UInt16 {
+            serializer.writeInt(UInt16(uint16), length: 2)
+        } else {
+            throw NSError(domain: "Value is not UInt16.", code: -1)
+        }
     }
 
-    public static func u32(_ serializer: Serializer, _ value: UInt32) {
-        serializer.writeInt(value, length: 4)
+    public static func u32(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+        if let uint32 = value as? UInt32 {
+            serializer.writeInt(UInt32(uint32), length: 4)
+        } else {
+            throw NSError(domain: "Value is not UInt32.", code: -1)
+        }
     }
 
-    public static func u64(_ serializer: Serializer, _ value: UInt64) {
-        serializer.writeInt(value, length: 8)
+    public static func u64(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+        if let uint64 = value as? UInt64 {
+            serializer.writeInt(UInt64(uint64), length: 8)
+        } else {
+            throw NSError(domain: "Value is not UInt64.", code: -1)
+        }
     }
 
-    public static func u128(_ serializer: Serializer, _ value: UInt128) {
-        serializer.writeInt(value, length: 16)
+    public static func u128(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+        if let uint128 = value as? UInt128 {
+            serializer.writeInt(UInt128(uint128), length: 16)
+        } else {
+            throw NSError(domain: "Value is not UInt128.", code: -1)
+        }
     }
 
-    public static func u256(_ serializer: Serializer, _ value: UInt256) {
-        serializer.writeInt(value, length: 32)
+    public static func u256(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+        if let uint256 = value as? UInt256 {
+            serializer.writeInt(uint256, length: 32)
+        } else {
+            throw NSError(domain: "Value is not UInt256.", code: -1)
+        }
     }
 
-    func uleb128(_ value: UInt) {
+    func uleb128(_ value: UInt) throws {
         var _value = value
         while _value >= 0x80 {
             let byte = _value & 0x7F
-            Serializer.u8(self, UInt8(byte | 0x80))
+            try Serializer.u8(self, UInt8(byte | 0x80))
             _value >>= 7
         }
-        Serializer.u8(self, UInt8(_value & 0x7F))
+        try Serializer.u8(self, UInt8(_value & 0x7F))
     }
 
     private func writeInt(_ value: any UnsignedInteger, length: Int) {

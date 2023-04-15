@@ -61,24 +61,24 @@ public struct ScriptArgument: KeyProtocol {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        Serializer.u8(serializer, UInt8(self.variant))
+        try Serializer.u8(serializer, UInt8(self.variant))
         
         if self.variant == ScriptArgument.u8 {
-            Serializer.u8(serializer, self.value as! UInt8)
+            try Serializer.u8(serializer, self.value as! UInt8)
         } else if self.variant == ScriptArgument.u16 {
-            Serializer.u16(serializer, self.value as! UInt16)
+            try Serializer.u16(serializer, self.value as! UInt16)
         } else if self.variant == ScriptArgument.u32 {
-            Serializer.u32(serializer, self.value as! UInt32)
+            try Serializer.u32(serializer, self.value as! UInt32)
         } else if self.variant == ScriptArgument.u64 {
-            Serializer.u64(serializer, self.value as! UInt64)
+            try Serializer.u64(serializer, self.value as! UInt64)
         } else if self.variant == ScriptArgument.u128 {
-            Serializer.u128(serializer, self.value as! UInt128)
+            try Serializer.u128(serializer, self.value as! UInt128)
         } else if self.variant == ScriptArgument.u256 {
-            Serializer.u256(serializer, self.value as! UInt256)
+            try Serializer.u256(serializer, self.value as! UInt256)
         } else if self.variant == ScriptArgument.address && self.value.self is KeyProtocol.Type {
              try Serializer._struct(serializer, value: self.value as! KeyProtocol)
         } else if self.variant == ScriptArgument.u8Vector {
-            Serializer.toBytes(serializer, self.value as! Data)
+            try Serializer.toBytes(serializer, self.value as! Data)
         } else if self.variant == ScriptArgument.bool {
             serializer.bool(self.value as! Bool)
         }

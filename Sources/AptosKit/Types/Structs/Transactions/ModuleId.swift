@@ -27,6 +27,6 @@ public struct ModuleId: KeyProtocol {
     
     public func serialize(_ serializer: Serializer) throws {
         try self.address.serialize(serializer)
-        Serializer.str(serializer, self.name)
+        try Serializer.str(serializer, self.name)
     }
 }

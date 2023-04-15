@@ -23,6 +23,6 @@ public struct U64Tag: TypeProtcol, Equatable {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        Serializer.u64(serializer, UInt64(self.value))
+        try Serializer.u64(serializer, UInt64(self.value))
     }
 }

@@ -23,6 +23,6 @@ public struct U8Tag: TypeProtcol, Equatable {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        Serializer.u8(serializer, UInt8(self.value))
+        try Serializer.u8(serializer, UInt8(self.value))
     }
 }

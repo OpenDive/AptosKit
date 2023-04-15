@@ -21,8 +21,8 @@ public struct Script: TransactionProtocol {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        Serializer.toBytes(serializer, self.code)
-        serializer.sequence(self.tyArgs, Serializer._struct)
-        serializer.sequence(self.args, Serializer._struct)
+        try Serializer.toBytes(serializer, self.code)
+        try serializer.sequence(self.tyArgs, Serializer._struct)
+        try serializer.sequence(self.args, Serializer._struct)
     }
 }

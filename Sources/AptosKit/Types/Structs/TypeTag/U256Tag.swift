@@ -24,6 +24,6 @@ public struct U256Tag: TypeProtcol, Equatable {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        Serializer.u256(serializer, UInt256(self.value))
+        try Serializer.u256(serializer, UInt256(self.value))
     }
 }

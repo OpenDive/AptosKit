@@ -8,12 +8,12 @@
 import Foundation
 
 public struct TransactionArgument {
-    public let value: Any
-    public let encoder: (Serializer, Any) -> ()
+    public let value: any EncodingProtocol
+    public let encoder: (Serializer, any EncodingProtocol) throws -> ()
     
-    public func encode() -> Data {
+    public func encode() throws -> Data {
         let ser = Serializer()
-        self.encoder(ser, self.value)
+        try self.encoder(ser, self.value)
         return ser.output()
     }
 }

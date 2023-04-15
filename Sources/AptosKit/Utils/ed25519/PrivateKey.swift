@@ -80,6 +80,6 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        Serializer.toBytes(serializer, self.key)
+        try Serializer.toBytes(serializer, self.key)
     }
 }

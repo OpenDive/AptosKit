@@ -50,7 +50,7 @@ final class ED25519Tests: XCTestCase {
         let signature = try privateKey.sign(data: input)
         
         let ser = Serializer()
-        signature.serialize(ser)
+        try signature.serialize(ser)
         let serSignature = try Signature.deserialize(from: Deserializer(data: ser.output()))
         
         XCTAssertEqual(signature, serSignature)
@@ -68,7 +68,7 @@ final class ED25519Tests: XCTestCase {
         )
         
         var ser = Serializer()
-        multisigPublicKey.serialize(ser)
+        try multisigPublicKey.serialize(ser)
         var publicKeyBcs = ser.output().hexEncodedString()
         let expectedPublicKeyBcs: String =
             "41754bb6a4720a658bdd5f532995955db0971ad3519acbde2f1149c3857348006c1634cd4607073f2be4a6f2aadc2b866ddb117398a675f2096ed906b20e0bf2c901"
@@ -77,7 +77,7 @@ final class ED25519Tests: XCTestCase {
         let publicKeyBytes = multisigPublicKey.toBytes()
         multisigPublicKey = try MultiPublicKey.fromBytes(publicKeyBytes)
         ser = Serializer()
-        multisigPublicKey.serialize(ser)
+        try multisigPublicKey.serialize(ser)
         publicKeyBcs = ser.output().hexEncodedString()
         XCTAssertEqual(publicKeyBcs, expectedPublicKeyBcs)
         
@@ -91,7 +91,7 @@ final class ED25519Tests: XCTestCase {
             signatureMap: [(try privateKey2.publicKey(), signature)]
         )
         ser = Serializer()
-        multisigSignature.serialize(ser)
+        try multisigSignature.serialize(ser)
         let multisigSignatureBcs = ser.output().hexEncodedString()
         let expectedMultisigSignatureBcs: String =
             "4402e90d8f300d79963cb7159ffa6f620f5bba4af5d32a7176bfb5480b43897cf4886bbb4042182f4647c9b04f02dbf989966f0facceec52d22bdcc7ce631bfc0c40000000"

@@ -23,7 +23,7 @@ public struct EntryFunction: TransactionProtocol {
         var byteArgs: [Data] = []
         
         for arg in args {
-            byteArgs.append(arg.encode())
+            byteArgs.append(try arg.encode())
         }
         return EntryFunction(
             module: moduleId,
@@ -44,8 +44,8 @@ public struct EntryFunction: TransactionProtocol {
     
     public func serialize(_ serializer: Serializer) throws {
         try self.module.serialize(serializer)
-        Serializer.str(serializer, self.function)
-        serializer.sequence(self.tyArgs, Serializer._struct)
-        serializer.sequence(self.args, Serializer.toBytes)
+        try Serializer.str(serializer, self.function)
+        try serializer.sequence(self.tyArgs, Serializer._struct)
+        try serializer.sequence(self.args, Serializer.toBytes)
     }
 }

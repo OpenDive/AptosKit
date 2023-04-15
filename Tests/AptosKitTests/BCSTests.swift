@@ -33,7 +33,7 @@ final class BCSTests: XCTestCase {
     func testThatBoolSerializationAndDeserializationThrowAnErrorWithInvalidInput() throws {
         let input: Int = 32
         let ser = Serializer()
-        Serializer.u8(ser, UInt8(input))
+        try Serializer.u8(ser, UInt8(input))
         let der = Deserializer(data: ser.output())
         
         XCTAssertThrowsError(try der.bool())
@@ -45,7 +45,7 @@ final class BCSTests: XCTestCase {
             return
         }
         let ser = Serializer()
-        Serializer.toBytes(ser, input)
+        try Serializer.toBytes(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.toBytes(der)
 
@@ -59,7 +59,7 @@ final class BCSTests: XCTestCase {
             "c": 23829
         ]
         let ser = Serializer()
-        ser.map(input, keyEncoder: Serializer.str, valueEncoder: Serializer.u32)
+        try ser.map(input, keyEncoder: Serializer.str, valueEncoder: Serializer.u32)
         let der = Deserializer(data: ser.output())
         let output = try der.map(keyDecoder: Deserializer.string, valueDecoder: Deserializer.u32)
         
@@ -69,7 +69,7 @@ final class BCSTests: XCTestCase {
     func testThatSequenceSerializationAndDeserializationWorksWithArrays() throws {
         let input: [String] = ["a", "abc", "def", "ghi"]
         let ser = Serializer()
-        ser.sequence(input, Serializer.str)
+        try ser.sequence(input, Serializer.str)
         let der = Deserializer(data: ser.output())
         let output = try der.sequence(valueDecoder: Deserializer.string)
         
@@ -80,7 +80,7 @@ final class BCSTests: XCTestCase {
         let input: [String] = ["a", "abc", "def", "ghi"]
         let ser = Serializer()
         let seqSer = Serializer.sequenceSerializer(Serializer.str)
-        seqSer(ser, input)
+        try seqSer(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try der.sequence(valueDecoder: Deserializer.string)
         
@@ -90,7 +90,7 @@ final class BCSTests: XCTestCase {
     func testThatStringSerializationAndDeserializationWorksWithStrings() throws {
         let input: String = "1234567890"
         let ser = Serializer()
-        Serializer.str(ser, input)
+        try Serializer.str(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.string(der)
         
@@ -100,7 +100,7 @@ final class BCSTests: XCTestCase {
     func testThatU8SerializationAndDeserializationWorksWithUInt8s() throws {
         let input: UInt8 = 15
         let ser = Serializer()
-        Serializer.u8(ser, input)
+        try Serializer.u8(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u8(der)
         
@@ -110,7 +110,7 @@ final class BCSTests: XCTestCase {
     func testThatU16SerializationAndDeserializationWorksWithUInt16s() throws {
         let input: UInt16 = 111_15
         let ser = Serializer()
-        Serializer.u16(ser, input)
+        try Serializer.u16(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u16(der)
         
@@ -120,7 +120,7 @@ final class BCSTests: XCTestCase {
     func testThatU32SerializationAndDeserializationWorksWithUInt32s() throws {
         let input: UInt32 = 1_111_111_115
         let ser = Serializer()
-        Serializer.u32(ser, input)
+        try Serializer.u32(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u32(der)
         
@@ -130,7 +130,7 @@ final class BCSTests: XCTestCase {
     func testThatU64SerializationAndDeserializationWorksWithUInt64s() throws {
         let input: UInt64 = 1_111_111_111_111_111_115
         let ser = Serializer()
-        Serializer.u64(ser, input)
+        try Serializer.u64(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u64(der)
         
@@ -140,7 +140,7 @@ final class BCSTests: XCTestCase {
     func testThatU128SerializationAndDeserializationWorksWithUInt128s() throws {
         let input: UInt128 = UInt128("1111111111111111111111111111111111115")!
         let ser = Serializer()
-        Serializer.u128(ser, input)
+        try Serializer.u128(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u128(der)
         
@@ -150,7 +150,7 @@ final class BCSTests: XCTestCase {
     func testThatU256SerializationAndDeserializationWorksWithUInt256s() throws {
         let input: UInt256 = UInt256("111111111111111111111111111111111111111111111111111111111111111111111111111115")!
         let ser = Serializer()
-        Serializer.u256(ser, input)
+        try Serializer.u256(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u256(der)
         
@@ -160,7 +160,7 @@ final class BCSTests: XCTestCase {
     func testThatULeb128SerializationAndDeserializationWorksWithUInts() throws {
         let input: UInt = 1_111_111_115
         let ser = Serializer()
-        ser.uleb128(input)
+        try ser.uleb128(input)
         let der = Deserializer(data: ser.output())
         let output = try der.uleb128()
         

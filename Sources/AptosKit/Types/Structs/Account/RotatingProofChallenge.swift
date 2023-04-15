@@ -32,11 +32,11 @@ public struct RotatingProofChallenge {
     
     public func serialize(_ serializer: Serializer) throws {
         try self.typeInfoAccountAddress.serialize(serializer)
-        Serializer.str(serializer, self.typeInfoModuleName)
-        Serializer.str(serializer, self.typeInfoStructName)
-        Serializer.u64(serializer, UInt64(self.sequence_number))
+        try Serializer.str(serializer, self.typeInfoModuleName)
+        try Serializer.str(serializer, self.typeInfoStructName)
+        try Serializer.u64(serializer, UInt64(self.sequence_number))
         try self.originator.serialize(serializer)
         try self.currentAuthKey.serialize(serializer)
-        Serializer.toBytes(serializer, self.newPublicKey)
+        try Serializer.toBytes(serializer, self.newPublicKey)
     }
 }

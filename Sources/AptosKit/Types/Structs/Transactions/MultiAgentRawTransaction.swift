@@ -24,9 +24,9 @@ public struct MultiAgentRawTransaction {
     
     public func keyed() throws -> Data {
         let ser = Serializer()
-        Serializer.u8(ser, 0)
+        try Serializer.u8(ser, UInt8(0))
         try Serializer._struct(ser, value: self.rawTransaction)
-        ser.sequence(self.secondarySigners, Serializer._struct)
+        try ser.sequence(self.secondarySigners, Serializer._struct)
         var prehash = Array(try prehash()).map { Data([$0]) }
         prehash.append(ser.output())
         return prehash.reduce(Data(), { $0 + $1 })
