@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct MultiSignature {
+public struct MultiSignature: EncodingProtocol, Equatable {
     public var signatures: [Signature]
     public var bitmap: Data
     

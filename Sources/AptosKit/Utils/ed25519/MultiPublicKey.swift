@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct MultiPublicKey: CustomStringConvertible {
+public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatable {
     public var keys: [PublicKey]
     public var threshold: Int
     

@@ -9,8 +9,8 @@ import Foundation
 
 // TODO: Implement struct
 public struct MultiEd25519Authenticator: AuthenticatorProtocol {
-    public var publicKey: Int
-    public var signature: Int
+    public var publicKey: MultiPublicKey
+    public var signature: MultiSignature
     
     public func verify(_ data: Data) throws -> Bool {
         throw NSError(domain: "Not Implemented", code: -1)
@@ -21,7 +21,8 @@ public struct MultiEd25519Authenticator: AuthenticatorProtocol {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        throw NSError(domain: "Not Implemented", code: -1)
+        try Serializer._struct(serializer, value: self.publicKey)
+        try Serializer._struct(serializer, value: self.signature)
     }
     
     public func isEqualTo(_ rhs: AuthenticatorProtocol) -> Bool {
