@@ -8,7 +8,7 @@
 import Foundation
 import UInt256
 
-public struct ScriptArgument: KeyProtocol {
+public struct ScriptArgument: KeyProtocol, Equatable {
     public static let u8: Int = 0
     public static let u64: Int = 1
     public static let u128: Int = 2
@@ -29,6 +29,60 @@ public struct ScriptArgument: KeyProtocol {
         
         self.variant = variant
         self.value = value
+    }
+    
+    public static func == (lhs: ScriptArgument, rhs: ScriptArgument) -> Bool {
+        if lhs.variant != rhs.variant { return false }
+        
+        if lhs.value is UInt8 && rhs.value is UInt8 {
+            let lhsValue = lhs.value as! UInt8
+            let rhsValue = rhs.value as! UInt8
+            return lhsValue == rhsValue
+        } else if lhs.value is UInt16 && rhs.value is UInt16 {
+            let lhsValue = lhs.value as! UInt16
+            let rhsValue = rhs.value as! UInt16
+            return lhsValue == rhsValue
+        } else if lhs.value is UInt32 && rhs.value is UInt32 {
+            let lhsValue = lhs.value as! UInt32
+            let rhsValue = rhs.value as! UInt32
+            return lhsValue == rhsValue
+        } else if lhs.value is UInt64 && rhs.value is UInt64 {
+            let lhsValue = lhs.value as! UInt64
+            let rhsValue = rhs.value as! UInt64
+            return lhsValue == rhsValue
+        } else if lhs.value is UInt128 && rhs.value is UInt128 {
+            let lhsValue = lhs.value as! UInt128
+            let rhsValue = rhs.value as! UInt128
+            return lhsValue == rhsValue
+        } else if lhs.value is UInt256 && rhs.value is UInt256 {
+            let lhsValue = lhs.value as! UInt256
+            let rhsValue = rhs.value as! UInt256
+            return lhsValue == rhsValue
+        } else if lhs.value is Bool && rhs.value is Bool {
+            let lhsValue = lhs.value as! Bool
+            let rhsValue = rhs.value as! Bool
+            return lhsValue == rhsValue
+        } else if lhs.value is Data && rhs.value is Data {
+            let lhsValue = lhs.value as! Data
+            let rhsValue = rhs.value as! Data
+            return lhsValue == rhsValue
+        } else if lhs.value is any KeyProtocol && rhs.value is any KeyProtocol {
+            let lhsValue = lhs.value as! any KeyProtocol
+            let rhsValue = rhs.value as! any KeyProtocol
+            let lhsSer = Serializer()
+            let rhsSer = Serializer()
+            
+            do {
+                try Serializer._struct(lhsSer, value: lhsValue)
+                try Serializer._struct(rhsSer, value: rhsValue)
+            } catch {
+                return false
+            }
+            
+            return lhsSer.output() == rhsSer.output()
+        } else {
+            return false
+        }
     }
     
     public static func deserialize(from deserializer: Deserializer) throws -> ScriptArgument {

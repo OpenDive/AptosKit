@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ModuleBundle: TransactionProtocol {
+public struct ModuleBundle: TransactionProtocol, Equatable {
     public var tyArgs: [TypeTag]
     
     init(tyArgs: [TypeTag]) throws {

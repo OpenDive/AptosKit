@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ModuleId: KeyProtocol {
+public struct ModuleId: KeyProtocol, Equatable {
     public var address: AccountAddress
     public var name: String
     

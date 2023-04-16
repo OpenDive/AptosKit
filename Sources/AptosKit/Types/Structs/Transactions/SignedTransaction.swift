@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct SignedTransaction: KeyProtocol {
+public struct SignedTransaction: KeyProtocol, Equatable {
     public var transaction: RawTransaction
     public var authenticator: Authenticator
     

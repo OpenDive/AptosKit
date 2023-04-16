@@ -7,10 +7,17 @@
 
 import Foundation
 
-public struct Script: TransactionProtocol {
+public struct Script: TransactionProtocol, Equatable {
     public var code: Data
     public var args: [ScriptArgument]
     public var tyArgs: [TypeTag]
+    
+    public static func == (lhs: Script, rhs: Script) -> Bool {
+        return
+            lhs.code == rhs.code &&
+            lhs.args == rhs.args &&
+            lhs.tyArgs == rhs.tyArgs
+    }
     
     public static func deserialize(from deserializer: Deserializer) throws -> Script {
         let code = try Deserializer.toBytes(deserializer)

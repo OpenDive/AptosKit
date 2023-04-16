@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import CryptoSwift
 
-public struct RawTransaction: KeyProtocol {
+public struct RawTransaction: KeyProtocol, Equatable {
     public var sender: AccountAddress
     public var sequenceNumber: UInt64
     public var payload: TransactionPayload
@@ -16,19 +17,30 @@ public struct RawTransaction: KeyProtocol {
     public var expirationTimestampSecs: UInt64
     public var chainId: UInt8
     
+    public static func == (lhs: RawTransaction, rhs: RawTransaction) -> Bool {
+        return
+            lhs.sender == rhs.sender &&
+            lhs.sequenceNumber == rhs.sequenceNumber &&
+            lhs.payload == rhs.payload &&
+            lhs.maxGasAmount == rhs.maxGasAmount &&
+            lhs.gasUnitPrice == rhs.gasUnitPrice &&
+            lhs.expirationTimestampSecs == rhs.expirationTimestampSecs &&
+            lhs.chainId == rhs.chainId
+    }
+    
     public func prehash() throws -> Data {
         guard let data = "APTOS::RawTransaction".data(using: .utf8) else {
             throw NSError(domain: "Invalid String", code: -1)
         }
-        return sha256(data: data)
+        return data.sha3(.sha256)
     }
     
     public func keyed() throws -> Data {
         let ser = Serializer()
         try self.serialize(ser)
-        var prehash = Array(try prehash()).map { Data([$0]) }
+        var prehash = try prehash()
         prehash.append(ser.output())
-        return prehash.reduce(Data(), { $0 + $1 })
+        return prehash
     }
     
     public func sign(_ key: PrivateKey) throws -> Signature {
@@ -53,11 +65,11 @@ public struct RawTransaction: KeyProtocol {
     
     public func serialize(_ serializer: Serializer) throws {
         try self.sender.serialize(serializer)
-        try Serializer.u64(serializer, UInt64(self.sequenceNumber))
+        try Serializer.u64(serializer, self.sequenceNumber)
         try self.payload.serialize(serializer)
-        try Serializer.u64(serializer, UInt64(self.maxGasAmount))
-        try Serializer.u64(serializer, UInt64(self.gasUnitPrice))
-        try Serializer.u64(serializer, UInt64(self.expirationTimestampSecs))
-        try Serializer.u8(serializer, UInt8(self.chainId))
+        try Serializer.u64(serializer, self.maxGasAmount)
+        try Serializer.u64(serializer, self.gasUnitPrice)
+        try Serializer.u64(serializer, self.expirationTimestampSecs)
+        try Serializer.u8(serializer, self.chainId)
     }
 }

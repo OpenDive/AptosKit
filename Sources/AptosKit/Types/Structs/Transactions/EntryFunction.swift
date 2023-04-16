@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct EntryFunction: TransactionProtocol {
+public struct EntryFunction: TransactionProtocol, Equatable {
     public var module: ModuleId
     public var function: String
     public var tyArgs: [TypeTag]

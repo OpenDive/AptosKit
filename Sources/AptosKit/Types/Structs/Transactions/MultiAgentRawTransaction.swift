@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoSwift
 
 public struct MultiAgentRawTransaction {
     public var rawTransaction: RawTransaction
@@ -19,7 +20,7 @@ public struct MultiAgentRawTransaction {
         guard let data = "APTOS::RawTransactionWithData".data(using: .utf8) else {
             throw NSError(domain: "Invalid String", code: -1)
         }
-        return sha256(data: data)
+        return data.sha3(.sha256)
     }
     
     public func keyed() throws -> Data {
