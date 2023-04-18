@@ -101,4 +101,60 @@ public struct RestClient {
             "key": key
         ])
     }
+    
+    public func aggregatorValue(
+        _ accountAddress: AccountAddress,
+        _ resourceType: String,
+        _ aggregatorPath: [String]
+    ) async throws -> Int {
+        let sourceData = try await self.accountResource(accountAddress, resourceType)["data"]
+        var data = sourceData
+        var aggregator = aggregatorPath
+        
+        while aggregator.count > 0 {
+            var key = aggregator.popLast()
+            if let key {
+                if data[key].exists() {
+                    data = data[key]
+                } else {
+                    throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+                }
+            } else {
+                break
+            }
+        }
+        
+        if !data["vec"].exists() {
+            throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+        }
+        data = data["vec"]
+        if data.count != 1 {
+            throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+        }
+        data = data[0]
+        if !data["aggregator"].exists() {
+            throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+        }
+        data = data["aggregator"]
+        if !data["vec"].exists() {
+            throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+        }
+        data = data["vec"]
+        if data.count != 1 {
+            throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+        }
+        data = data[0]
+        if !data["handle"].exists() {
+            throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+        }
+        let handle = data["handle"].stringValue
+        if !data["key"].exists() {
+            throw NSError(domain: "aggregator path not found in data: \(sourceData)", code: -1)
+        }
+        guard let key = data["key"].rawValue as? any EncodingProtocol else {
+            throw NSError(domain: "Could not decode key: \(data["key"].stringValue)", code: -1)
+        }
+
+        return try await self.getTableItem(handle, "address", "u128", key).intValue
+    }
 }
