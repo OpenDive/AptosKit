@@ -44,7 +44,6 @@ final class RestClientTests: XCTestCase {
     
     func testThatTableItemsWillReturnTheCorrectValues() async throws {
         let mockRestClient = MockRestClient()
-        let account = try Account.loadKey("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c")
         let result = try await mockRestClient.getTableItem(
             "0x1b854694ae746cdbd8d44186ca4929b2b337df21d1c74633be19b2710552fdca",
             "address",
@@ -53,5 +52,13 @@ final class RestClientTests: XCTestCase {
         )
         
         XCTAssertEqual(result.intValue, 102994413849650711)
+    }
+    
+    func testThatAggregatorValueWillReturnTheCorrectValues() async throws {
+        let mockRestClient = MockRestClient()
+        let account = try Account.loadKey("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c")
+        let result = try await mockRestClient.aggregatorValue(account.accountAddress, "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>", ["supply"])
+        
+        XCTAssertEqual(result, 102994413849650711)
     }
 }
