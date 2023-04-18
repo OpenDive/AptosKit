@@ -1,0 +1,27 @@
+{
+  "type": "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
+  "data": {
+    "coin": {
+      "value": "647362"
+    },
+    "deposit_events": {
+      "counter": "1",
+      "guid": {
+        "id": {
+          "addr": "0x9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d",
+          "creation_num": "2"
+        }
+      }
+    },
+    "frozen": false,
+    "withdraw_events": {
+      "counter": "1",
+      "guid": {
+        "id": {
+          "addr": "0x9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d",
+          "creation_num": "3"
+        }
+      }
+    }
+  }
+}

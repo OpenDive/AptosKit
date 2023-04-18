@@ -53,7 +53,9 @@ let package = Package(
         ),
         .testTarget(
             name: "AptosKitTests",
-            dependencies: ["AptosKit"]
+            dependencies: ["AptosKit"],
+            path: "Tests",
+            resources: [.process("Resources")]
         )
     ],
     swiftLanguageVersions: [.v5]

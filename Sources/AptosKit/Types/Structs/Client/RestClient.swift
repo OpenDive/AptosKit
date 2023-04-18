@@ -8,7 +8,7 @@
 import Foundation
 import SwiftyJSON
 
-public struct RestClient {
+public struct RestClient: AptosKitProtocol {
     public var chainId: Int?
     public var client: URLSession
     public var clientConfig: ClientConfig
