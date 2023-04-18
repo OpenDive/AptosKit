@@ -22,4 +22,12 @@ public protocol AptosKitProtocol {
     func aggregatorValue(_ accountAddress: AccountAddress, _ resourceType: String, _ aggregatorPath: [String]) async throws -> Int
     
     func info() async throws -> InfoResponse
+    
+    func simulateTransaction(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON
+    
+    func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction
+    
+    func transactionPending(_ txnHash: String) async throws -> Bool
+    
+    func waitForTransaction(_ txnHash: String) async throws
 }

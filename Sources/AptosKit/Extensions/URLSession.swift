@@ -133,16 +133,24 @@ extension URLSession {
         )
     }
     
-    public func decodeUrl(with url: URL) async throws -> JSON {
-        let result = try await self.asyncData(with: url)
+    public func decodeUrl(with url: URL, _ method: HTTPMethod = .get) async throws -> JSON {
+        let result = try await self.asyncData(with: url, method: method)
         return JSON(result)
     }
     
     public func decodeUrl(with url: URL, _ body: [String: Any]) async throws -> JSON {
         let jsonData = try? JSONSerialization.data(withJSONObject: body)
         let data = try await self.asyncData(
-            with: url, method: .get,
+            with: url, method: .post,
             body: jsonData
+        )
+        return try await self.decodeData(with: data)
+    }
+    
+    public func decodeUrl(with url: URL, _ headers: [String: String], _ body: Data) async throws -> JSON {
+        let data = try await self.asyncData(
+            with: url, method: .post,
+            headers: headers, body: body
         )
         return try await self.decodeData(with: data)
     }

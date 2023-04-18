@@ -9,7 +9,7 @@ import Foundation
 import SwiftyJSON
 
 public struct RestClient: AptosKitProtocol {
-    public var chainId: Int?
+    public var chainId: Int
     public var client: URLSession
     public var clientConfig: ClientConfig
     public var baseUrl: String
@@ -18,11 +18,13 @@ public struct RestClient: AptosKitProtocol {
         baseUrl: String,
         client: URLSession = URLSession.shared,
         clientConfig: ClientConfig = ClientConfig()
-    ) {
+    ) async throws {
+        guard let url = URL(string: baseUrl) else { throw NSError(domain: "Invalid URL", code: -1) }
+        
         self.baseUrl = baseUrl
         self.client = client
         self.clientConfig = clientConfig
-        self.chainId = nil
+        self.chainId = try await self.client.decodeUrl(with: url)["chain_id"].intValue
     }
     
     public func account(
@@ -161,5 +163,56 @@ public struct RestClient: AptosKitProtocol {
     public func info() async throws -> InfoResponse {
         guard let url = URL(string: self.baseUrl) else { throw NSError(domain: "Invalid URL", code: -1) }
         return try await self.client.decodeUrl(with: url)
+    }
+    
+    public func simulateTransaction(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON {
+        let signature = Data(repeating: 0, count: 64)
+        let authenticator = Authenticator(authenticator: Ed25519Authenticator(publicKey: try sender.publicKey(), signature: Signature(signature: signature)))
+        let signedTransaction = SignedTransaction(transaction: transaction, authenticator: authenticator)
+        
+        let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
+        guard let request = URL(string: "\(self.baseUrl)/transactions/simulate") else { throw NSError(domain: "Invalid URL", code: -1) }
+        return try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
+    }
+    
+    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
+        return try await RawTransaction(
+            sender: sender.address(),
+            sequenceNumber: UInt64(self.accountSequenceNumber(sender.address())),
+            payload: payload,
+            maxGasAmount: UInt64(self.clientConfig.maxGasAmount),
+            gasUnitPrice: UInt64(self.clientConfig.gasUnitPrice),
+            expirationTimestampSecs: UInt64(Date().timeIntervalSince1970 + Double(self.clientConfig.expirationTtl)),
+            chainId: UInt8(self.chainId)
+        )
+    }
+    
+    public func transactionPending(_ txnHash: String) async throws -> Bool {
+        guard let url = URL(string: "\(self.baseUrl)/transactions/by_hash/\(txnHash)") else {
+            throw NSError(domain: "Invalid URL", code: -1)
+        }
+        
+        let response = try await self.client.decodeUrl(with: url)
+        return response["type"].stringValue == "pending_transaction"
+    }
+    
+    public func waitForTransaction(_ txnHash: String) async throws {
+        var count = 0
+        
+        repeat {
+            if count >= self.clientConfig.transactionWaitInSeconds {
+                throw NSError(domain: "Transaction \(txnHash) timed out", code: -1)
+            }
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            count += 1
+        } while try await self.transactionPending(txnHash)
+        
+        guard let url = URL(string: "\(self.baseUrl)/transactions/by_hash/\(txnHash)") else {
+            throw NSError(domain: "Invalid URL", code: -1)
+        }
+        let response = try await self.client.decodeUrl(with: url)
+        guard response["success"].exists(), response["success"].boolValue else {
+            throw NSError(domain: "\(response["message"].stringValue) - \(txnHash)", code: -1)
+        }
     }
 }

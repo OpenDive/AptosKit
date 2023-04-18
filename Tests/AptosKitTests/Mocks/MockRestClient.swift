@@ -125,4 +125,20 @@ public struct MockRestClient: AptosKitProtocol {
     public func info() async throws -> InfoResponse {
         return try await getDecodedData(with: "Info") as InfoResponse
     }
+    
+    public func simulateTransaction(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func transactionPending(_ txnHash: String) async throws -> Bool {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func waitForTransaction(_ txnHash: String) async throws {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
 }
