@@ -112,7 +112,7 @@ public struct RestClient {
         var aggregator = aggregatorPath
         
         while aggregator.count > 0 {
-            var key = aggregator.popLast()
+            let key = aggregator.popLast()
             if let key {
                 if data[key].exists() {
                     data = data[key]
