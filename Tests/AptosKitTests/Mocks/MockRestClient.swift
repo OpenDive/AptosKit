@@ -130,7 +130,11 @@ public struct MockRestClient: AptosKitProtocol {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
-    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
+    public func submitBcsTransaction(_ signedTransaction: SignedTransaction) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func submitTransaction(_ sender: Account, _ payload: [String : Any]) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
@@ -139,6 +143,22 @@ public struct MockRestClient: AptosKitProtocol {
     }
     
     public func waitForTransaction(_ txnHash: String) async throws {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func createMultiAgentBcsTransaction(
+        _ sender: Account,
+        _ secondaryAccounts: [Account],
+        _ payload: TransactionPayload
+    ) async throws -> SignedTransaction {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
 }

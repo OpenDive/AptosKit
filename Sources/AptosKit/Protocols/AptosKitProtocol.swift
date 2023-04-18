@@ -25,9 +25,17 @@ public protocol AptosKitProtocol {
     
     func simulateTransaction(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON
     
-    func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction
+    func submitBcsTransaction(_ signedTransaction: SignedTransaction) async throws -> String
+    
+    func submitTransaction(_ sender: Account, _ payload: [String: Any]) async throws -> String
     
     func transactionPending(_ txnHash: String) async throws -> Bool
     
     func waitForTransaction(_ txnHash: String) async throws
+    
+    func createMultiAgentBcsTransaction(_ sender: Account, _ secondaryAccounts: [Account], _ payload: TransactionPayload) async throws -> SignedTransaction
+    
+    func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction
+    
+    func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String
 }

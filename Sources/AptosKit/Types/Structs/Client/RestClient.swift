@@ -175,16 +175,34 @@ public struct RestClient: AptosKitProtocol {
         return try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
     }
     
-    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
-        return try await RawTransaction(
-            sender: sender.address(),
-            sequenceNumber: UInt64(self.accountSequenceNumber(sender.address())),
-            payload: payload,
-            maxGasAmount: UInt64(self.clientConfig.maxGasAmount),
-            gasUnitPrice: UInt64(self.clientConfig.gasUnitPrice),
-            expirationTimestampSecs: UInt64(Date().timeIntervalSince1970 + Double(self.clientConfig.expirationTtl)),
-            chainId: UInt8(self.chainId)
-        )
+    public func submitBcsTransaction(_ signedTransaction: SignedTransaction) async throws -> String {
+        let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
+        guard let request = URL(string: "\(self.baseUrl)/transactions") else { throw NSError(domain: "Invalid URL", code: -1) }
+        let response = try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
+        return response["hash"].stringValue
+    }
+    
+    public func submitTransaction(_ sender: Account, _ payload: [String: Any]) async throws -> String {
+        var txnRequest: [String: Any] = [
+            "sender": sender.address().description,
+            "sequence_number": String(try await self.accountSequenceNumber(sender.address())),
+            "max_gas_amount": String(self.clientConfig.maxGasAmount),
+            "gas_unit_price": String(self.clientConfig.gasUnitPrice),
+            "expiration_timestamp_secs": String(Int(Date().timeIntervalSince1970) + self.clientConfig.expirationTtl),
+            "payload": payload
+        ]
+        guard let request = URL(string: "\(self.baseUrl)/transactions/encode_submission") else { throw NSError(domain: "Invalid URL", code: -1) }
+        var response = try await self.client.decodeUrl(with: request, txnRequest)
+        let toSign = Data(hex: response.stringValue)
+        let signature = try sender.sign(toSign)
+        txnRequest["signature"] = [
+            "type": "ed25519_signature",
+            "public_key": try sender.publicKey().description,
+            "signature": signature.description
+        ]
+        guard let requestFinal = URL(string: "\(self.baseUrl)/transactions") else { throw NSError(domain: "Invalid URL", code: -1) }
+        response = try await self.client.decodeUrl(with: requestFinal, txnRequest)
+        return response["hash"].stringValue
     }
     
     public func transactionPending(_ txnHash: String) async throws -> Bool {
@@ -214,5 +232,61 @@ public struct RestClient: AptosKitProtocol {
         guard response["success"].exists(), response["success"].boolValue else {
             throw NSError(domain: "\(response["message"].stringValue) - \(txnHash)", code: -1)
         }
+    }
+    
+    public func createMultiAgentBcsTransaction(
+        _ sender: Account,
+        _ secondaryAccounts: [Account],
+        _ payload: TransactionPayload
+    ) async throws -> SignedTransaction {
+        let rawTransaction = MultiAgentRawTransaction(
+            rawTransaction: try await createBcsTransaction(sender, payload),
+            secondarySigners: secondaryAccounts.map { $0.address() }
+        )
+        let keyedTxn = try rawTransaction.keyed()
+        let authenticator = Authenticator(
+            authenticator: MultiAgentAuthenticator(
+                sender: Authenticator(
+                    authenticator: Ed25519Authenticator(
+                        publicKey: try sender.publicKey(),
+                        signature: try sender.sign(keyedTxn)
+                    )
+                ),
+                secondarySigner: try secondaryAccounts.map {(
+                    $0.address(), Authenticator(
+                        authenticator: Ed25519Authenticator(
+                            publicKey: try $0.publicKey(),
+                            signature: try $0.sign(keyedTxn)
+                        )
+                    )
+                )}
+            )
+        )
+        return SignedTransaction(transaction: rawTransaction.inner(), authenticator: authenticator)
+    }
+    
+    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
+        return try await RawTransaction(
+            sender: sender.address(),
+            sequenceNumber: UInt64(self.accountSequenceNumber(sender.address())),
+            payload: payload,
+            maxGasAmount: UInt64(self.clientConfig.maxGasAmount),
+            gasUnitPrice: UInt64(self.clientConfig.gasUnitPrice),
+            expirationTimestampSecs: UInt64(Date().timeIntervalSince1970 + Double(self.clientConfig.expirationTtl)),
+            chainId: UInt8(self.chainId)
+        )
+    }
+    
+    public func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
+        let payload: [String: Any] = [
+            "type": "entry_function_payload",
+            "function": "0x1::aptos_account::transfer_coins",
+            "type_arguments": ["0x1::aptos_coin::AptosCoin"],
+            "arguments": [
+                "\(recipient.description)",
+                "\(amount)"
+            ]
+        ]
+        return try await self.submitTransaction(sender, payload)
     }
 }

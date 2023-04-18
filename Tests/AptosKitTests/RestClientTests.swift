@@ -12,7 +12,6 @@ final class RestClientTests: XCTestCase {
     func testThatAccountWillReturnTheCorrectInformationAboutAnAccount() async throws {
         let mockRestClient = MockRestClient()
         let account = try Account.loadKey("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c")
-        print(try account.privateKey.publicKey().key.hexEncodedString())
         let result = try await mockRestClient.account(account.accountAddress)
         
         XCTAssertEqual(result.sequenceNumber, "1")
@@ -111,4 +110,24 @@ final class RestClientTests: XCTestCase {
         let outputSuccess = try await restClient.simulateTransaction(transaction, alice)
         XCTAssertEqual(outputSuccess[0]["vm_status"].stringValue, "Executed successfully")
     }
+    
+    func testThatEndToEndTransactionWorksAsIntended() async throws {
+        let baseUrl = "https://fullnode.devnet.aptoslabs.com/v1"
+        let faucetUrl = "https://faucet.devnet.aptoslabs.com"
+        
+        let restClient = try await RestClient(baseUrl: baseUrl)
+        let faucetClient = FaucetClient(baseUrl: faucetUrl, restClient: restClient)
+        
+        let alice = try Account.generate()
+        let bob = try Account.generate()
+        
+        try await faucetClient.fundAccount(alice.address().description, 100_000_000)
+        try await faucetClient.fundAccount(bob.address().description, 0)
+        
+        let txnHash = try await restClient.transfer(alice, bob.address(), 1_000)
+        try await restClient.waitForTransaction(txnHash)
+        let bobsBalance = try await restClient.accountBalance(bob.address())
+        
+        XCTAssertEqual(bobsBalance, 1_000)
+    }   
 }
