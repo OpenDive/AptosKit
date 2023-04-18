@@ -69,4 +69,15 @@ public struct RestClient {
         )
         return resource["data"]["coin"]["value"].intValue
     }
+    
+    public func accountSequenceNumber(
+        _ accountAddress: AccountAddress,
+        _ ledgerVersion: Int? = nil
+    ) async throws -> Int {
+        let accountResources = try await self.account(accountAddress, ledgerVersion: ledgerVersion)
+        guard let result = Int(accountResources.sequenceNumber) else {
+            throw NSError(domain: "Sequence Number is an Invalid Integer", code: -1)
+        }
+        return result
+    }
 }
