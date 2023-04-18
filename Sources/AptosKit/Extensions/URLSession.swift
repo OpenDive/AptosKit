@@ -137,4 +137,13 @@ extension URLSession {
         let result = try await self.asyncData(with: url)
         return JSON(result)
     }
+    
+    public func decodeUrl(with url: URL, _ body: [String: Any]) async throws -> JSON {
+        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        let data = try await self.asyncData(
+            with: url, method: .get,
+            body: jsonData
+        )
+        return try await self.decodeData(with: data)
+    }
 }

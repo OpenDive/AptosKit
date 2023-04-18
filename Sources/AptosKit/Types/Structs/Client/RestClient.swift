@@ -43,21 +43,6 @@ public struct RestClient {
         )
     }
     
-    public func accountResource(
-        _ accountAddress: AccountAddress,
-        _ resourceType: String,
-        _ ledgerVersion: Int? = nil
-    ) async throws -> JSON {
-        var request: String = ""
-        if ledgerVersion == nil {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)"
-        } else {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)?ledger_version=\(ledgerVersion!)"
-        }
-        guard let url = URL(string: request) else { throw NSError(domain: "Invalid URL", code: -1) }
-        return try await self.client.decodeUrl(with: url)
-    }
-    
     public func accountBalance(
         _ accountAddress: AccountAddress,
         _ ledgerVersion: Int? = nil
@@ -79,5 +64,41 @@ public struct RestClient {
             throw NSError(domain: "Sequence Number is an Invalid Integer", code: -1)
         }
         return result
+    }
+    
+    public func accountResource(
+        _ accountAddress: AccountAddress,
+        _ resourceType: String,
+        _ ledgerVersion: Int? = nil
+    ) async throws -> JSON {
+        var request: String = ""
+        if ledgerVersion == nil {
+            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)"
+        } else {
+            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)?ledger_version=\(ledgerVersion!)"
+        }
+        guard let url = URL(string: request) else { throw NSError(domain: "Invalid URL", code: -1) }
+        return try await self.client.decodeUrl(with: url)
+    }
+    
+    public func getTableItem(
+        _ handle: String,
+        _ keyType: String,
+        _ valueType: String,
+        _ key: any EncodingProtocol,
+        _ ledgerVersion: Int? = nil
+    ) async throws -> JSON {
+        var request = ""
+        if let ledgerVersion {
+            request = "\(self.baseUrl)/tables/\(handle)/item?ledger_version=\(ledgerVersion)"
+        } else {
+            request = "\(self.baseUrl)/tables/\(handle)/item"
+        }
+        guard let url = URL(string: request) else { throw NSError(domain: "Invalid URL", code: -1) }
+        return try await self.client.decodeUrl(with: url, [
+            "key_type": keyType,
+            "value_type": valueType,
+            "key": key
+        ])
     }
 }
