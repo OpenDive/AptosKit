@@ -1,0 +1,11 @@
+{
+  "chain_id": 1,
+  "epoch": "2253",
+  "ledger_version": "124050613",
+  "oldest_ledger_version": "0",
+  "ledger_timestamp": "1681793118965892",
+  "node_role": "full_node",
+  "oldest_block_height": "0",
+  "block_height": "48194648",
+  "git_hash": "e80219926372ccd1c69654d7b6bb4ba21a0c9862"
+}

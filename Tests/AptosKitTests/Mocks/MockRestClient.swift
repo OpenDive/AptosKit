@@ -20,7 +20,7 @@ public struct MockRestClient: AptosKitProtocol {
         }
 
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.keyDecodingStrategy = .useDefaultKeys
 
         guard let result = try? decoder.decode(T.self, from: data) else {
             throw NSError(domain: "Decoding data has failed.", code: -1)
@@ -120,5 +120,9 @@ public struct MockRestClient: AptosKitProtocol {
         }
 
         return try await self.getTableItem(handle, "address", "u128", key).intValue
+    }
+    
+    public func info() async throws -> InfoResponse {
+        return try await getDecodedData(with: "Info") as InfoResponse
     }
 }

@@ -157,4 +157,9 @@ public struct RestClient: AptosKitProtocol {
 
         return try await self.getTableItem(handle, "address", "u128", key).intValue
     }
+    
+    public func info() async throws -> InfoResponse {
+        guard let url = URL(string: self.baseUrl) else { throw NSError(domain: "Invalid URL", code: -1) }
+        return try await self.client.decodeUrl(with: url)
+    }
 }

@@ -61,4 +61,19 @@ final class RestClientTests: XCTestCase {
         
         XCTAssertEqual(result, 102994413849650711)
     }
+    
+    func testThatInfoResponseReturnsTheCorrectValues() async throws {
+        let mockRestClient = MockRestClient()
+        let result = try await mockRestClient.info()
+        
+        XCTAssertEqual(result.chainId, 1)
+        XCTAssertEqual(result.epoch, "2253")
+        XCTAssertEqual(result.ledgerVersion, "124050613")
+        XCTAssertEqual(result.oldestLedgerVersion, "0")
+        XCTAssertEqual(result.ledgerTimestamp, "1681793118965892")
+        XCTAssertEqual(result.nodeRole, "full_node")
+        XCTAssertEqual(result.oldestBlockHeight, "0")
+        XCTAssertEqual(result.blockHeight, "48194648")
+        XCTAssertEqual(result.gitHash, "e80219926372ccd1c69654d7b6bb4ba21a0c9862")
+    }
 }

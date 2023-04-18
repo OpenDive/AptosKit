@@ -129,7 +129,7 @@ extension URLSession {
     ) async throws -> T {
         return try await self.decode(
             from: url,
-            keyDecodingStrategy: .convertFromSnakeCase
+            keyDecodingStrategy: .useDefaultKeys
         )
     }
     

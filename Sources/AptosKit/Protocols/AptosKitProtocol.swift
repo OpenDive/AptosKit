@@ -20,4 +20,6 @@ public protocol AptosKitProtocol {
     func getTableItem(_ handle: String, _ keyType: String, _ valueType: String, _ key: any EncodingProtocol, _ ledgerVersion: Int?) async throws -> JSON
     
     func aggregatorValue(_ accountAddress: AccountAddress, _ resourceType: String, _ aggregatorPath: [String]) async throws -> Int
+    
+    func info() async throws -> InfoResponse
 }
