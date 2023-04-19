@@ -23,4 +23,15 @@ final class AccountTests: XCTestCase {
         XCTAssertEqual(start, load)
         XCTAssertEqual(start.address().hex(), try start.authKey())
     }
+    
+    func testThatKeysAreWorkingAsIntended() throws {
+        guard let message = "test message".data(using: .utf8) else {
+            XCTFail("Invalid Data")
+            return
+        }
+        let account = try Account.generate()
+        let signature = try account.sign(message)
+        
+        XCTAssertTrue(try account.publicKey().verify(data: message, signature: signature))
+    }
 }
