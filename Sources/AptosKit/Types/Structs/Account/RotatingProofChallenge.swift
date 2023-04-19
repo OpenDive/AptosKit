@@ -10,7 +10,7 @@ import Foundation
 public struct RotatingProofChallenge {
     let typeInfoAccountAddress: AccountAddress
     let typeInfoModuleName: String = "account"
-    let typeInfoStructName: String = "RotatingProofChallenge"
+    let typeInfoStructName: String = "RotationProofChallenge"
     let sequence_number: Int
     let originator: AccountAddress
     let currentAuthKey: AccountAddress
