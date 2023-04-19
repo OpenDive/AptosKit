@@ -256,4 +256,12 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> JSON {
         throw NSError(domain: "Not Implemented", code: -1)
     }
+    
+    public func publishPackage(
+        _ sender: Account,
+        _ packageMetadata: Data,
+        _ modules: [Data]
+    ) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
 }

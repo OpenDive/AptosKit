@@ -60,4 +60,6 @@ public protocol AptosKitProtocol {
     func getTokenData(_ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int) async throws -> JSON
     
     func getCollection(_ creator: AccountAddress, _ collectionName: String) async throws -> JSON
+    
+    func publishPackage(_ sender: Account, _ packageMetadata: Data, _ modules: [Data]) async throws -> String
 }

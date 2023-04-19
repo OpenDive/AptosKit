@@ -497,4 +497,18 @@ public struct RestClient: AptosKitProtocol {
             collectionName
         )
     }
+    
+    public func publishPackage(
+        _ sender: Account,
+        _ packageMetadata: Data,
+        _ modules: [Data]
+    ) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: packageMetadata, encoder: Serializer.toBytes)),
+            AnyTransactionArgument(TransactionArgument(value: modules, encoder: Serializer.sequenceSerializer(Serializer.toBytes)))
+        ]
+        let payload = try EntryFunction.natural("0x1::code", "publish_package_txn", [], transactionArguments)
+        let signedTransaction = try await self.createBcsSignedTransaction(sender, TransactionPayload(payload: payload))
+        return try await self.submitBcsTransaction(signedTransaction)
+    }
 }
