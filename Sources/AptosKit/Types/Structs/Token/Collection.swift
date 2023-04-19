@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public struct Collection: CustomStringConvertible {
     public let creator: AccountAddress
@@ -31,25 +32,12 @@ public struct Collection: CustomStringConvertible {
         return "AccountAddress[creator: \(self.creator), description: \(self._description), name: \(self.name), uri: \(self.uri)]"
     }
     
-    public static func parse(_ resource: [String: Any]) throws -> Collection {
-        guard let creator = resource["creator"], creator is String else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        guard let description = resource["description"], description is String else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        guard let name = resource["name"], name is String else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        guard let uri = resource["uri"], uri is String else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        
+    public static func parse(_ resource: JSON) throws -> Collection {
         return Collection(
-            creator: try AccountAddress.fromHex(creator as! String),
-            _description: description as! String,
-            name: name as! String,
-            uri: uri as! String
+            creator: try AccountAddress.fromHex(resource["creator"].stringValue),
+            _description: resource["description"].stringValue,
+            name: resource["name"].stringValue,
+            uri: resource["uri"].stringValue
         )
     }
 }

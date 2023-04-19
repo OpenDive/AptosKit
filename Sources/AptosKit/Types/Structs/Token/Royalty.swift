@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public struct Royalty: CustomStringConvertible {
     public let numerator: Int
@@ -24,21 +25,11 @@ public struct Royalty: CustomStringConvertible {
         return "Royalty[numberator: \(self.numerator), denominator: \(self.denominator), payee_address: \(self.payeeAddress.description)]"
     }
     
-    public static func parse(_ resource: [String: Any]) throws -> Royalty {
-        guard let numerator = resource["numerator"], numerator is Int else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        guard let denominator = resource["denominator"], denominator is Int else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        guard let payeeAddress = resource["payee_address"], payeeAddress is String else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        
+    public static func parse(_ resource: JSON) throws -> Royalty {
         return Royalty(
-            numerator: numerator as! Int,
-            denominator: denominator as! Int,
-            payeeAddress: try AccountAddress.fromHex(payeeAddress as! String)
+            numerator: resource["numerator"].intValue,
+            denominator: resource["denominator"].intValue,
+            payeeAddress: try AccountAddress.fromHex(resource["payee_address"].stringValue)
         )
     }
 }

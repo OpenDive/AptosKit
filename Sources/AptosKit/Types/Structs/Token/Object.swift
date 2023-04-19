@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public struct Object: CustomStringConvertible {
     public let allowUngatedTransfer: Bool
@@ -20,16 +21,10 @@ public struct Object: CustomStringConvertible {
         return "Object[allow_ungated_transfer: \(self.allowUngatedTransfer), owner: \(self.owner.description)]"
     }
     
-    public static func parse(_ resource: [String: Any]) throws -> Object {
-        guard let allowUngatedTranser = resource["allow_untaged_transfer"], allowUngatedTranser is Bool else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
-        guard let accountAddress = resource["owner"], accountAddress is String else {
-            throw NSError(domain: "Invalid resource", code: -1)
-        }
+    public static func parse(_ resource: JSON) throws -> Object {
         return Object(
-            allowUngatedTransfer: allowUngatedTranser as! Bool,
-            owner: try AccountAddress.fromHex(accountAddress as! String)
+            allowUngatedTransfer: resource["allow_ungated_transfer"].boolValue,
+            owner: try AccountAddress.fromHex(resource["owner"].stringValue)
         )
     }
 }
