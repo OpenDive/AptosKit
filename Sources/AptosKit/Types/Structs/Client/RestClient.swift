@@ -482,4 +482,19 @@ public struct RestClient: AptosKitProtocol {
         
         return try await self.getTableItem(tokenDataHandle, "0x3::token::TokenDataId", "0x3::token:TokenData", tokenDataId)
     }
+    
+    public func getCollection(
+        _ creator: AccountAddress,
+        _ collectionName: String
+    ) async throws -> JSON {
+        let resource = try await self.accountResource(creator, "0x3::token::Collections")
+        let tokenData = resource["data"]["collection_data"]["handle"].stringValue
+        
+        return try await self.getTableItem(
+            tokenData,
+            "0x1::string::String",
+            "0x3::token::CollectionData",
+            collectionName
+        )
+    }
 }

@@ -249,4 +249,11 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> JSON {
         throw NSError(domain: "Not Implemented", code: -1)
     }
+    
+    public func getCollection(
+        _ creator: AccountAddress,
+        _ collectionName: String
+    ) async throws -> JSON {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
 }
