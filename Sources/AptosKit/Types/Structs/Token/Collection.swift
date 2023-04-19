@@ -8,12 +8,12 @@
 import Foundation
 
 public struct Collection: CustomStringConvertible {
-    let creator: AccountAddress
-    let _description: String
-    let name: String
-    let uri: String
+    public let creator: AccountAddress
+    public let _description: String
+    public let name: String
+    public let uri: String
     
-    let structTag: String = "0x4::collection::Collection"
+    public let structTag: String = "0x4::collection::Collection"
     
     public init(
         creator: AccountAddress,

@@ -8,8 +8,8 @@
 import Foundation
 
 public struct Object: CustomStringConvertible {
-    let allowUngatedTransfer: Bool
-    let owner: AccountAddress
+    public let allowUngatedTransfer: Bool
+    public let owner: AccountAddress
     
     public init(allowUngatedTransfer: Bool, owner: AccountAddress) {
         self.allowUngatedTransfer = allowUngatedTransfer
