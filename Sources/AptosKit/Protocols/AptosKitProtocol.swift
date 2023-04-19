@@ -56,4 +56,6 @@ public protocol AptosKitProtocol {
     func getToken(_ owner: AccountAddress, _ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int) async throws -> JSON
     
     func getTokenBalance(_ owner: AccountAddress, _ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int) async throws -> String
+    
+    func getTokenData(_ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int) async throws -> JSON
 }
