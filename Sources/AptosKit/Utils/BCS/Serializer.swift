@@ -19,9 +19,15 @@ public class Serializer {
         return self._output
     }
 
-    func bool(_ value: Bool) {
-        let result: UInt8 = value ? UInt8(1) : UInt8(0)
-        self.writeInt(result, length: 1)
+    public static func bool<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
+        if let boolValue = value as? Bool {
+            let result: UInt8 = boolValue ? UInt8(1) : UInt8(0)
+            serializer.writeInt(result, length: 1)
+        } else if let boolArray = value as? [Bool] {
+            try serializer.sequence(boolArray, Serializer.bool)
+        } else {
+            throw NSError(domain: "Value is not Bool or [Bool].", code: -1)
+        }
     }
 
     static func toBytes(_ serializer: Serializer, _ value: Data) throws {
@@ -86,57 +92,71 @@ public class Serializer {
         }
     }
 
-    public static func str(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+    public static func str<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let str = value as? String {
             try Serializer.toBytes(serializer, String(str).data(using: .utf8)!)
+        } else if let strArray = value as? [String] {
+            try serializer.sequence(strArray, Serializer.str)
         } else {
             throw NSError(domain: "Value is not String.", code: -1)
         }
     }
 
-    public static func u8(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+    public static func u8<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let uint8 = value as? UInt8 {
             serializer.writeInt(UInt8(uint8), length: 1)
+        } else if let uint8Array = value as? [UInt8] {
+            try serializer.sequence(uint8Array, Serializer.u8)
         } else {
             throw NSError(domain: "Value is not UInt8.", code: -1)
         }
     }
 
-    public static func u16(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+    public static func u16<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let uint16 = value as? UInt16 {
             serializer.writeInt(UInt16(uint16), length: 2)
+        } else if let uint16Array = value as? [UInt16] {
+            try serializer.sequence(uint16Array, Serializer.u16)
         } else {
             throw NSError(domain: "Value is not UInt16.", code: -1)
         }
     }
 
-    public static func u32(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+    public static func u32<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let uint32 = value as? UInt32 {
             serializer.writeInt(UInt32(uint32), length: 4)
+        } else if let uint32Array = value as? [UInt32] {
+            try serializer.sequence(uint32Array, Serializer.u32)
         } else {
             throw NSError(domain: "Value is not UInt32.", code: -1)
         }
     }
 
-    public static func u64(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+    public static func u64<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let uint64 = value as? UInt64 {
             serializer.writeInt(UInt64(uint64), length: 8)
+        } else if let uint64Array = value as? [UInt64] {
+            try serializer.sequence(uint64Array, Serializer.u64)
         } else {
             throw NSError(domain: "Value is not UInt64.", code: -1)
         }
     }
 
-    public static func u128(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+    public static func u128<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let uint128 = value as? UInt128 {
             serializer.writeInt(UInt128(uint128), length: 16)
+        } else if let uint128Array = value as? [UInt128] {
+            try serializer.sequence(uint128Array, Serializer.u128)
         } else {
             throw NSError(domain: "Value is not UInt128.", code: -1)
         }
     }
 
-    public static func u256(_ serializer: Serializer, _ value: any EncodingProtocol) throws {
+    public static func u256<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let uint256 = value as? UInt256 {
             serializer.writeInt(uint256, length: 32)
+        } else if let uint256Array = value as? [UInt256] {
+            try serializer.sequence(uint256Array, Serializer.u256)
         } else {
             throw NSError(domain: "Value is not UInt256.", code: -1)
         }

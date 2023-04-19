@@ -8,7 +8,7 @@
 import Foundation
 import UInt256
 
-public protocol EncodingProtocol { }
+public protocol EncodingProtocol: EncodingContainer { }
 
 extension UInt8: EncodingProtocol { }
 extension UInt16: EncodingProtocol { }
@@ -22,3 +22,6 @@ extension UInt: EncodingProtocol { }
 extension Bool: EncodingProtocol { }
 extension String: EncodingProtocol { }
 extension Data: EncodingProtocol { }
+
+extension Array: EncodingContainer where Element: EncodingProtocol { }
+extension Dictionary: EncodingContainer where Key: EncodingProtocol, Value: Any { }

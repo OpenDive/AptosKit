@@ -17,7 +17,7 @@ public protocol AptosKitProtocol {
     
     func accountResource(_ accountAddress: AccountAddress, _ resourceType: String, _ ledgerVersion: Int?) async throws -> JSON
     
-    func getTableItem(_ handle: String, _ keyType: String, _ valueType: String, _ key: any EncodingProtocol, _ ledgerVersion: Int?) async throws -> JSON
+    func getTableItem(_ handle: String, _ keyType: String, _ valueType: String, _ key: any EncodingContainer, _ ledgerVersion: Int?) async throws -> JSON
     
     func aggregatorValue(_ accountAddress: AccountAddress, _ resourceType: String, _ aggregatorPath: [String]) async throws -> Int
     
@@ -37,5 +37,23 @@ public protocol AptosKitProtocol {
     
     func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction
     
+    func createBcsSignedTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> SignedTransaction
+    
     func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String
+    
+    func bcsTransfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String
+    
+    func createCollection(_ account: Account, _ name: String, _ description: String, _ uri: String) async throws -> String
+    
+    func createToken(_ account: Account, _ collectionName: String, _ name: String, _ description: String, _ supply: Int, _ uri: String, _ royaltyPointsPerMillion: Int) async throws -> String
+    
+    func offerToken(_ account: Account, _ receiver: AccountAddress, _ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int, _ amount: Int) async throws -> String
+    
+    func claimToken(_ account: Account, _ sender: AccountAddress, _ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int) async throws -> String
+    
+    func directTransferToken(_ sender: Account, _ receiver: Account, _ creatorAddress: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int, _ amount: Int) async throws -> String
+    
+    func getToken(_ owner: AccountAddress, _ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int) async throws -> JSON
+    
+    func getTokenBalance(_ owner: AccountAddress, _ creator: AccountAddress, _ collectionName: String, _ tokenName: String, _ propertyVersion: Int) async throws -> String
 }

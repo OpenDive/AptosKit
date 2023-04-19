@@ -57,7 +57,7 @@ public struct MockRestClient: AptosKitProtocol {
         return try await getDecodedData(with: "AccountResource") as JSON
     }
     
-    public func getTableItem(_ handle: String, _ keyType: String, _ valueType: String, _ key: any EncodingProtocol, _ ledgerVersion: Int? = nil) async throws -> JSON {
+    public func getTableItem(_ handle: String, _ keyType: String, _ valueType: String, _ key: any EncodingContainer, _ ledgerVersion: Int? = nil) async throws -> JSON {
         guard let key = key as? String else {
             throw NSError(domain: "Key is not a string value.", code: -1)
         }
@@ -158,7 +158,86 @@ public struct MockRestClient: AptosKitProtocol {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
+    public func createBcsSignedTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> SignedTransaction {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
     public func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func bcsTransfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func createCollection(_ account: Account, _ name: String, _ description: String, _ uri: String) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func createToken(
+        _ account: Account,
+        _ collectionName: String,
+        _ name: String,
+        _ description: String,
+        _ supply: Int,
+        _ uri: String,
+        _ royaltyPointsPerMillion: Int
+    ) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func offerToken(
+        _ account: Account,
+        _ receiver: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int,
+        _ amount: Int
+    ) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func claimToken(
+        _ account: Account,
+        _ sender: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int
+    ) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func directTransferToken(
+        _ sender: Account,
+        _ receiver: Account,
+        _ creatorAddress: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int,
+        _ amount: Int
+    ) async throws -> String {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func getToken(
+        _ owner: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int
+    ) async throws -> JSON {
+        throw NSError(domain: "Not Implemented", code: -1)
+    }
+    
+    public func getTokenBalance(
+        _ owner: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int
+    ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
 }

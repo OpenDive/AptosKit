@@ -17,7 +17,7 @@ public struct EntryFunction: TransactionProtocol, Equatable {
         _ module: String,
         _ function: String,
         _ tyArgs: [TypeTag],
-        _ args: [TransactionArgument]
+        _ args: [AnyTransactionArgument]
     ) throws -> EntryFunction {
         let moduleId = try ModuleId.fromStr(module)
         var byteArgs: [Data] = []

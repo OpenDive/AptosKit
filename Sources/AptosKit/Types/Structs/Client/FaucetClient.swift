@@ -8,8 +8,13 @@
 import Foundation
 
 public struct FaucetClient {
-    let baseUrl: String
-    let restClient: RestClient
+    public let baseUrl: String
+    public let restClient: RestClient
+    
+    public init(baseUrl: String, restClient: RestClient) {
+        self.baseUrl = baseUrl
+        self.restClient = restClient
+    }
     
     public func fundAccount(_ address: String, _ amount: Int) async throws {
         guard let url = URL(string: "\(self.baseUrl)/mint?amount=\(amount)&address=\(address)") else { throw NSError(domain: "Invalid URL", code: -1) }

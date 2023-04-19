@@ -27,7 +27,7 @@ public struct StructTag: TypeProtcol, Equatable {
                 name.append(letter)
             }
         }
-        let split = name.split(separator: "::")
+        let split = name.components(separatedBy: "::")
         return try StructTag(
             value: StructTagValue(
                 address: AccountAddress.fromHex(String(split[0])),

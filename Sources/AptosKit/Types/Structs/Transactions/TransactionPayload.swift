@@ -15,7 +15,7 @@ public struct TransactionPayload: KeyProtocol, Equatable {
     let variant: Int
     let value: any TransactionProtocol
     
-    init(payload: any TransactionProtocol) throws {
+    public init(payload: any TransactionProtocol) throws {
         if payload is Script {
             self.variant = TransactionPayload.script
         } else if payload is ModuleBundle {

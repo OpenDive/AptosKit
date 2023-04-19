@@ -134,7 +134,7 @@ public struct ScriptArgument: KeyProtocol, Equatable {
         } else if self.variant == ScriptArgument.u8Vector {
             try Serializer.toBytes(serializer, self.value as! Data)
         } else if self.variant == ScriptArgument.bool {
-            serializer.bool(self.value as! Bool)
+            try Serializer.bool(serializer, self.value as! Bool)
         }
     }
 }

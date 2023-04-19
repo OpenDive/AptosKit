@@ -7,9 +7,17 @@
 
 import Foundation
 
-public struct TransactionArgument {
-    public let value: any EncodingProtocol
-    public let encoder: (Serializer, any EncodingProtocol) throws -> ()
+public struct TransactionArgument<T: EncodingContainer> {
+    public let value: T
+    public let encoder: (Serializer, T) throws -> ()
+    
+    public init(
+        value: T,
+        encoder: @escaping (Serializer, T) throws -> Void
+    ) {
+        self.value = value
+        self.encoder = encoder
+    }
     
     public func encode() throws -> Data {
         let ser = Serializer()

@@ -24,6 +24,6 @@ public struct BoolTag: TypeProtcol, Equatable {
     }
     
     public func serialize(_ serializer: Serializer) throws {
-        serializer.bool(self.value)
+        try Serializer.bool(serializer, self.value)
     }
 }

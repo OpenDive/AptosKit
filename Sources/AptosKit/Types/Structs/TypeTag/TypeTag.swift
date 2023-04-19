@@ -22,6 +22,10 @@ public struct TypeTag: KeyProtocol, Equatable {
     
     let value: any TypeProtcol
     
+    public init(value: any TypeProtcol) {
+        self.value = value
+    }
+    
     public static func deserialize(from deserializer: Deserializer) throws -> TypeTag {
         let variant = try deserializer.uleb128()
         

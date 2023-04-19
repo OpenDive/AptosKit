@@ -52,8 +52,8 @@ final class TransactionTests: XCTestCase {
         let accountAddressTo = try AccountAddress.fromKey(publicKeyTo)
         
         let transactionArguments = [
-            TransactionArgument(value: accountAddressTo, encoder: Serializer._struct),
-            TransactionArgument(value: UInt64(5000), encoder: Serializer.u64)
+            AnyTransactionArgument(TransactionArgument(value: accountAddressTo, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(5000), encoder: Serializer.u64))
         ]
         
         let typeTagValue = try StructTag.fromStr("0x1::aptos_coin::AptosCoin")
@@ -120,11 +120,11 @@ final class TransactionTests: XCTestCase {
             try AccountAddress.fromKey(receiverPublicKey)
         
         let transactionArguments = [
-            TransactionArgument(
+            AnyTransactionArgument(TransactionArgument(
                 value: receiverAccountAddress,
                 encoder: Serializer._struct
-            ),
-            TransactionArgument(value: amountInput, encoder: Serializer.u64)
+            )),
+            AnyTransactionArgument(TransactionArgument(value: amountInput, encoder: Serializer.u64))
         ]
         
         let typeTag = TypeTag(value:
@@ -198,10 +198,10 @@ final class TransactionTests: XCTestCase {
             try AccountAddress.fromKey(receiverPublicKey)
         
         let transactionArguments = [
-            TransactionArgument(value: receiverAccountAddress, encoder: Serializer._struct),
-            TransactionArgument(value: "collection_name", encoder: Serializer.str),
-            TransactionArgument(value: "token_name", encoder: Serializer.str),
-            TransactionArgument(value: UInt64(1), encoder: Serializer.u64)
+            AnyTransactionArgument(TransactionArgument(value: receiverAccountAddress, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: "collection_name", encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: "token_name", encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(1), encoder: Serializer.u64))
         ]
         
         let payload = try EntryFunction.natural(

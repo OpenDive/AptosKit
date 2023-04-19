@@ -13,7 +13,7 @@ final class BCSTests: XCTestCase {
     func testThatBoolSerializationAndDeserializationWorksWithTrue() throws {
         let input: Bool = true
         let ser = Serializer()
-        ser.bool(input)
+        try Serializer.bool(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try der.bool()
         
@@ -23,7 +23,7 @@ final class BCSTests: XCTestCase {
     func testThatBoolSerializationAndDeserializationWorksWithFalse() throws {
         let input: Bool = false
         let ser = Serializer()
-        ser.bool(input)
+        try Serializer.bool(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try der.bool()
         
@@ -79,7 +79,7 @@ final class BCSTests: XCTestCase {
     func testThatSequenceSerializerSerializationAndDeserializationWorksWithArrays() throws {
         let input: [String] = ["a", "abc", "def", "ghi"]
         let ser = Serializer()
-        let seqSer = Serializer.sequenceSerializer(Serializer.str)
+        let seqSer: (Serializer, [String]) throws -> Void = Serializer.sequenceSerializer(Serializer.str)
         try seqSer(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try der.sequence(valueDecoder: Deserializer.string)

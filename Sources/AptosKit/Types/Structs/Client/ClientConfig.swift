@@ -8,8 +8,20 @@
 import Foundation
 
 public struct ClientConfig {
-    public var expirationTtl: Int = 600
-    public var gasUnitPrice: Int = 100
-    public var maxGasAmount: Int = 100_000
-    public var transactionWaitInSeconds: Int = 20
+    public init(
+        expirationTtl: Int = 600,
+        gasUnitPrice: Int = 100,
+        maxGasAmount: Int = 100_000,
+        transactionWaitInSeconds: Int = 20
+    ) {
+        self.expirationTtl = expirationTtl
+        self.gasUnitPrice = gasUnitPrice
+        self.maxGasAmount = maxGasAmount
+        self.transactionWaitInSeconds = transactionWaitInSeconds
+    }
+    
+    public var expirationTtl: Int
+    public var gasUnitPrice: Int
+    public var maxGasAmount: Int
+    public var transactionWaitInSeconds: Int
 }

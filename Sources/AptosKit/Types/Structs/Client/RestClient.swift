@@ -14,7 +14,7 @@ public struct RestClient: AptosKitProtocol {
     public var clientConfig: ClientConfig
     public var baseUrl: String
     
-    init(
+    public init(
         baseUrl: String,
         client: URLSession = URLSession.shared,
         clientConfig: ClientConfig = ClientConfig()
@@ -87,7 +87,7 @@ public struct RestClient: AptosKitProtocol {
         _ handle: String,
         _ keyType: String,
         _ valueType: String,
-        _ key: any EncodingProtocol,
+        _ key: any EncodingContainer,
         _ ledgerVersion: Int? = nil
     ) async throws -> JSON {
         var request = ""
@@ -277,6 +277,18 @@ public struct RestClient: AptosKitProtocol {
         )
     }
     
+    public func createBcsSignedTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> SignedTransaction {
+        let rawTransaction = try await self.createBcsTransaction(sender, payload)
+        let signature = try sender.sign(try rawTransaction.keyed())
+        let authenticator = Authenticator(
+            authenticator: Ed25519Authenticator(
+                publicKey: try sender.publicKey(),
+                signature: signature
+            )
+        )
+        return SignedTransaction(transaction: rawTransaction, authenticator: authenticator)
+    }
+    
     public func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
         let payload: [String: Any] = [
             "type": "entry_function_payload",
@@ -288,5 +300,169 @@ public struct RestClient: AptosKitProtocol {
             ]
         ]
         return try await self.submitTransaction(sender, payload)
+    }
+    
+    public func bcsTransfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: recipient, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(amount), encoder: Serializer.u64))
+        ]
+        
+        let payload = try EntryFunction.natural(
+            "0x1::aptos_account",
+            "transfer_coins",
+            [TypeTag(value: try StructTag.fromStr("0x1::aptos_coin::AptosCoin"))],
+            transactionArguments
+        )
+        
+        let signedTransaction = try await self.createBcsSignedTransaction(
+            sender,
+            TransactionPayload(payload: payload)
+        )
+        return try await self.submitBcsTransaction(signedTransaction)
+    }
+    
+    public func createCollection(_ account: Account, _ name: String, _ description: String, _ uri: String) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: name, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: description, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: uri, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: MAX_U64, encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(
+                value: [false, false, false],
+                encoder: Serializer.sequenceSerializer(Serializer.bool)
+            ))
+        ]
+        let payload = try EntryFunction.natural("0x3::token", "create_collection_script", [], transactionArguments)
+        let signedTransaction = try await self.createBcsSignedTransaction(account, TransactionPayload(payload: payload))
+        return try await self.submitBcsTransaction(signedTransaction)
+    }
+    
+    public func createToken(
+        _ account: Account,
+        _ collectionName: String,
+        _ name: String,
+        _ description: String,
+        _ supply: Int,
+        _ uri: String,
+        _ royaltyPointsPerMillion: Int
+    ) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: collectionName, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: name, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: description, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(supply), encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(supply), encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: uri, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: account.address(), encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(1_000_000), encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(royaltyPointsPerMillion), encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: [false, false, false, false, false], encoder: Serializer.sequenceSerializer(Serializer.bool))),
+            AnyTransactionArgument(TransactionArgument(value: [String](), encoder: Serializer.sequenceSerializer(Serializer.str))),
+            AnyTransactionArgument(TransactionArgument(value: [Data](), encoder: Serializer.sequenceSerializer(Serializer.toBytes))),
+            AnyTransactionArgument(TransactionArgument(value: [String](), encoder: Serializer.sequenceSerializer(Serializer.str)))
+        ]
+        let payload = try EntryFunction.natural(
+            "0x3::token",
+            "create_token_script",
+            [],
+            transactionArguments
+        )
+        let signedTransaction = try await self.createBcsSignedTransaction(account, TransactionPayload(payload: payload))
+        return try await self.submitBcsTransaction(signedTransaction)
+    }
+    
+    public func offerToken(
+        _ account: Account,
+        _ receiver: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int,
+        _ amount: Int
+    ) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: receiver, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: creator, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: collectionName, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: tokenName, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(propertyVersion), encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(amount), encoder: Serializer.u64)),
+        ]
+        let payload = try EntryFunction.natural("0x3::token_transfers", "offer_script", [], transactionArguments)
+        let signedTransaction = try await self.createBcsSignedTransaction(account, TransactionPayload(payload: payload))
+        return try await self.submitBcsTransaction(signedTransaction)
+    }
+    
+    public func claimToken(
+        _ account: Account,
+        _ sender: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int
+    ) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: sender, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: creator, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: collectionName, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: tokenName, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(propertyVersion), encoder: Serializer.u64))
+        ]
+        let payload = try EntryFunction.natural("0x3::token_transfers", "claim_script", [], transactionArguments)
+        let signedTransaction = try await self.createBcsSignedTransaction(account, TransactionPayload(payload: payload))
+        return try await self.submitBcsTransaction(signedTransaction)
+    }
+    
+    public func directTransferToken(
+        _ sender: Account,
+        _ receiver: Account,
+        _ creatorAddress: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int,
+        _ amount: Int
+    ) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: creatorAddress, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: collectionName, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: tokenName, encoder: Serializer.str)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(propertyVersion), encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(amount), encoder: Serializer.u64)),
+        ]
+        let payload = try EntryFunction.natural("0x3::token", "direct_token_script", [], transactionArguments)
+        let signedTransaction = try await self.createMultiAgentBcsTransaction(sender, [receiver], TransactionPayload(payload: payload))
+        return try await self.submitBcsTransaction(signedTransaction)
+    }
+    
+    public func getToken(
+        _ owner: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int
+    ) async throws -> JSON {
+        let resource = try await self.accountResource(owner, "0x3::token::TokenStore")
+        let tokenStoreHandle = resource["data"]["tokens"]["handle"].stringValue
+        let tokenId: [String: Any] = [
+            "token_data_id": [
+                "creator": creator.hex(),
+                "collection": collectionName,
+                "name": tokenName
+            ],
+            "property_version": "\(propertyVersion)"
+        ]
+        
+        return try await self.getTableItem(tokenStoreHandle, "0x3::token::TokenId", "0x3::token:Token", tokenId)
+    }
+    
+    public func getTokenBalance(
+        _ owner: AccountAddress,
+        _ creator: AccountAddress,
+        _ collectionName: String,
+        _ tokenName: String,
+        _ propertyVersion: Int
+    ) async throws -> String {
+        return try await self.getToken(owner, creator, collectionName, tokenName, propertyVersion)["amount"].stringValue
     }
 }

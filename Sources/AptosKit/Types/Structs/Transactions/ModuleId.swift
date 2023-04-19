@@ -12,7 +12,7 @@ public struct ModuleId: KeyProtocol, Equatable {
     public var name: String
     
     public static func fromStr(_ moduleId: String) throws -> ModuleId {
-        let split = moduleId.split(separator: "::")
+        let split = moduleId.components(separatedBy: "::")
         return ModuleId(
             address: try AccountAddress.fromHex(String(split[0])),
             name: String(split[1])
