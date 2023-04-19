@@ -30,9 +30,15 @@ public class Serializer {
         }
     }
 
-    static func toBytes(_ serializer: Serializer, _ value: Data) throws {
-        try serializer.uleb128(UInt(value.count))
-        serializer._output.append(value)
+    static func toBytes<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
+        if let dataValue = value as? Data {
+            try serializer.uleb128(UInt(dataValue.count))
+            serializer._output.append(dataValue)
+        } else if let dataArray = value as? [Data] {
+            try serializer.sequence(dataArray, Serializer.toBytes)
+        } else {
+            throw NSError(domain: "Value is not Data or [Data].", code: -1)
+        }
     }
 
     func fixedBytes(_ value: Data) {
