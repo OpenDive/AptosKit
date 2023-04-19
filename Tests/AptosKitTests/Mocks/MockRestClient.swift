@@ -154,23 +154,42 @@ public struct MockRestClient: AptosKitProtocol {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
-    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
+    public func createBcsTransaction(
+        _ sender: Account,
+        _ payload: TransactionPayload
+    ) async throws -> RawTransaction {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
-    public func createBcsSignedTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> SignedTransaction {
+    public func createBcsSignedTransaction(
+        _ sender: Account,
+        _ payload: TransactionPayload
+    ) async throws -> SignedTransaction {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
-    public func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
+    public func transfer(
+        _ sender: Account,
+        _ recipient: AccountAddress,
+        _ amount: Int
+    ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
-    public func bcsTransfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
+    public func bcsTransfer(
+        _ sender: Account,
+        _ recipient: AccountAddress,
+        _ amount: Int
+    ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     
-    public func createCollection(_ account: Account, _ name: String, _ description: String, _ uri: String) async throws -> String {
+    public func createCollection(
+        _ account: Account,
+        _ name: String,
+        _ description: String,
+        _ uri: String
+    ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
     

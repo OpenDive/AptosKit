@@ -49,8 +49,8 @@ struct SimulateTransactionView: View {
                                 "transfer",
                                 [TypeTag(value: StructTag.fromStr("0x1::aptos_coin::AptosCoin"))],
                                 [
-                                    TransactionArgument(value: bob.address(), encoder: Serializer._struct),
-                                    TransactionArgument(value: UInt64(100_000), encoder: Serializer.u64)
+                                    AnyTransactionArgument(TransactionArgument(value: bob.address(), encoder: Serializer._struct)),
+                                    AnyTransactionArgument(TransactionArgument(value: UInt64(100_000), encoder: Serializer.u64))
                                 ]
                             )
                             let transaction = try await restClient.createBcsTransaction(
