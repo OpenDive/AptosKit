@@ -15,6 +15,7 @@
 		7D7B4DCE29EF426C00BF1404 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DCD29EF426C00BF1404 /* CreateAccountView.swift */; };
 		7D7B4DD229EF44A900BF1404 /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DD129EF44A900BF1404 /* TransactionView.swift */; };
 		7D7B4DD429EF48B100BF1404 /* SimulateTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DD329EF48B100BF1404 /* SimulateTransactionView.swift */; };
+		7D7B4DDA29F1D8BD00BF1404 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		7D7B4DCD29EF426C00BF1404 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		7D7B4DD129EF44A900BF1404 /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
 		7D7B4DD329EF48B100BF1404 /* SimulateTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulateTransactionView.swift; sourceTree = "<group>"; };
+		7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				7D7B4DCD29EF426C00BF1404 /* CreateAccountView.swift */,
 				7D7B4DD129EF44A900BF1404 /* TransactionView.swift */,
 				7D7B4DD329EF48B100BF1404 /* SimulateTransactionView.swift */,
+				7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */,
 			);
 			path = iOS_Example;
 			sourceTree = "<group>";
@@ -164,6 +167,7 @@
 				7D7B4DCE29EF426C00BF1404 /* CreateAccountView.swift in Sources */,
 				7D7B4DD229EF44A900BF1404 /* TransactionView.swift in Sources */,
 				7D7B4DBE29EF32C500BF1404 /* ContentView.swift in Sources */,
+				7D7B4DDA29F1D8BD00BF1404 /* HomeView.swift in Sources */,
 				7D7B4DD429EF48B100BF1404 /* SimulateTransactionView.swift in Sources */,
 				7D7B4DBC29EF32C500BF1404 /* iOS_ExampleApp.swift in Sources */,
 			);

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Wallet {
+public struct Wallet: Hashable {
     public let passphrase: [String]
     public let account: Account
     
@@ -29,5 +29,9 @@ public struct Wallet {
     public init(passphrase: [String]) throws {
         self.account = try Account.loadKey(Data(try Mnemonic.toEntropy(passphrase)).hexEncodedString())
         self.passphrase = passphrase
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.account.privateKey.key.hexEncodedString())
     }
 }
