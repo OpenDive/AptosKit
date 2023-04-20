@@ -27,7 +27,12 @@ struct ContentView: View {
         TabView {
             HomeView(currentWallet: $currentWallet, wallets: $wallets)
                 .tabItem {
-                    Label("Accounts", systemImage: "person")
+                    Label("Add Accounts", systemImage: "person.fill.badge.plus")
+                }
+            
+            AccountView(currentWallet: $currentWallet)
+                .tabItem {
+                    Label("Account Settings", systemImage: "person")
                 }
         }
     }
