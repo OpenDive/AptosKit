@@ -17,4 +17,9 @@ public enum AptosError: Swift.Error {
     case unexpectedLargeULEB128Value(value: String)
     case unexpectedEndOfInput(requested: String, found: String)
     case invalidLength
+    case lengthMismatch
+    case invalidPublicKey
+    case keysCountOutOfRange(min: Int, max: Int)
+    case thresholdOutOfRange(min: Int, max: Int)
+    case noContentInKey
 }
