@@ -1,5 +1,5 @@
 //
-//  TransactionArgument.swift
+//  AptosRestClientError.swift
 //  AptosKit
 //
 //  Copyright (c) 2023 OpenDive
@@ -25,27 +25,20 @@
 
 import Foundation
 
-/// Aptos Blockchain Transaction Argument
-public struct TransactionArgument<T: EncodingContainer> {
-    /// The value itself
-    public let value: T
-
-    /// The encoder used for serializing the value
-    public let encoder: (Serializer, T) throws -> ()
-
-    public init(
-        value: T,
-        encoder: @escaping (Serializer, T) throws -> Void
-    ) {
-        self.value = value
-        self.encoder = encoder
+/// An error associated with the Aptos REST Client
+public struct AptosRestClientError: Codable, Error {
+    enum CodingKeys: String, CodingKey {
+        case message
+        case errorCode = "error_code"
+        case vmErrorCode = "vm_error_code"
     }
 
-    /// Encodes the value using the class's encoder
-    /// - Returns: A Data object that's serialized
-    public func encode() throws -> Data {
-        let ser = Serializer()
-        try self.encoder(ser, self.value)
-        return ser.output()
-    }
+    /// A message describing the error
+    let message: String
+
+    /// These codes provide more granular error information beyond just the HTTP status code of the response.
+    let errorCode: String
+
+    /// A code providing VM error details when submitting transactions to the VM
+    let vmErrorCode: Int
 }

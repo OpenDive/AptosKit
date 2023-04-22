@@ -1,39 +1,78 @@
 //
-//  File.swift
-//  
+//  ScriptArgument.swift
+//  AptosKit
 //
-//  Created by Marcus Arnett on 4/11/23.
+//  Copyright (c) 2023 OpenDive
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 import Foundation
 import UInt256
 
+/// Aptos Blockchain Script Argument
 public struct ScriptArgument: KeyProtocol, Equatable {
+    /// UInt8 Variant
     public static let u8: Int = 0
+
+    /// UInt64 Variant
     public static let u64: Int = 1
+
+    /// UInt128 Variant
     public static let u128: Int = 2
+
+    /// AccountAddress Variant
     public static let address: Int = 3
+
+    /// Vector Variant
     public static let u8Vector: Int = 4
+
+    /// Boolean Variant
     public static let bool: Int = 5
+
+    /// UInt16 Variant
     public static let u16: Int = 6
+
+    /// UInt32 Variant
     public static let u32: Int = 7
+
+    /// UInt256 Variant
     public static let u256: Int = 8
-    
+
+    /// The variant value itself
     public var variant: Int
+
+    /// The value itself
     public var value: Any
-    
+
     init(variant: Int, value: Any) throws {
         if variant < 0 || variant > 5 {
-            throw NSError(domain: "Invalid Variant", code: -1)
+            throw AptosError.invalidVariant
         }
-        
+
         self.variant = variant
         self.value = value
     }
-    
+
     public static func == (lhs: ScriptArgument, rhs: ScriptArgument) -> Bool {
         if lhs.variant != rhs.variant { return false }
-        
+
         if lhs.value is UInt8 && rhs.value is UInt8 {
             let lhsValue = lhs.value as! UInt8
             let rhsValue = rhs.value as! UInt8
@@ -71,24 +110,24 @@ public struct ScriptArgument: KeyProtocol, Equatable {
             let rhsValue = rhs.value as! any KeyProtocol
             let lhsSer = Serializer()
             let rhsSer = Serializer()
-            
+
             do {
                 try Serializer._struct(lhsSer, value: lhsValue)
                 try Serializer._struct(rhsSer, value: rhsValue)
             } catch {
                 return false
             }
-            
+
             return lhsSer.output() == rhsSer.output()
         } else {
             return false
         }
     }
-    
+
     public static func deserialize(from deserializer: Deserializer) throws -> ScriptArgument {
         let variant = Int(try Deserializer.u8(deserializer))
         let value: Any
-        
+
         if variant == ScriptArgument.u8 {
             value = try Deserializer.u8(deserializer)
         } else if variant == ScriptArgument.u16 {
@@ -108,15 +147,15 @@ public struct ScriptArgument: KeyProtocol, Equatable {
         } else if variant == ScriptArgument.bool {
             value = try deserializer.bool()
         } else {
-            throw NSError(domain: "Invalid Variant", code: -1)
+            throw AptosError.invalidVariant
         }
-        
+
         return try ScriptArgument(variant: variant, value: value)
     }
-    
+
     public func serialize(_ serializer: Serializer) throws {
         try Serializer.u8(serializer, UInt8(self.variant))
-        
+
         if self.variant == ScriptArgument.u8 {
             try Serializer.u8(serializer, self.value as! UInt8)
         } else if self.variant == ScriptArgument.u16 {
@@ -135,6 +174,8 @@ public struct ScriptArgument: KeyProtocol, Equatable {
             try Serializer.toBytes(serializer, self.value as! Data)
         } else if self.variant == ScriptArgument.bool {
             try Serializer.bool(serializer, self.value as! Bool)
+        } else {
+            throw AptosError.invalidVariant
         }
     }
 }
