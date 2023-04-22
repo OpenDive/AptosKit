@@ -30,7 +30,7 @@ struct CreateCollectionView: View {
                 .padding(.horizontal)
                 .padding(.top, 25)
             
-            Text("Create an NFT")
+            Text("Create a Collection")
                 .font(.title)
                 .padding(.top)
             

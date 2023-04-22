@@ -24,7 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7D7B4DB829EF32C500BF1404 /* iOS_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOS_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D7B4DB829EF32C500BF1404 /* AptosSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AptosSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D7B4DBB29EF32C500BF1404 /* iOS_ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_ExampleApp.swift; sourceTree = "<group>"; };
 		7D7B4DBD29EF32C500BF1404 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7D7B4DBF29EF32C600BF1404 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,7 +66,7 @@
 		7D7B4DB929EF32C500BF1404 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7D7B4DB829EF32C500BF1404 /* iOS_Example.app */,
+				7D7B4DB829EF32C500BF1404 /* AptosSwift.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,9 +127,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7D7B4DB729EF32C500BF1404 /* iOS_Example */ = {
+		7D7B4DB729EF32C500BF1404 /* AptosSwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7D7B4DC629EF32C600BF1404 /* Build configuration list for PBXNativeTarget "iOS_Example" */;
+			buildConfigurationList = 7D7B4DC629EF32C600BF1404 /* Build configuration list for PBXNativeTarget "AptosSwift" */;
 			buildPhases = (
 				7D7B4DB429EF32C500BF1404 /* Sources */,
 				7D7B4DB529EF32C500BF1404 /* Frameworks */,
@@ -139,12 +139,12 @@
 			);
 			dependencies = (
 			);
-			name = iOS_Example;
+			name = AptosSwift;
 			packageProductDependencies = (
 				7D7B4DCB29EF331800BF1404 /* AptosKit */,
 			);
 			productName = iOS_Example;
-			productReference = 7D7B4DB829EF32C500BF1404 /* iOS_Example.app */;
+			productReference = 7D7B4DB829EF32C500BF1404 /* AptosSwift.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -162,7 +162,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7D7B4DB329EF32C500BF1404 /* Build configuration list for PBXProject "iOS_Example" */;
+			buildConfigurationList = 7D7B4DB329EF32C500BF1404 /* Build configuration list for PBXProject "AptosSwift" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -175,7 +175,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7D7B4DB729EF32C500BF1404 /* iOS_Example */,
+				7D7B4DB729EF32C500BF1404 /* AptosSwift */,
 			);
 		};
 /* End PBXProject section */
@@ -350,7 +350,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.marcodotio.iOS-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = io.OpenDive.AptosSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -383,7 +383,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.marcodotio.iOS-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = io.OpenDive.AptosSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -397,7 +397,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7D7B4DB329EF32C500BF1404 /* Build configuration list for PBXProject "iOS_Example" */ = {
+		7D7B4DB329EF32C500BF1404 /* Build configuration list for PBXProject "AptosSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7D7B4DC429EF32C600BF1404 /* Debug */,
@@ -406,7 +406,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7D7B4DC629EF32C600BF1404 /* Build configuration list for PBXNativeTarget "iOS_Example" */ = {
+		7D7B4DC629EF32C600BF1404 /* Build configuration list for PBXNativeTarget "AptosSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7D7B4DC729EF32C600BF1404 /* Debug */,

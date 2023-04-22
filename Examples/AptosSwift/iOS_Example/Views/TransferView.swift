@@ -82,7 +82,7 @@ struct TransferView: View {
                         .clipShape(Capsule())
                         .padding(.top, 8)
                 } else {
-                    Text("Create Collection")
+                    Text("Create Transaction")
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(width: 270, height: 50)
