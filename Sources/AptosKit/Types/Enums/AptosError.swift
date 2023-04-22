@@ -22,4 +22,5 @@ public enum AptosError: Swift.Error {
     case keysCountOutOfRange(min: Int, max: Int)
     case thresholdOutOfRange(min: Int, max: Int)
     case noContentInKey
+    case notImplemented
 }
