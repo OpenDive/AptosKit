@@ -37,10 +37,13 @@ public enum AptosError: Swift.Error {
     case invalidLength
     case lengthMismatch
     case invalidPublicKey
+    case invalidSeedLength
     case keysCountOutOfRange(min: Int, max: Int)
     case thresholdOutOfRange(min: Int, max: Int)
     case noContentInKey
     case notImplemented
     case invalidTransactionType
     case invalidVariant
+    case seedModeIncompatibleWithEd25519Bip32BasedSeeds(seedMode: String)
+    case invalidAddressLength
 }
