@@ -179,7 +179,11 @@ public struct RestClient: AptosKitProtocol {
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
         guard let request = URL(string: "\(self.baseUrl)/transactions") else { throw NSError(domain: "Invalid URL", code: -1) }
         let response = try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
-        return response["hash"].stringValue
+        if response["hash"].exists() {
+            return response["hash"].stringValue
+        } else {
+            return response.stringValue
+        }
     }
     
     public func submitTransaction(_ sender: Account, _ payload: [String: Any]) async throws -> String {

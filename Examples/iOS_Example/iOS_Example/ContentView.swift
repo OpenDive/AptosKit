@@ -9,30 +9,41 @@ import SwiftUI
 import AptosKit
 
 struct ContentView: View {
-    @State private var wallets: [Wallet] = []
-    @State private var currentWallet: Wallet
+    @State var viewModel: HomeViewModel
     
     init() {
         do {
-            let newWallet = try Wallet()
-            self.currentWallet = newWallet
-            self.wallets.append(newWallet)
+            self.viewModel = try HomeViewModel()
         } catch {
-            print("ERROR - \(error)")
             fatalError()
         }
     }
     
     var body: some View {
         TabView {
-            HomeView(currentWallet: $currentWallet, wallets: $wallets)
+            HomeView(viewModel: viewModel)
                 .tabItem {
-                    Label("Add Accounts", systemImage: "person.fill.badge.plus")
+                    Label("Accounts", systemImage: "person.fill.badge.plus")
                 }
             
-            AccountView(currentWallet: $currentWallet)
+            AccountView(viewModel: viewModel)
                 .tabItem {
                     Label("Account Settings", systemImage: "person")
+                }
+            
+            MintNFTView(viewModel: viewModel)
+                .tabItem {
+                    Label("NFT", systemImage: "photo.artframe")
+                }
+            
+            CreateCollectionView(viewModel: viewModel)
+                .tabItem {
+                    Label("Collection", systemImage: "shippingbox.fill")
+                }
+            
+            TransferView(viewModel: viewModel)
+                .tabItem {
+                    Label("Transaction", systemImage: "bitcoinsign.circle")
                 }
         }
     }

@@ -10,10 +10,14 @@ import AptosKit
 import UniformTypeIdentifiers
 
 struct AccountView: View {
+    @ObservedObject var viewModel: HomeViewModel
+    
+    init(viewModel: HomeViewModel) {
+        self.viewModel = viewModel
+    }
+    
     @State private var isAirdropping: Bool = false
     @State private var isShowingAlert: Bool = false
-    
-    @Binding var currentWallet: Wallet
     
     var body: some View {
         VStack {
@@ -30,7 +34,7 @@ struct AccountView: View {
             
             Button {
                 UIPasteboard.general.setValue(
-                    self.currentWallet.passphrase.joined(separator: " "),
+                    self.viewModel.currentWallet.mnemonic.phrase.joined(separator: " "),
                     forPasteboardType: UTType.plainText.identifier
                 )
             } label: {
@@ -46,7 +50,23 @@ struct AccountView: View {
             
             Button {
                 UIPasteboard.general.setValue(
-                    self.currentWallet.account.privateKey.key.hexEncodedString(),
+                    self.viewModel.getCurrentWalletAddress(),
+                    forPasteboardType: UTType.plainText.identifier
+                )
+            } label: {
+                Text("Copy Address")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(width: 270, height: 50)
+                    .background(.blue)
+                    .clipShape(Capsule())
+                    .padding(.top, 8)
+            }
+            .padding(.top)
+            
+            Button {
+                UIPasteboard.general.setValue(
+                    self.viewModel.currentWallet.account.privateKey.key.hexEncodedString(),
                     forPasteboardType: UTType.plainText.identifier
                 )
             } label: {
@@ -64,10 +84,7 @@ struct AccountView: View {
                 Task {
                     do {
                         self.isAirdropping = true
-                        let restClient = try await RestClient(baseUrl: "https://fullnode.devnet.aptoslabs.com/v1")
-                        let faucetClient = FaucetClient(baseUrl: "https://faucet.devnet.aptoslabs.com", restClient: restClient)
-                        
-                        try await faucetClient.fundAccount(currentWallet.account.address().description, 1)
+                        try await self.viewModel.airdropToCurrentWallet()
                         self.isShowingAlert = true
                     } catch {
                         print("ERROR - \(error)")
@@ -93,6 +110,8 @@ struct AccountView: View {
                 }
             }
             .padding(.top)
+            
+            Spacer()
         }
         .alert("Successfully Airdropped 1 APT", isPresented: $isShowingAlert) {
             Button("OK", role: .cancel) {
@@ -105,20 +124,18 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     struct WrapperView: View {
-        @State private var currentWallet: Wallet
+        @State var viewModel: HomeViewModel
         
         init() {
             do {
-                let newWallet = try Wallet()
-                self.currentWallet = newWallet
+                self.viewModel = try HomeViewModel()
             } catch {
-                print("ERROR - \(error)")
                 fatalError()
             }
         }
         
         var body: some View {
-            AccountView(currentWallet: $currentWallet)
+            AccountView(viewModel: viewModel)
         }
     }
     

@@ -17,6 +17,10 @@
 		7D7B4DD429EF48B100BF1404 /* SimulateTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DD329EF48B100BF1404 /* SimulateTransactionView.swift */; };
 		7D7B4DDA29F1D8BD00BF1404 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */; };
 		7D7B4DDC29F1DD2500BF1404 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DDB29F1DD2500BF1404 /* AccountView.swift */; };
+		7D7B4DE229F3137800BF1404 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DE129F3137800BF1404 /* HomeViewModel.swift */; };
+		7D7B4DE429F32A5000BF1404 /* MintNFTView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DE329F32A5000BF1404 /* MintNFTView.swift */; };
+		7D7B4DE629F3555A00BF1404 /* CreateCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DE529F3555A00BF1404 /* CreateCollectionView.swift */; };
+		7D7B4DE829F35AA900BF1404 /* TransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DE729F35AA900BF1404 /* TransferView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +35,11 @@
 		7D7B4DD329EF48B100BF1404 /* SimulateTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulateTransactionView.swift; sourceTree = "<group>"; };
 		7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7D7B4DDB29F1DD2500BF1404 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		7D7B4DDD29F1EE1B00BF1404 /* key.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = key.json; sourceTree = "<group>"; };
+		7D7B4DE129F3137800BF1404 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		7D7B4DE329F32A5000BF1404 /* MintNFTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintNFTView.swift; sourceTree = "<group>"; };
+		7D7B4DE529F3555A00BF1404 /* CreateCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollectionView.swift; sourceTree = "<group>"; };
+		7D7B4DE729F35AA900BF1404 /* TransferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,15 +74,16 @@
 		7D7B4DBA29EF32C500BF1404 /* iOS_Example */ = {
 			isa = PBXGroup;
 			children = (
+				7D7B4DDF29F3052700BF1404 /* ViewModels */,
+				7D7B4DDE29F1EE6600BF1404 /* Views */,
 				7D7B4DBB29EF32C500BF1404 /* iOS_ExampleApp.swift */,
 				7D7B4DBD29EF32C500BF1404 /* ContentView.swift */,
 				7D7B4DBF29EF32C600BF1404 /* Assets.xcassets */,
+				7D7B4DDD29F1EE1B00BF1404 /* key.json */,
 				7D7B4DC129EF32C600BF1404 /* Preview Content */,
 				7D7B4DCD29EF426C00BF1404 /* CreateAccountView.swift */,
 				7D7B4DD129EF44A900BF1404 /* TransactionView.swift */,
 				7D7B4DD329EF48B100BF1404 /* SimulateTransactionView.swift */,
-				7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */,
-				7D7B4DDB29F1DD2500BF1404 /* AccountView.swift */,
 			);
 			path = iOS_Example;
 			sourceTree = "<group>";
@@ -92,6 +102,26 @@
 				7D7B4DCA29EF32D700BF1404 /* AptosKit */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7D7B4DDE29F1EE6600BF1404 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */,
+				7D7B4DDB29F1DD2500BF1404 /* AccountView.swift */,
+				7D7B4DE329F32A5000BF1404 /* MintNFTView.swift */,
+				7D7B4DE529F3555A00BF1404 /* CreateCollectionView.swift */,
+				7D7B4DE729F35AA900BF1404 /* TransferView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7D7B4DDF29F3052700BF1404 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				7D7B4DE129F3137800BF1404 /* HomeViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -169,11 +199,15 @@
 			files = (
 				7D7B4DCE29EF426C00BF1404 /* CreateAccountView.swift in Sources */,
 				7D7B4DD229EF44A900BF1404 /* TransactionView.swift in Sources */,
+				7D7B4DE629F3555A00BF1404 /* CreateCollectionView.swift in Sources */,
 				7D7B4DBE29EF32C500BF1404 /* ContentView.swift in Sources */,
+				7D7B4DE229F3137800BF1404 /* HomeViewModel.swift in Sources */,
 				7D7B4DDA29F1D8BD00BF1404 /* HomeView.swift in Sources */,
 				7D7B4DDC29F1DD2500BF1404 /* AccountView.swift in Sources */,
 				7D7B4DD429EF48B100BF1404 /* SimulateTransactionView.swift in Sources */,
+				7D7B4DE429F32A5000BF1404 /* MintNFTView.swift in Sources */,
 				7D7B4DBC29EF32C500BF1404 /* iOS_ExampleApp.swift in Sources */,
+				7D7B4DE829F35AA900BF1404 /* TransferView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
