@@ -44,6 +44,11 @@ public enum AptosError: Swift.Error {
     case notImplemented
     case invalidTransactionType
     case invalidVariant
+    case invalidUrl(url: String)
     case seedModeIncompatibleWithEd25519Bip32BasedSeeds(seedMode: String)
     case invalidAddressLength
+    case aggregatorPathNotFound(path: String)
+    case couldNotDecodeKey(key: String)
+    case invalidSequenceNumber
+    case transactionTimedOut(hash: String)
 }
