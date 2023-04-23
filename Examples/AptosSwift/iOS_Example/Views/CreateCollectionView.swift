@@ -30,15 +30,15 @@ struct CreateCollectionView: View {
     @State private var collectionName: String = "AptosTestingCollection"
     @State private var collectionDescription: String = "AptosTestingCollection"
     @State private var collectionUri: String = "AptosTestingCollection"
-    
+
     @State private var message: String = ""
     @State private var isShowingPopup: Bool = false
     @State private var isCreatingCollection: Bool = false
-    
+
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         VStack {
             Image("aptosLogo")
@@ -47,27 +47,27 @@ struct CreateCollectionView: View {
                 .frame(width: UIScreen.main.bounds.width - 200)
                 .padding(.horizontal)
                 .padding(.top, 25)
-            
+
             Text("Create a Collection")
                 .font(.title)
                 .padding(.top)
-            
+
             VStack {
                 TextField("Collection Name", text: $collectionName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.bottom, 10)
                     .padding(.horizontal)
-                
+
                 TextField("Collection Description", text: $collectionDescription)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(10)
-                
+
                 TextField("Collection URI", text: $collectionUri)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.top, 10)
                     .padding(.horizontal)
             }
-            
+
             Button {
                 Task {
                     do {
@@ -120,7 +120,7 @@ struct CreateCollectionView: View {
 struct CreateCollectionView_Previews: PreviewProvider {
     struct WrapperView: View {
         @State var viewModel: HomeViewModel
-        
+
         init() {
             do {
                 self.viewModel = try HomeViewModel()
@@ -128,12 +128,12 @@ struct CreateCollectionView_Previews: PreviewProvider {
                 fatalError()
             }
         }
-        
+
         var body: some View {
             CreateCollectionView(viewModel: viewModel)
         }
     }
-    
+
     static var previews: some View {
         WrapperView()
     }

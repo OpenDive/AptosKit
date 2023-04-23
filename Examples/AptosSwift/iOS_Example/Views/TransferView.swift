@@ -23,23 +23,22 @@
 //  THE SOFTWARE.
 //
 
-
 import SwiftUI
 
 struct TransferView: View {
     @ObservedObject var viewModel: HomeViewModel
-    
+
     @State private var receiverAddress: String = ""
     @State private var tokenAmount: String = "0.2"
-    
+
     @State private var message: String = ""
     @State private var isShowingPopup: Bool = false
     @State private var isTransfering: Bool = false
-    
+
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         VStack {
             Image("aptosLogo")
@@ -48,28 +47,28 @@ struct TransferView: View {
                 .frame(width: UIScreen.main.bounds.width - 200)
                 .padding(.horizontal)
                 .padding(.top, 25)
-            
+
             Text("Send Transaction")
                 .font(.title)
                 .padding(.top)
-            
+
             VStack {
                 ZStack {
                     Text("Sender Address: ") +
                     Text("\(self.viewModel.getCurrentWalletAddress())").bold()
                 }
                 .padding()
-                
+
                 TextField("Receiver Address", text: $receiverAddress)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.bottom, 10)
                     .padding(.horizontal)
-                
+
                 TextField("Token Amount (APT)", text: $tokenAmount)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(10)
             }
-            
+
             Button {
                 Task {
                     do {
@@ -111,7 +110,7 @@ struct TransferView: View {
                 }
             }
             .padding(.top)
-            
+
             Spacer()
         }
         .alert("\(message)", isPresented: $isShowingPopup) {
@@ -127,7 +126,7 @@ struct TransferView: View {
 struct TransferView_Previews: PreviewProvider {
     struct WrapperView: View {
         @State var viewModel: HomeViewModel
-        
+
         init() {
             do {
                 self.viewModel = try HomeViewModel()
@@ -135,12 +134,12 @@ struct TransferView_Previews: PreviewProvider {
                 fatalError()
             }
         }
-        
+
         var body: some View {
             TransferView(viewModel: viewModel)
         }
     }
-    
+
     static var previews: some View {
         WrapperView()
     }

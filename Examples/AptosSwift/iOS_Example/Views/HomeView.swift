@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 //
 
-
 import SwiftUI
 import AptosKit
 
@@ -32,11 +31,11 @@ struct HomeView: View {
     @State private var currentWalletBalance: Double = 0.0
     @State private var phrase: String = ""
     @State private var isShowingPopup: Bool = false
-    
+
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         VStack {
             Image("aptosLogo")
@@ -45,11 +44,11 @@ struct HomeView: View {
                 .frame(width: UIScreen.main.bounds.width - 200)
                 .padding(.horizontal)
                 .padding(.top, 25)
-            
+
             Text("Add Account")
                 .font(.title)
                 .padding(.top)
-            
+
             Button {
                 do {
                     try self.viewModel.createWallet()
@@ -66,7 +65,7 @@ struct HomeView: View {
                     .padding(.top, 8)
             }
             .padding(.top)
-            
+
             Button {
                 do {
                     try self.viewModel.restoreWallet(phrase)
@@ -84,7 +83,7 @@ struct HomeView: View {
                     .padding(.top, 8)
             }
             .padding(.top)
-            
+
             if !self.viewModel.wallets.isEmpty {
                 Picker("Select A Wallet", selection: self.$viewModel.currentWallet) {
                     ForEach(self.viewModel.wallets, id: \.self) { wallet in
@@ -101,12 +100,12 @@ struct HomeView: View {
                 Text("Generate or Import a wallet")
                     .padding(.top, 40)
             }
-            
+
             TextField("Enter your seed phrase (separate words with spaces)", text: $phrase, axis: .vertical)
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal)
                 .padding(.top, 40)
-            
+
             Spacer()
         }
         .task {
@@ -138,7 +137,7 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     struct WrapperView: View {
         @State var viewModel: HomeViewModel
-        
+
         init() {
             do {
                 self.viewModel = try HomeViewModel()
@@ -146,12 +145,12 @@ struct HomeView_Previews: PreviewProvider {
                 fatalError()
             }
         }
-        
+
         var body: some View {
             HomeView(viewModel: viewModel)
         }
     }
-    
+
     static var previews: some View {
         WrapperView()
     }

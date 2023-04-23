@@ -23,21 +23,20 @@
 //  THE SOFTWARE.
 //
 
-
 import SwiftUI
 import AptosKit
 import UniformTypeIdentifiers
 
 struct AccountView: View {
     @ObservedObject var viewModel: HomeViewModel
-    
+
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
     }
-    
+
     @State private var isAirdropping: Bool = false
     @State private var isShowingAlert: Bool = false
-    
+
     var body: some View {
         VStack {
             Image("aptosLogo")
@@ -46,11 +45,11 @@ struct AccountView: View {
                 .frame(width: UIScreen.main.bounds.width - 200)
                 .padding(.horizontal)
                 .padding(.top, 25)
-            
+
             Text("Account Settings")
                 .font(.title)
                 .padding(.top)
-            
+
             Button {
                 UIPasteboard.general.setValue(
                     self.viewModel.currentWallet.mnemonic.phrase.joined(separator: " "),
@@ -66,7 +65,7 @@ struct AccountView: View {
                     .padding(.top, 8)
             }
             .padding(.top)
-            
+
             Button {
                 UIPasteboard.general.setValue(
                     self.viewModel.getCurrentWalletAddress(),
@@ -82,7 +81,7 @@ struct AccountView: View {
                     .padding(.top, 8)
             }
             .padding(.top)
-            
+
             Button {
                 UIPasteboard.general.setValue(
                     self.viewModel.currentWallet.account.privateKey.key.hexEncodedString(),
@@ -98,7 +97,7 @@ struct AccountView: View {
                     .padding(.top, 8)
             }
             .padding(.top)
-            
+
             Button {
                 Task {
                     do {
@@ -129,7 +128,7 @@ struct AccountView: View {
                 }
             }
             .padding(.top)
-            
+
             Spacer()
         }
         .alert("Successfully Airdropped 1 APT", isPresented: $isShowingAlert) {
@@ -144,7 +143,7 @@ struct AccountView: View {
 struct AccountView_Previews: PreviewProvider {
     struct WrapperView: View {
         @State var viewModel: HomeViewModel
-        
+
         init() {
             do {
                 self.viewModel = try HomeViewModel()
@@ -152,12 +151,12 @@ struct AccountView_Previews: PreviewProvider {
                 fatalError()
             }
         }
-        
+
         var body: some View {
             AccountView(viewModel: viewModel)
         }
     }
-    
+
     static var previews: some View {
         WrapperView()
     }
