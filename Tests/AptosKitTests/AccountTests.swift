@@ -24,7 +24,6 @@
 //
 
 import XCTest
-import Foundation
 @testable import AptosKit
 
 final class AccountTests: XCTestCase {
