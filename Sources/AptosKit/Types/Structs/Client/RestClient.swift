@@ -185,7 +185,7 @@ public struct RestClient: AptosKitProtocol {
 
     public func simulateTransaction(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON {
         let signature = Data(repeating: 0, count: 64)
-        let authenticator = Authenticator(authenticator: Ed25519Authenticator(publicKey: try sender.publicKey(), signature: Signature(signature: signature)))
+        let authenticator = try Authenticator(authenticator: Ed25519Authenticator(publicKey: try sender.publicKey(), signature: Signature(signature: signature)))
         let signedTransaction = SignedTransaction(transaction: transaction, authenticator: authenticator)
         
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
@@ -266,16 +266,16 @@ public struct RestClient: AptosKitProtocol {
             secondarySigners: secondaryAccounts.map { $0.address() }
         )
         let keyedTxn = try rawTransaction.keyed()
-        let authenticator = Authenticator(
+        let authenticator = try Authenticator(
             authenticator: MultiAgentAuthenticator(
-                sender: Authenticator(
+                sender: try Authenticator(
                     authenticator: Ed25519Authenticator(
                         publicKey: try sender.publicKey(),
                         signature: try sender.sign(keyedTxn)
                     )
                 ),
                 secondarySigner: try secondaryAccounts.map {(
-                    $0.address(), Authenticator(
+                    $0.address(), try Authenticator(
                         authenticator: Ed25519Authenticator(
                             publicKey: try $0.publicKey(),
                             signature: try $0.sign(keyedTxn)
@@ -302,7 +302,7 @@ public struct RestClient: AptosKitProtocol {
     public func createBcsSignedTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> SignedTransaction {
         let rawTransaction = try await self.createBcsTransaction(sender, payload)
         let signature = try sender.sign(try rawTransaction.keyed())
-        let authenticator = Authenticator(
+        let authenticator = try Authenticator(
             authenticator: Ed25519Authenticator(
                 publicKey: try sender.publicKey(),
                 signature: signature

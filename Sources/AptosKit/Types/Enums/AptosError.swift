@@ -37,6 +37,8 @@ public enum AptosError: Swift.Error {
     case invalidLength
     case lengthMismatch
     case invalidPublicKey
+    case invalidType(type: String)
+    case invalidAuthenticatorType
     case invalidSeedLength
     case keysCountOutOfRange(min: Int, max: Int)
     case thresholdOutOfRange(min: Int, max: Int)

@@ -84,7 +84,7 @@ final class TransactionTests: XCTestCase {
             try rawTransaction.verify(publicKeyFrom, signature)
         )
 
-        let authenticator = Authenticator(
+        let authenticator = try Authenticator(
             authenticator: Ed25519Authenticator(
                 publicKey: publicKeyFrom,
                 signature: signature
@@ -151,7 +151,7 @@ final class TransactionTests: XCTestCase {
         let signature = try rawTransactionGenerated.sign(senderPrivateKey)
         XCTAssertTrue(try rawTransactionGenerated.verify(senderPublicKey, signature))
         
-        let authenticator = Authenticator(
+        let authenticator = try Authenticator(
             authenticator: Ed25519Authenticator(
                 publicKey: senderPublicKey,
                 signature: signature
@@ -233,9 +233,9 @@ final class TransactionTests: XCTestCase {
             try rawTransactionGenerated.verify(receiverPublicKey, receiverSignature)
         )
         
-        let authenticator = Authenticator(authenticator:
+        let authenticator = try Authenticator(authenticator:
             MultiAgentAuthenticator(
-                sender: Authenticator(
+                sender: try Authenticator(
                     authenticator: Ed25519Authenticator(
                         publicKey: senderPublicKey,
                         signature: senderSignature
@@ -244,7 +244,7 @@ final class TransactionTests: XCTestCase {
                 secondarySigner: [
                     (
                         receiverAccountAddress,
-                        Authenticator(authenticator:
+                        try Authenticator(authenticator:
                             Ed25519Authenticator(
                                 publicKey: receiverPublicKey,
                                 signature: receiverSignature
