@@ -1,6 +1,6 @@
 //  swift-tools-version: 5.6
 //
-//  Package.swift
+//  Package@swift-5.6.swift
 //  AptosKit
 //
 //  Copyright (c) 2023 OpenDive
