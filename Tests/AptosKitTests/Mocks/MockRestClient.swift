@@ -1,8 +1,26 @@
 //
-//  File.swift
-//  
+//  MockRestClient.swift
+//  AptosKit
 //
-//  Created by Marcus Arnett on 4/17/23.
+//  Copyright (c) 2023 OpenDive
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 import Foundation
@@ -28,7 +46,7 @@ public struct MockRestClient: AptosKitProtocol {
 
         return result
     }
-    
+
     public func account(_ accountAddress: AccountAddress, ledgerVersion: Int? = nil) async throws -> AccountResponse {
         if accountAddress.address.hexEncodedString() == "9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d" {
             return AccountResponse(sequenceNumber: "1", authenticationKey: "0x9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d")
@@ -36,7 +54,7 @@ public struct MockRestClient: AptosKitProtocol {
             throw NSError(domain: "Incorrect Formatting for AccountAddress.", code: -1)
         }
     }
-    
+
     public func accountBalance(_ accountAddress: AccountAddress, _ ledgerVersion: Int? = nil) async throws -> Int {
         if accountAddress.address.hexEncodedString() == "9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d" {
             return 647362
@@ -44,7 +62,7 @@ public struct MockRestClient: AptosKitProtocol {
             throw NSError(domain: "Incorrect Formatting for AccountAddress.", code: -1)
         }
     }
-    
+
     public func accountSequenceNumber(_ accountAddress: AccountAddress, _ ledgerVersion: Int? = nil) async throws -> Int {
         if accountAddress.address.hexEncodedString() == "9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d" {
             return 1
@@ -52,29 +70,29 @@ public struct MockRestClient: AptosKitProtocol {
             throw NSError(domain: "Incorrect Formatting for AccountAddress.", code: -1)
         }
     }
-    
+
     public func accountResource(_ accountAddress: AccountAddress, _ resourceType: String, _ ledgerVersion: Int? = nil) async throws -> JSON {
         return try await getDecodedData(with: "AccountResource") as JSON
     }
-    
+
     public func getTableItem(_ handle: String, _ keyType: String, _ valueType: String, _ key: any EncodingContainer, _ ledgerVersion: Int? = nil) async throws -> JSON {
         guard let key = key as? String else {
             throw NSError(domain: "Key is not a string value.", code: -1)
         }
-        
+
         if key == "0x619dc29a0aac8fa146714058e8dd6d2d0f3bdf5f6331907bf91f3acd81e6935" {
             return 102994413849650711
         } else {
             throw NSError(domain: "Incorrect Formatting for Key.", code: -1)
         }
     }
-    
+
     public func aggregatorValue(_ accountAddress: AccountAddress, _ resourceType: String, _ aggregatorPath: [String]) async throws -> Int {
         var data = try await getDecodedData(with: "AggregatorValue") as JSON
         data = data["data"]
-        
+
         var aggregator = aggregatorPath
-        
+
         while aggregator.count > 0 {
             let key = aggregator.popLast()
             if let key {
@@ -87,7 +105,7 @@ public struct MockRestClient: AptosKitProtocol {
                 break
             }
         }
-        
+
         if !data["vec"].exists() {
             throw NSError(domain: "aggregator path not found in data: \(data)", code: -1)
         }
@@ -121,31 +139,31 @@ public struct MockRestClient: AptosKitProtocol {
 
         return try await self.getTableItem(handle, "address", "u128", key).intValue
     }
-    
+
     public func info() async throws -> InfoResponse {
         return try await getDecodedData(with: "Info") as InfoResponse
     }
-    
+
     public func simulateTransaction(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func submitBcsTransaction(_ signedTransaction: SignedTransaction) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func submitTransaction(_ sender: Account, _ payload: [String : Any]) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func transactionPending(_ txnHash: String) async throws -> Bool {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func waitForTransaction(_ txnHash: String) async throws {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func createMultiAgentBcsTransaction(
         _ sender: Account,
         _ secondaryAccounts: [Account],
@@ -153,21 +171,21 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> SignedTransaction {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func createBcsTransaction(
         _ sender: Account,
         _ payload: TransactionPayload
     ) async throws -> RawTransaction {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func createBcsSignedTransaction(
         _ sender: Account,
         _ payload: TransactionPayload
     ) async throws -> SignedTransaction {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func transfer(
         _ sender: Account,
         _ recipient: AccountAddress,
@@ -175,7 +193,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func bcsTransfer(
         _ sender: Account,
         _ recipient: AccountAddress,
@@ -183,7 +201,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func createCollection(
         _ account: Account,
         _ name: String,
@@ -192,7 +210,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func createToken(
         _ account: Account,
         _ collectionName: String,
@@ -204,7 +222,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func offerToken(
         _ account: Account,
         _ receiver: AccountAddress,
@@ -216,7 +234,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func claimToken(
         _ account: Account,
         _ sender: AccountAddress,
@@ -227,7 +245,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func directTransferToken(
         _ sender: Account,
         _ receiver: Account,
@@ -239,7 +257,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func getToken(
         _ owner: AccountAddress,
         _ creator: AccountAddress,
@@ -249,7 +267,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> JSON {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func getTokenBalance(
         _ owner: AccountAddress,
         _ creator: AccountAddress,
@@ -259,7 +277,7 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> String {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func getTokenData(
         _ creator: AccountAddress,
         _ collectionName: String,
@@ -268,14 +286,14 @@ public struct MockRestClient: AptosKitProtocol {
     ) async throws -> JSON {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func getCollection(
         _ creator: AccountAddress,
         _ collectionName: String
     ) async throws -> JSON {
         throw NSError(domain: "Not Implemented", code: -1)
     }
-    
+
     public func publishPackage(
         _ sender: Account,
         _ packageMetadata: Data,

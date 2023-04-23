@@ -1,15 +1,31 @@
 //
-//  File.swift
-//  
+//  URLSession.swift
+//  AptosKit
 //
-//  Created by Marcus Arnett on 4/12/23.
+//  Copyright (c) 2023 OpenDive
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 import Foundation
 import SwiftyJSON
 
-// Extensions used to help better streamline the main Holodex class.
-// Most are private to help with having better Access Control.
 extension URLSession {
     /// Uses URLRequest to set up a HTTPMethod, and implement default values for the method cases.
     public enum HTTPMethod: String {
@@ -137,12 +153,30 @@ extension URLSession {
             keyDecodingStrategy: .useDefaultKeys
         )
     }
-    
+
+    /// Decodes the contents of the specified URL into a JSON object using the specified HTTP method.
+    ///
+    /// - Parameters:
+    ///    - url: The URL to decode.
+    ///    - method: The HTTP method to use for the request, with a default value of .get.
+    ///
+    /// - Returns: The decoded JSON object.
+    ///
+    /// - Throws: An error if the decoding process fails.
     public func decodeUrl(with url: URL, _ method: HTTPMethod = .get) async throws -> JSON {
         let result = try await self.asyncData(with: url, method: method)
         return JSON(result)
     }
-    
+
+    /// Decodes the contents of the specified URL into a `JSON` object using the specified HTTP method and request body.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to decode.
+    ///   - body: The request body as a dictionary of key-value pairs.
+    ///
+    /// - Returns: The decoded `JSON` object.
+    ///
+    /// - Throws: An error if the decoding process fails.
     public func decodeUrl(with url: URL, _ body: [String: Any]) async throws -> JSON {
         let jsonData = try? JSONSerialization.data(withJSONObject: body)
         let data = try await self.asyncData(
@@ -151,7 +185,17 @@ extension URLSession {
         )
         return try await self.decodeData(with: data)
     }
-    
+
+    /// Decodes the contents of the specified URL into a `JSON` object using the specified HTTP headers and request body.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to decode.
+    ///   - headers: The HTTP headers to include in the request.
+    ///   - body: The request body as `Data`.
+    ///
+    /// - Returns: The decoded `JSON` object.
+    ///
+    /// - Throws: An error if the decoding process fails.
     public func decodeUrl(with url: URL, _ headers: [String: String], _ body: Data) async throws -> JSON {
         let data = try await self.asyncData(
             with: url, method: .post,

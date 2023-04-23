@@ -1,8 +1,26 @@
 //
-//  File.swift
-//  
+//  RestClientTests.swift
+//  AptosKit
 //
-//  Created by Marcus Arnett on 4/13/23.
+//  Copyright (c) 2023 OpenDive
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 import XCTest
@@ -17,7 +35,7 @@ final class RestClientTests: XCTestCase {
         XCTAssertEqual(result.sequenceNumber, "1")
         XCTAssertEqual(result.authenticationKey, "0x9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d")
     }
-    
+
     func testThatAccountResourcesWillReturnTheCorrectInformationAboutAccountResources() async throws {
         let mockRestClient = MockRestClient()
         let account = try Account.loadKey("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c")
@@ -25,7 +43,7 @@ final class RestClientTests: XCTestCase {
         
         XCTAssertEqual(result["data"]["coin"]["value"].intValue, 647362)
     }
-    
+
     func testThatAccountBalanceWillReturnTheCorrectInformationAboutAccountBalance() async throws {
         let mockRestClient = MockRestClient()
         let account = try Account.loadKey("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c")
@@ -33,7 +51,7 @@ final class RestClientTests: XCTestCase {
         
         XCTAssertEqual(result, 647362)
     }
-    
+
     func testThatAccountSequenceNumberWillReturnTheCorrectSequenceNumber() async throws {
         let mockRestClient = MockRestClient()
         let account = try Account.loadKey("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c")
@@ -41,7 +59,7 @@ final class RestClientTests: XCTestCase {
         
         XCTAssertEqual(result, 1)
     }
-    
+
     func testThatTableItemsWillReturnTheCorrectValues() async throws {
         let mockRestClient = MockRestClient()
         let result = try await mockRestClient.getTableItem(
@@ -53,7 +71,7 @@ final class RestClientTests: XCTestCase {
         
         XCTAssertEqual(result.intValue, 102994413849650711)
     }
-    
+
     func testThatAggregatorValueWillReturnTheCorrectValues() async throws {
         let mockRestClient = MockRestClient()
         let account = try Account.loadKey("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c")
@@ -61,7 +79,7 @@ final class RestClientTests: XCTestCase {
         
         XCTAssertEqual(result, 102994413849650711)
     }
-    
+
     func testThatInfoResponseReturnsTheCorrectValues() async throws {
         let mockRestClient = MockRestClient()
         let result = try await mockRestClient.info()
@@ -76,7 +94,7 @@ final class RestClientTests: XCTestCase {
         XCTAssertEqual(result.blockHeight, "48194648")
         XCTAssertEqual(result.gitHash, "e80219926372ccd1c69654d7b6bb4ba21a0c9862")
     }
-    
+
     func testThatEndToEndSimulateTransacrtionWorksAsIntended() async throws {
         let baseUrl = "https://fullnode.devnet.aptoslabs.com/v1"
         let faucetUrl = "https://faucet.devnet.aptoslabs.com"
@@ -110,7 +128,7 @@ final class RestClientTests: XCTestCase {
         let outputSuccess = try await restClient.simulateTransaction(transaction, alice)
         XCTAssertEqual(outputSuccess[0]["vm_status"].stringValue, "Executed successfully")
     }
-    
+
     func testThatEndToEndTransactionWorksAsIntended() async throws {
         let baseUrl = "https://fullnode.devnet.aptoslabs.com/v1"
         let faucetUrl = "https://faucet.devnet.aptoslabs.com"

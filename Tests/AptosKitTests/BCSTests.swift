@@ -1,8 +1,26 @@
 //
-//  File.swift
-//  
+//  BCSTests.swift
+//  AptosKit
 //
-//  Created by Marcus Arnett on 4/12/23.
+//  Copyright (c) 2023 OpenDive
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 import XCTest
@@ -19,7 +37,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatBoolSerializationAndDeserializationWorksWithFalse() throws {
         let input: Bool = false
         let ser = Serializer()
@@ -29,7 +47,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatBoolSerializationAndDeserializationThrowAnErrorWithInvalidInput() throws {
         let input: Int = 32
         let ser = Serializer()
@@ -38,7 +56,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertThrowsError(try der.bool())
     }
-    
+
     func testThatBytesSerializationAndDeserializationWorksWithData() throws {
         guard let input: Data = "1234567890".data(using: .utf8) else {
             XCTFail("String Data is invalid")
@@ -51,7 +69,7 @@ final class BCSTests: XCTestCase {
 
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatMapSerializationAndDeserializationWorksWithMaps() throws {
         let input: [String: UInt32] = [
             "a": 12345,
@@ -65,7 +83,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatSequenceSerializationAndDeserializationWorksWithArrays() throws {
         let input: [String] = ["a", "abc", "def", "ghi"]
         let ser = Serializer()
@@ -75,7 +93,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatSequenceSerializerSerializationAndDeserializationWorksWithArrays() throws {
         let input: [String] = ["a", "abc", "def", "ghi"]
         let ser = Serializer()
@@ -86,7 +104,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatStringSerializationAndDeserializationWorksWithStrings() throws {
         let input: String = "1234567890"
         let ser = Serializer()
@@ -96,7 +114,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatU8SerializationAndDeserializationWorksWithUInt8s() throws {
         let input: UInt8 = 15
         let ser = Serializer()
@@ -106,7 +124,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatU16SerializationAndDeserializationWorksWithUInt16s() throws {
         let input: UInt16 = 111_15
         let ser = Serializer()
@@ -116,7 +134,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatU32SerializationAndDeserializationWorksWithUInt32s() throws {
         let input: UInt32 = 1_111_111_115
         let ser = Serializer()
@@ -126,7 +144,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatU64SerializationAndDeserializationWorksWithUInt64s() throws {
         let input: UInt64 = 1_111_111_111_111_111_115
         let ser = Serializer()
@@ -136,7 +154,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatU128SerializationAndDeserializationWorksWithUInt128s() throws {
         let input: UInt128 = UInt128("1111111111111111111111111111111111115")!
         let ser = Serializer()
@@ -146,7 +164,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatU256SerializationAndDeserializationWorksWithUInt256s() throws {
         let input: UInt256 = UInt256("111111111111111111111111111111111111111111111111111111111111111111111111111115")!
         let ser = Serializer()
@@ -156,7 +174,7 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
-    
+
     func testThatULeb128SerializationAndDeserializationWorksWithUInts() throws {
         let input: UInt = 1_111_111_115
         let ser = Serializer()
