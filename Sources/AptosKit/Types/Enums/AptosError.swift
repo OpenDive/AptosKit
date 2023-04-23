@@ -25,7 +25,7 @@
 
 import Foundation
 
-public enum AptosError: Swift.Error {
+public enum AptosError: Swift.Error, Equatable {
     case other(String)
     case invalidDataValue(supportedType: String)
     case doesNotConformTo(protocolType: String)

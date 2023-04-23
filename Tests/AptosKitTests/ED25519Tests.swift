@@ -122,77 +122,77 @@ final class ED25519Tests: XCTestCase {
         do {
             _ = try MultiPublicKey(keys: [keys[0]], threshold: 1)
             XCTFail("Key index is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
 
         do {
             _ = try MultiPublicKey(keys: keys, threshold: 1)
             XCTFail("Key index is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
 
         do {
             _ = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 0)
             XCTFail("Key threshold is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
 
         do {
             _ = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 5)
             XCTFail("Key threshold is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
 
         do {
             let error = try MultiPublicKey(keys: [keys[0]], threshold: 1, checked: false)
             _ = try MultiPublicKey.fromBytes(error.toBytes())
             XCTFail("Key index is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
 
         do {
             let error = try MultiPublicKey(keys: keys, threshold: 1, checked: false)
             _ = try MultiPublicKey.fromBytes(error.toBytes())
             XCTFail("Key index is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Must have between 2 and 32 keys.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
 
         do {
             let error = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 0, checked: false)
             _ = try MultiPublicKey.fromBytes(error.toBytes())
             XCTFail("Key threshold is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
 
         do {
             let error = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 5, checked: false)
             _ = try MultiPublicKey.fromBytes(error.toBytes())
             XCTFail("Key threshold is out of range.")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, "Threshold must be between 1 and 4.")
+        } catch let error as AptosError {
+            XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))
         } catch {
-            XCTFail("Error is not NSError type.")
+            XCTFail("Error is not AptosError type.")
         }
     }
 }
