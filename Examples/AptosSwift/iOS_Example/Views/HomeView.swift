@@ -32,6 +32,7 @@ struct HomeView: View {
     @State private var phrase: String = ""
     @State private var isShowingPopup: Bool = false
     @State private var isGettingBalance: Bool = false
+    @FocusState private var isFocused: Bool
 
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -74,6 +75,7 @@ struct HomeView: View {
             .padding(.top)
 
             Button {
+                self.isFocused = false
                 do {
                     try self.viewModel.restoreWallet(phrase)
                     self.phrase = ""
@@ -108,10 +110,11 @@ struct HomeView: View {
                     .padding(.top, 40)
             }
 
-            TextField("Enter your seed phrase (separate words with spaces)", text: $phrase, axis: .vertical)
+            TextField("Enter your seed phrase", text: $phrase)
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal)
-                .padding(.top, 40)
+                .padding(.top)
+                .focused($isFocused)
 
             Spacer()
         }

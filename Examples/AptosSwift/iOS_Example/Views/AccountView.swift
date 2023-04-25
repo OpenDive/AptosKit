@@ -36,6 +36,8 @@ struct AccountView: View {
 
     @State private var isAirdropping: Bool = false
     @State private var isShowingAlert: Bool = false
+    @State private var isShowingError: Bool = false
+    @State private var errorMessage: String = ""
 
     var body: some View {
         VStack {
@@ -110,8 +112,10 @@ struct AccountView: View {
                         self.isAirdropping = true
                         try await self.viewModel.airdropToCurrentWallet()
                         self.isShowingAlert = true
-                    } catch {
-                        print("ERROR - \(error)")
+                    } catch let error as AptosError {
+                        self.isAirdropping = false
+                        self.errorMessage = "\(error)"
+                        self.isShowingError = true
                     }
                 }
             } label: {
@@ -141,6 +145,12 @@ struct AccountView: View {
             Button("OK", role: .cancel) {
                 self.isAirdropping = false
                 self.isShowingAlert = false
+            }
+        }
+        .alert("There was an error airdropping: \(self.errorMessage)", isPresented: $isShowingError) {
+            Button("OK", role: .cancel) {
+                self.isShowingError = false
+                self.errorMessage = ""
             }
         }
     }

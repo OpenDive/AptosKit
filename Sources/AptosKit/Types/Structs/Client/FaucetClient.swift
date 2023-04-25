@@ -51,6 +51,9 @@ public struct FaucetClient {
     public func fundAccount(_ address: String, _ amount: Int) async throws {
         guard let url = URL(string: "\(self.baseUrl)/mint?amount=\(amount)&address=\(address)") else { throw NSError(domain: "Invalid URL", code: -1) }
         let response = try await self.restClient.client.decodeUrl(with: url, .post)
+        if response.null != nil {
+            throw AptosError.restError
+        }
         for txnHash in response.arrayValue {
             try await self.restClient.waitForTransaction(txnHash.stringValue)
         }

@@ -34,6 +34,8 @@ struct TransferView: View {
     @State private var message: String = ""
     @State private var isShowingPopup: Bool = false
     @State private var isTransfering: Bool = false
+    
+    @FocusState private var isFocused: Bool
 
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -69,18 +71,26 @@ struct TransferView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.bottom, 10)
                     .padding(.horizontal)
+                    .focused($isFocused)
 
                 TextField("Token Amount (APT)", text: $tokenAmount)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(10)
+                    .focused($isFocused)
             }
 
             Button {
+                self.isFocused = false
                 Task {
                     do {
                         self.isTransfering = true
                         guard let amountDouble = Double(tokenAmount) else {
                             self.message = "Please use a valid Double for royalty points and / or supply number."
+                            self.isShowingPopup = true
+                            return
+                        }
+                        guard !receiverAddress.isEmpty else {
+                            self.message = "Please provide a valid receiver Address"
                             self.isShowingPopup = true
                             return
                         }
@@ -92,7 +102,7 @@ struct TransferView: View {
                         }
                         self.isShowingPopup = true
                     } catch {
-                        self.message = "Something went wrong: \(error.localizedDescription)"
+                        self.message = "Something went wrong: \(error)"
                         self.isShowingPopup = true
                     }
                 }

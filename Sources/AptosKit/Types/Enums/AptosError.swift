@@ -57,4 +57,5 @@ public enum AptosError: Swift.Error, Equatable {
     case couldNotDecodeKey(key: String)
     case invalidSequenceNumber
     case transactionTimedOut(hash: String)
+    case restError
 }
