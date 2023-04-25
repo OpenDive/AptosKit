@@ -48,9 +48,15 @@ struct CreateCollectionView: View {
                 .padding(.horizontal)
                 .padding(.top, 25)
 
-            Text("Create a Collection")
-                .font(.title)
-                .padding(.top)
+            if isCreatingCollection {
+                Text("Creating Collection...")
+                    .font(.title)
+                    .padding(.top)
+            } else {
+                Text("Create a Collection")
+                    .font(.title)
+                    .padding(.top)
+            }
 
             VStack {
                 TextField("Collection Name", text: $collectionName)

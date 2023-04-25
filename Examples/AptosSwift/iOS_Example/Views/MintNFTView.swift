@@ -52,9 +52,15 @@ struct MintNFTView: View {
                 .padding(.horizontal)
                 .padding(.top, 25)
 
-            Text("Create an NFT")
-                .font(.title)
-                .padding(.top)
+            if isMintingNft {
+                Text("Creating NFT...")
+                    .font(.title)
+                    .padding(.top)
+            } else {
+                Text("Create an NFT")
+                    .font(.title)
+                    .padding(.top)
+            }
 
             VStack {
                 TextField("Collection Name", text: $collectionName)

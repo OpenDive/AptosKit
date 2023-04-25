@@ -48,9 +48,15 @@ struct TransferView: View {
                 .padding(.horizontal)
                 .padding(.top, 25)
 
-            Text("Send Transaction")
-                .font(.title)
-                .padding(.top)
+            if isTransfering {
+                Text("Sending Transaction...")
+                    .font(.title)
+                    .padding(.top)
+            } else {
+                Text("Send Transaction")
+                    .font(.title)
+                    .padding(.top)
+            }
 
             VStack {
                 ZStack {

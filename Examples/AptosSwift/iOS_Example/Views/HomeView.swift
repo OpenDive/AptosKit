@@ -31,6 +31,7 @@ struct HomeView: View {
     @State private var currentWalletBalance: Double = 0.0
     @State private var phrase: String = ""
     @State private var isShowingPopup: Bool = false
+    @State private var isGettingBalance: Bool = false
 
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -45,9 +46,15 @@ struct HomeView: View {
                 .padding(.horizontal)
                 .padding(.top, 25)
 
-            Text("Add Account")
-                .font(.title)
-                .padding(.top)
+            if isGettingBalance {
+                Text("Loading Balance...")
+                    .font(.title)
+                    .padding(.top)
+            } else {
+                Text("Add Account")
+                    .font(.title)
+                    .padding(.top)
+            }
 
             Button {
                 do {
@@ -111,7 +118,9 @@ struct HomeView: View {
         .task {
             Task {
                 do {
+                    self.isGettingBalance = true
                     self.currentWalletBalance = try await self.viewModel.getCurrentWalletBalance()
+                    self.isGettingBalance = false
                 } catch {
                     print("ERROR - \(error)")
                 }
@@ -120,7 +129,9 @@ struct HomeView: View {
         .onChange(of: self.viewModel.currentWallet) { newValue in
             Task {
                 do {
+                    self.isGettingBalance = true
                     self.currentWalletBalance = try await self.viewModel.getCurrentWalletBalance()
+                    self.isGettingBalance = false
                 } catch {
                     print("ERROR - \(error)")
                 }

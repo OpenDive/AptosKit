@@ -12,7 +12,6 @@
 		7D7B4DC029EF32C600BF1404 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D7B4DBF29EF32C600BF1404 /* Assets.xcassets */; };
 		7D7B4DC329EF32C600BF1404 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D7B4DC229EF32C600BF1404 /* Preview Assets.xcassets */; };
 		7D7B4DCC29EF331800BF1404 /* AptosKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D7B4DCB29EF331800BF1404 /* AptosKit */; };
-		7D7B4DCE29EF426C00BF1404 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DCD29EF426C00BF1404 /* CreateAccountView.swift */; };
 		7D7B4DDA29F1D8BD00BF1404 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */; };
 		7D7B4DDC29F1DD2500BF1404 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DDB29F1DD2500BF1404 /* AccountView.swift */; };
 		7D7B4DE229F3137800BF1404 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7B4DE129F3137800BF1404 /* HomeViewModel.swift */; };
@@ -28,7 +27,6 @@
 		7D7B4DBF29EF32C600BF1404 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7D7B4DC229EF32C600BF1404 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7D7B4DCA29EF32D700BF1404 /* AptosKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AptosKit; path = ../..; sourceTree = "<group>"; };
-		7D7B4DCD29EF426C00BF1404 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		7D7B4DD929F1D8BD00BF1404 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7D7B4DDB29F1DD2500BF1404 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		7D7B4DE129F3137800BF1404 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -75,7 +73,6 @@
 				7D7B4DBD29EF32C500BF1404 /* ContentView.swift */,
 				7D7B4DBF29EF32C600BF1404 /* Assets.xcassets */,
 				7D7B4DC129EF32C600BF1404 /* Preview Content */,
-				7D7B4DCD29EF426C00BF1404 /* CreateAccountView.swift */,
 			);
 			path = iOS_Example;
 			sourceTree = "<group>";
@@ -189,7 +186,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D7B4DCE29EF426C00BF1404 /* CreateAccountView.swift in Sources */,
 				7D7B4DE629F3555A00BF1404 /* CreateCollectionView.swift in Sources */,
 				7D7B4DBE29EF32C500BF1404 /* ContentView.swift in Sources */,
 				7D7B4DE229F3137800BF1404 /* HomeViewModel.swift in Sources */,

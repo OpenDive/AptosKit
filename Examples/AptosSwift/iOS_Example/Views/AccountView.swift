@@ -46,9 +46,15 @@ struct AccountView: View {
                 .padding(.horizontal)
                 .padding(.top, 25)
 
-            Text("Account Settings")
-                .font(.title)
-                .padding(.top)
+            if isAirdropping {
+                Text("Airdropping 1 APT...")
+                    .font(.title)
+                    .padding(.top)
+            } else {
+                Text("Account Settings")
+                    .font(.title)
+                    .padding(.top)
+            }
 
             Button {
                 UIPasteboard.general.setValue(
