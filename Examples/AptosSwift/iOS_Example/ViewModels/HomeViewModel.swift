@@ -27,17 +27,30 @@ import Foundation
 import AptosKit
 
 public class HomeViewModel: ObservableObject {
-    @Published var wallets: [Wallet]
+    @Published var wallets: [Wallet] = []
     @Published var currentWallet: Wallet
 
     let restBaseUrl = "https://fullnode.devnet.aptoslabs.com/v1"
     let faucetUrl = "https://faucet.devnet.aptoslabs.com"
 
-    public init() throws {
-        let mnemo = Mnemonic(wordcount: 12, wordlist: Wordlists.english)
-        let newWallet = try Wallet(mnemonic: mnemo)
-        self.currentWallet = newWallet
-        self.wallets = [newWallet]
+    public init(_ mnemos: [[String]]? = nil) throws {
+        if let mnemos {
+            var tmpWallets: [Wallet] = []
+            var lastWallet: Wallet? = nil
+            for mnemo in mnemos {
+                let mnemoObject = try Mnemonic(phrase: mnemo)
+                let newWallet = try Wallet(mnemonic: mnemoObject)
+                tmpWallets.append(newWallet)
+                lastWallet = newWallet
+            }
+            self.wallets = tmpWallets
+            self.currentWallet = lastWallet!
+        } else {
+            let mnemo = Mnemonic(wordcount: 12, wordlist: Wordlists.english)
+            let newWallet = try Wallet(mnemonic: mnemo)
+            self.currentWallet = newWallet
+            self.wallets = [newWallet]
+        }
     }
 
     public init(wallet: Wallet) {
@@ -137,7 +150,12 @@ public class HomeViewModel: ObservableObject {
     }
 
     private func initializeWallet(_ mnemo: Mnemonic) throws {
+        let userDefaults = UserDefaults.standard
         let newWallet = try Wallet(mnemonic: mnemo)
+        userDefaults.set(
+            mnemo.phrase,
+            forKey: newWallet.account.accountAddress.description
+        )
         self.wallets.append(newWallet)
         self.currentWallet = newWallet
     }

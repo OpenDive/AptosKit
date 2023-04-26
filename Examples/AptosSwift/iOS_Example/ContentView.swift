@@ -32,8 +32,29 @@ struct ContentView: View {
 
     init() {
         do {
-            self.viewModel = try HomeViewModel()
+            let userDefaults = UserDefaults.standard
+            var defaultWalletSeeds: [[String]] = []
+            
+            for element in userDefaults.dictionaryRepresentation() {
+                let mnemo = userDefaults.object(forKey: element.key) as? [String]
+                
+                if let mnemo, mnemo.count == 12 {
+                    print(mnemo.joined(separator: " "))
+                    defaultWalletSeeds.append(mnemo)
+                }
+            }
+            
+            if defaultWalletSeeds.isEmpty {
+                self.viewModel = try HomeViewModel()
+                userDefaults.set(
+                    self.viewModel.currentWallet.mnemonic.phrase,
+                    forKey: self.viewModel.currentWallet.account.accountAddress.description
+                )
+            } else {
+                self.viewModel = try HomeViewModel(defaultWalletSeeds)
+            }
         } catch {
+            print(error)
             fatalError()
         }
     }
