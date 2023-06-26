@@ -33,16 +33,18 @@ AptosKit is a community-maintained SDK for the Aptos Blockchain environment and 
 - [x] Comprehensive Unit and Integration Test coverage.
 - [x] Swift Concurrency Support back to iOS 13, macOS 10.15, tvOS 13, and watchOS 6.
 - [x] Complete documentation of AptosKit.
+- [x] Implement Token REST Client.
 
 ## ToDo
 
-- [ ] Implement Token REST Client.
+- [ ] Token REST Client Example.
 
 ## Requirements
 
 | Platform | Minimum Swift Version | Installation | Status |
 | --- | --- | --- | --- |
 | iOS 13.0+ / macOS 10.15+ / tvOS 13.0+ / watchOS 6.0+ | 5.5 | [Swift Package Manager](#swift-package-manager) | Fully Tested |
+| VisionOS 1.0 | 5.8 | [Swift Package Manager](#swift-package-manager) | Untested |
 
 ## Installation
 
@@ -54,7 +56,7 @@ The [Swift Package Manager](https://swift.org/package-manager/) allows for devel
 
 * File > Swift Packages > Add Package Dependency
 * Add `https://github.com/opendive/AptosKit.git`
-* Select "Up to next Major" with "1.0"
+* Select "Up to next Major" with "1.1"
 
 #### SPM Through Xcode Package
 
@@ -62,7 +64,7 @@ Once you have your Swift package set up, add the Git link within the `dependenci
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/opendive/AptosKit.git", .upToNextMajor(from: "1.0"))
+    .package(url: "https://github.com/opendive/AptosKit.git", .upToNextMajor(from: "1.1"))
 ]
 ```
 

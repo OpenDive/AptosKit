@@ -4,8 +4,9 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0     | :white_check_mark: |
+| 1.0     | :x: |
+| 1.1    | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
-TODO
+Please post an issue on this GitHub Repository to report any security vulnerabilities found within the project.
