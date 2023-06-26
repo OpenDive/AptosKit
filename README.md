@@ -38,6 +38,7 @@ AptosKit is a community-maintained SDK for the Aptos Blockchain environment and 
 ## ToDo
 
 - [ ] Token REST Client Example.
+- [ ] Implement enum object to switch between development, test, and main networks.
 
 ## Requirements
 
@@ -99,7 +100,6 @@ We welcome anyone to contribute to the project through posting issues, if they e
 
 ## Next Steps
 
-* In the near future, we will be implementing a Token Client class that will make interacting with NFTs and Collections even easier for the end developer.
 * We will also focus on implementing a MultiED25519Authenticator for use with authenticating more than one ED25519 transaction at a time in a single call.
 
 ## Credits
