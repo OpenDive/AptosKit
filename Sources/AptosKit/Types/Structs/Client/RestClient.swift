@@ -100,6 +100,20 @@ public struct RestClient: AptosKitProtocol {
         guard let url = URL(string: request) else { throw AptosError.invalidUrl(url: request) }
         return try await self.client.decodeUrl(with: url)
     }
+    
+    public func accountResources(
+        _ accountAddress: AccountAddress,
+        _ ledgerVersion: Int? = nil
+    ) async throws -> JSON {
+        var request: String = ""
+        if ledgerVersion == nil {
+            request = "\(self.baseUrl)/accounts/\(accountAddress)/resources/"
+        } else {
+            request = "\(self.baseUrl)/accounts/\(accountAddress)/resources?ledger_version=\(ledgerVersion!)"
+        }
+        guard let url = URL(string: request) else { throw AptosError.invalidUrl(url: request) }
+        return try await self.client.decodeUrl(with: url)
+    }
 
     public func getTableItem(
         _ handle: String,

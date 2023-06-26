@@ -45,7 +45,7 @@ enum AuthKeyScheme {
 }
 
 /// The Aptos Blockchain Account Address
-public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible {
+public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible, Hashable {
     /// The address data itself
     public let address: Data
 
