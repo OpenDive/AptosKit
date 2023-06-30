@@ -30,6 +30,10 @@ import SwiftyJSON
 public struct AptosTokenClient {
     /// REST Client used for communicating with the Aptos Blockchain
     public let client: RestClient
+    
+    public init(client: RestClient) {
+        self.client = client
+    }
 
     /// Fetches and returns a `ReadObject` from the given account address.
     ///
@@ -53,6 +57,9 @@ public struct AptosTokenClient {
         var resources: [AnyHashableReadObject: Any] = [:]
 
         let readResources = try await client.accountResources(address)
+        guard readResources["error_code"].string == nil else {
+            throw NSError(domain: readResources["error_code"].stringValue, code: -1)
+        }
         for resource in readResources.arrayValue {
             if let type = resource["type"].string,
                let resourceClass = ReadObject.resourceMap[type] {
@@ -112,7 +119,7 @@ public struct AptosTokenClient {
     ) throws -> TransactionPayload {
         let transactionArguments = [
             AnyTransactionArgument(TransactionArgument(value: description, encoder: Serializer.str)),
-            AnyTransactionArgument(TransactionArgument(value: maxSupply, encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(maxSupply), encoder: Serializer.u64)),
             AnyTransactionArgument(TransactionArgument(value: name, encoder: Serializer.str)),
             AnyTransactionArgument(TransactionArgument(value: uri, encoder: Serializer.str)),
             AnyTransactionArgument(TransactionArgument(value: mutableDescription, encoder: Serializer.bool)),
@@ -124,8 +131,8 @@ public struct AptosTokenClient {
             AnyTransactionArgument(TransactionArgument(value: mutableTokenUri, encoder: Serializer.bool)),
             AnyTransactionArgument(TransactionArgument(value: tokensBurnableByCreator, encoder: Serializer.bool)),
             AnyTransactionArgument(TransactionArgument(value: tokensFreezableByCreator, encoder: Serializer.bool)),
-            AnyTransactionArgument(TransactionArgument(value: royaltyNumerator, encoder: Serializer.u64)),
-            AnyTransactionArgument(TransactionArgument(value: royaltyDenominator, encoder: Serializer.u64))
+            AnyTransactionArgument(TransactionArgument(value: UInt64(royaltyNumerator), encoder: Serializer.u64)),
+            AnyTransactionArgument(TransactionArgument(value: UInt64(royaltyDenominator), encoder: Serializer.u64))
         ]
 
         let payload = try EntryFunction.natural(
@@ -582,14 +589,14 @@ public struct AptosTokenClient {
     ) async throws -> String {
         var transactionArguments = [AnyTransactionArgument(TransactionArgument(value: token, encoder: Serializer._struct))]
         transactionArguments.append(contentsOf: try prop.toTransactionArguments())
-        
+
         let payload = try EntryFunction.natural(
             "0x4::aptos_token",
             "update_property",
             [TypeTag(value: StructTag.fromStr("0x4::token::Token"))],
             transactionArguments
         )
-        
+
         let signedTransaction = try await self.client.createBcsSignedTransaction(creator, TransactionPayload(payload: payload))
         return try await self.client.submitBcsTransaction(signedTransaction)
     }

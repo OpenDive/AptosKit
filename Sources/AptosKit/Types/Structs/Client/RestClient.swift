@@ -107,7 +107,7 @@ public struct RestClient: AptosKitProtocol {
     ) async throws -> JSON {
         var request: String = ""
         if ledgerVersion == nil {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resources/"
+            request = "\(self.baseUrl)/accounts/\(accountAddress)/resources"
         } else {
             request = "\(self.baseUrl)/accounts/\(accountAddress)/resources?ledger_version=\(ledgerVersion!)"
         }
@@ -266,7 +266,7 @@ public struct RestClient: AptosKitProtocol {
         }
         let response = try await self.client.decodeUrl(with: url)
         guard response["success"].exists(), response["success"].boolValue else {
-            throw NSError(domain: "\(response["message"].stringValue) - \(txnHash)", code: -1)
+            throw NSError(domain: "\(response["vm_status"].stringValue) - \(txnHash)", code: -1)
         }
     }
 

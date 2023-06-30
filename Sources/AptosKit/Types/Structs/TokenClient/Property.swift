@@ -153,7 +153,7 @@ public struct Property: Hashable {
         return Property(name: name, propertyType: "0x1::string::String", value: value)
     }
     
-    public static func bool(_ name: String, _ value: Data) -> Property {
+    public static func bytes(_ name: String, _ value: Data) -> Property {
         return Property(name: name, propertyType: "vector<u8>", value: value)
     }
 }

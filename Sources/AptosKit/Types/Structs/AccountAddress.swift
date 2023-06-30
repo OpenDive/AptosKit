@@ -163,6 +163,35 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible, H
         return try AccountAddress(address: result)
     }
 
+    /// Generates an `AccountAddress` for a GUID object.
+    ///
+    /// This function takes in a creator address and a `creationNum` which it uses to serialize into an array of bytes.
+    /// It then appends the creator address and `deriveObjectAddressFromGuid` to this array. It uses this byte array
+    /// to compute a SHA-256 hash. This hash is then returned as a new `AccountAddress`.
+    ///
+    /// - Parameters:
+    ///     - creator: The account address of the creator.
+    ///     - creationNum: The creation number of the object.
+    ///
+    /// - Returns: An `AccountAddress` which is generated for a GUID object.
+    ///
+    /// - Throws: This function throws an error if the process of creating the `AccountAddress` fails.
+    ///
+    /// Note: This function uses the SHA-256 algorithm for hashing which is a part of the SHA-2 (Secure Hash Algorithm 2) set of cryptographic hash functions.
+    /// Hash functions are fundamental to modern cryptography. These functions map binary strings of an arbitrary length to small binary strings of a fixed length.
+    public static func forGuidObject(_ creator: AccountAddress, _ creationNum: Int) throws -> AccountAddress {
+        let ser = Serializer()
+        try Serializer.u64(ser, UInt64(creationNum))
+
+        var addressBytes = Data(count: ser.output().count + creator.address.count + 1)
+        addressBytes[0..<ser.output().count] = ser.output()[0..<ser.output().count]
+        addressBytes[ser.output().count..<ser.output().count + creator.address.count] = creator.address[0..<creator.address.count]
+        addressBytes[ser.output().count + creator.address.count..<ser.output().count + creator.address.count + 1] = AuthKeyScheme.deriveObjectAddressFromGuid
+        let result = addressBytes.sha3(.sha256)
+
+        return try AccountAddress(address: result)
+    }
+
     /// Create an AccountAddress instance for a named object.
     ///
     /// This function creates an AccountAddress instance for a named object given the creator's address and a seed value. The function generates a new address by concatenating the byte representation
