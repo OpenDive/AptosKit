@@ -211,6 +211,12 @@ public struct RestClient: AptosKitProtocol {
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
         guard let request = URL(string: "\(self.baseUrl)/transactions") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions") }
         let response = try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
+        guard response["error_code"].string == nil else {
+            throw NSError(
+                domain: "Error: \(response["error_code"].stringValue) - \(response["message"].stringValue)",
+                code: -1
+            )
+        }
         if response["hash"].exists() {
             return response["hash"].stringValue
         } else {
@@ -466,7 +472,7 @@ public struct RestClient: AptosKitProtocol {
             AnyTransactionArgument(TransactionArgument(value: UInt64(propertyVersion), encoder: Serializer.u64)),
             AnyTransactionArgument(TransactionArgument(value: UInt64(amount), encoder: Serializer.u64)),
         ]
-        let payload = try EntryFunction.natural("0x3::token", "direct_token_script", [], transactionArguments)
+        let payload = try EntryFunction.natural("0x3::token", "direct_transfer_script", [], transactionArguments)
         let signedTransaction = try await self.createMultiAgentBcsTransaction(sender, [receiver], TransactionPayload(payload: payload))
         return try await self.submitBcsTransaction(signedTransaction)
     }
@@ -488,8 +494,8 @@ public struct RestClient: AptosKitProtocol {
             ],
             "property_version": "\(propertyVersion)"
         ]
-        
-        return try await self.getTableItem(tokenStoreHandle, "0x3::token::TokenId", "0x3::token:Token", tokenId)
+
+        return try await self.getTableItem(tokenStoreHandle, "0x3::token::TokenId", "0x3::token::Token", tokenId)
     }
 
     public func getTokenBalance(
@@ -516,7 +522,7 @@ public struct RestClient: AptosKitProtocol {
             "name": tokenName
         ]
 
-        return try await self.getTableItem(tokenDataHandle, "0x3::token::TokenDataId", "0x3::token:TokenData", tokenDataId)
+        return try await self.getTableItem(tokenDataHandle, "0x3::token::TokenDataId", "0x3::token::TokenData", tokenDataId)
     }
 
     public func getCollection(

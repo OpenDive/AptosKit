@@ -1,5 +1,5 @@
 //
-//  Example.swift
+//  ReadAggregator.swift
 //  AptosKit
 //
 //  Copyright (c) 2023 OpenDive
@@ -24,17 +24,16 @@
 //
 
 import Foundation
+import AptosKit
 
-@main
-struct Example {
-    static func main() async throws {
-        // MARK: Read Aggregator
-        try await ReadAggregator.readAggregatorTest()
-        
-        // MARK: Simple NFT
-        try await SimpleNFT.simpleNftTest()
-
-        // MARK: Token Client
-        try await TokenClient.tokenClientTest()
+struct ReadAggregator {
+    static func readAggregatorTest() async throws {
+        let restClient = try await RestClient(baseUrl: "https://fullnode.devnet.aptoslabs.com/v1")
+        let totalApt = try await restClient.aggregatorValue(
+            AccountAddress.fromHex("0x1"),
+            "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>",
+            ["supply"]
+        )
+        print("Total Circulating APT: \(totalApt)")
     }
 }
