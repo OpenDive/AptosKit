@@ -30,9 +30,12 @@ struct Example {
     static func main() async throws {
         // MARK: Read Aggregator
         try await ReadAggregator.readAggregatorTest()
-        
+
         // MARK: Simple NFT
         try await SimpleNFT.simpleNftTest()
+
+        // MARK: Simulate Transfer Coin
+        try await SimulateTransferCoin.simulateTransferCoinTest()
 
         // MARK: Token Client
         try await TokenClient.tokenClientTest()
