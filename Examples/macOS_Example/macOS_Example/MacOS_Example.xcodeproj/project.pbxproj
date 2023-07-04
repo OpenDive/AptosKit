@@ -14,8 +14,6 @@
 		7D6E0A0B2A4E2F68009488DB /* TokenClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */; };
 		7D6E0A142A4E2FA1009488DB /* AptosKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D6E0A132A4E2FA1009488DB /* AptosKit */; };
 		7DC0CEFF2A53A3FC00A7292B /* TransferCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */; };
-		7DC0CF012A53A60D00A7292B /* TransferTwoByTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CF002A53A60D00A7292B /* TransferTwoByTwo.swift */; };
-		7DC0CF0C2A53B4A500A7292B /* TwoByTwoTransferMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CF0B2A53B4A500A7292B /* TwoByTwoTransferMove.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,8 +47,6 @@
 		7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenClient.swift; sourceTree = "<group>"; };
 		7D6E0A122A4E2F98009488DB /* AptosKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AptosKit; path = ../../..; sourceTree = "<group>"; };
 		7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferCoin.swift; sourceTree = "<group>"; };
-		7DC0CF002A53A60D00A7292B /* TransferTwoByTwo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferTwoByTwo.swift; sourceTree = "<group>"; };
-		7DC0CF0B2A53B4A500A7292B /* TwoByTwoTransferMove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoByTwoTransferMove.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,8 +87,6 @@
 				7D47B2082A53749500841117 /* SimpleNFT.swift */,
 				7D47B20A2A5389D800841117 /* SimulateTransferCoin.swift */,
 				7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */,
-				7DC0CF002A53A60D00A7292B /* TransferTwoByTwo.swift */,
-				7DC0CF0B2A53B4A500A7292B /* TwoByTwoTransferMove.swift */,
 			);
 			path = MacOS_Example;
 			sourceTree = "<group>";
@@ -178,11 +172,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DC0CF0C2A53B4A500A7292B /* TwoByTwoTransferMove.swift in Sources */,
 				7D47B2092A53749500841117 /* SimpleNFT.swift in Sources */,
 				7D47B2052A5373A100841117 /* ReadAggregator.swift in Sources */,
 				7D47B20B2A5389D800841117 /* SimulateTransferCoin.swift in Sources */,
-				7DC0CF012A53A60D00A7292B /* TransferTwoByTwo.swift in Sources */,
 				7DC0CEFF2A53A3FC00A7292B /* TransferCoin.swift in Sources */,
 				7D6E0A0B2A4E2F68009488DB /* TokenClient.swift in Sources */,
 				7D47B2072A53742300841117 /* Example.swift in Sources */,
