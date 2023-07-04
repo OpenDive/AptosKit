@@ -37,6 +37,9 @@ struct Example {
         // MARK: Simulate Transfer Coin
         try await SimulateTransferCoin.simulateTransferCoinTest()
 
+        // MARK: Transfer Coin
+        try await TransferCoin.transferCoinTest()
+
         // MARK: Token Client
         try await TokenClient.tokenClientTest()
     }

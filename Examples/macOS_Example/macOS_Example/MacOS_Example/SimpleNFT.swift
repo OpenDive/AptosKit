@@ -34,19 +34,19 @@ struct SimpleNFT {
             baseUrl: "https://faucet.devnet.aptoslabs.com",
             restClient: restClient
         )
-        
+
         // MARK: Section 2
         let alice = try Wallet(mnemonic: Mnemonic(wordcount: 12, wordlist: Wordlists.english))
         let bob = try Wallet(mnemonic: Mnemonic(wordcount: 12, wordlist: Wordlists.english))
-        
+
         let collectionName = "Alice's"
         let tokenName = "Alice's first token"
         let propertyVersion = 0
-        
+
         print("\n=== Addresses ===")
         print("Alice: \(alice.account.address().description)")
         print("Bob: \(bob.account.address().description)")
-        
+
         // MARK: Section 3
         let _ = try await faucetClient.fundAccount(
             alice.account.address().description,
@@ -56,7 +56,7 @@ struct SimpleNFT {
             bob.account.address().description,
             100_000_000
         )
-        
+
         print("\n=== Initial Coin Balances ===")
         let aliceBalance = try await restClient.accountBalance(
             alice.account.address()
@@ -66,9 +66,9 @@ struct SimpleNFT {
         )
         print("Alice: \(aliceBalance)")
         print("Bob: \(bobBalance)")
-        
+
         print("\n=== Creating Collection and Token ===")
-        
+
         // MARK: Section 4
         let txnHashCreateCollection = try await restClient.createCollection(
             alice.account,
@@ -77,7 +77,7 @@ struct SimpleNFT {
             "https://aptos.dev"
         )
         try await restClient.waitForTransaction(txnHashCreateCollection)
-        
+
         // MARK: Section 5
         let txnHashCreateToken = try await restClient.createToken(
             alice.account,
@@ -89,11 +89,11 @@ struct SimpleNFT {
             0
         )
         try await restClient.waitForTransaction(txnHashCreateToken)
-        
+
         // MARK: Section 6
         let collectionData = try await restClient.getCollection(alice.account.address(), collectionName)
         print("Alice's collection: \(collectionData)")
-        
+
         // MARK: Section 7
         let balance = try await restClient.getTokenBalance(
             alice.account.address(),
@@ -103,7 +103,7 @@ struct SimpleNFT {
             propertyVersion
         )
         print("Alice's token balance: \(balance)")
-        
+
         // MARK: Section 8
         let tokenData = try await restClient.getTokenData(
             alice.account.address(),
@@ -112,9 +112,9 @@ struct SimpleNFT {
             propertyVersion
         )
         print("Alice's Token Data: \(tokenData)")
-        
+
         print("\n=== Transferring the token to Bob ===")
-        
+
         // MARK: Section 9
         let txnHashOfferToken = try await restClient.offerToken(
             alice.account,
@@ -125,7 +125,7 @@ struct SimpleNFT {
             propertyVersion, 1
         )
         try await restClient.waitForTransaction(txnHashOfferToken)
-        
+
         // MARK: Section 10
         let txnHashClaimToken = try await restClient.claimToken(
             bob.account,
@@ -136,7 +136,7 @@ struct SimpleNFT {
             propertyVersion
         )
         try await restClient.waitForTransaction(txnHashClaimToken)
-        
+
         let aliceTokenBalance = try await restClient.getTokenBalance(
             alice.account.address(),
             alice.account.address(),
@@ -151,12 +151,12 @@ struct SimpleNFT {
             tokenName,
             propertyVersion
         )
-        
+
         print("Alice's Token Balance: \(aliceTokenBalance)")
         print("Bob's Token Balance: \(bobTokenBalance)")
-        
+
         print("\n=== Transferring the token back to Alice using MultiAgent ===")
-        
+
         // MARK: Section 11
         let txnHashDirectTransferToken = try await restClient.directTransferToken(
             bob.account,
@@ -183,7 +183,7 @@ struct SimpleNFT {
             tokenName,
             propertyVersion
         )
-        
+
         print("Alice's Direct Transfer Token Balance: \(aliceDirectTransferTokenBalance)")
         print("Bob's Direct Transfer Token Balance: \(bobDirectTransferTokenBalance)")
     }
