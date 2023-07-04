@@ -13,6 +13,7 @@
 		7D47B20B2A5389D800841117 /* SimulateTransferCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D47B20A2A5389D800841117 /* SimulateTransferCoin.swift */; };
 		7D6E0A0B2A4E2F68009488DB /* TokenClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */; };
 		7D6E0A142A4E2FA1009488DB /* AptosKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D6E0A132A4E2FA1009488DB /* AptosKit */; };
+		7D749CB82A54AF3100437267 /* HelloBlockchain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D749CB72A54AF3100437267 /* HelloBlockchain.swift */; };
 		7DC0CEFF2A53A3FC00A7292B /* TransferCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 		7D6E0A072A4E2F68009488DB /* MacOS_Example */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MacOS_Example; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenClient.swift; sourceTree = "<group>"; };
 		7D6E0A122A4E2F98009488DB /* AptosKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AptosKit; path = ../../..; sourceTree = "<group>"; };
+		7D749CB72A54AF3100437267 /* HelloBlockchain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloBlockchain.swift; sourceTree = "<group>"; };
 		7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferCoin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +89,7 @@
 				7D47B2082A53749500841117 /* SimpleNFT.swift */,
 				7D47B20A2A5389D800841117 /* SimulateTransferCoin.swift */,
 				7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */,
+				7D749CB72A54AF3100437267 /* HelloBlockchain.swift */,
 			);
 			path = MacOS_Example;
 			sourceTree = "<group>";
@@ -172,6 +175,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D749CB82A54AF3100437267 /* HelloBlockchain.swift in Sources */,
 				7D47B2092A53749500841117 /* SimpleNFT.swift in Sources */,
 				7D47B2052A5373A100841117 /* ReadAggregator.swift in Sources */,
 				7D47B20B2A5389D800841117 /* SimulateTransferCoin.swift in Sources */,
