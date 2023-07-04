@@ -209,7 +209,9 @@ public struct RestClient: AptosKitProtocol {
 
     public func submitBcsTransaction(_ signedTransaction: SignedTransaction) async throws -> String {
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
-        guard let request = URL(string: "\(self.baseUrl)/transactions") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions") }
+        guard let request = URL(string: "\(self.baseUrl)/transactions") else {
+            throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions")
+        }
         let response = try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
         guard response["error_code"].string == nil else {
             throw NSError(
@@ -282,7 +284,7 @@ public struct RestClient: AptosKitProtocol {
         _ payload: TransactionPayload
     ) async throws -> SignedTransaction {
         let rawTransaction = MultiAgentRawTransaction(
-            rawTransaction: try await createBcsTransaction(sender, payload),
+            rawTransaction: try await self.createBcsTransaction(sender, payload),
             secondarySigners: secondaryAccounts.map { $0.address() }
         )
         let keyedTxn = try rawTransaction.keyed()
@@ -295,7 +297,8 @@ public struct RestClient: AptosKitProtocol {
                     )
                 ),
                 secondarySigner: try secondaryAccounts.map {(
-                    $0.address(), try Authenticator(
+                    $0.address(),
+                    try Authenticator(
                         authenticator: Ed25519Authenticator(
                             publicKey: try $0.publicKey(),
                             signature: try $0.sign(keyedTxn)

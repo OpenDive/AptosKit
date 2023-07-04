@@ -29,39 +29,39 @@ import UInt256
 /// Aptos Blockchain Script Argument
 public struct ScriptArgument: KeyProtocol, Equatable {
     /// UInt8 Variant
-    public static let u8: Int = 0
+    public static let u8: UInt8 = 0
 
     /// UInt64 Variant
-    public static let u64: Int = 1
+    public static let u64: UInt8 = 1
 
     /// UInt128 Variant
-    public static let u128: Int = 2
+    public static let u128: UInt8 = 2
 
     /// AccountAddress Variant
-    public static let address: Int = 3
+    public static let address: UInt8 = 3
 
     /// Vector Variant
-    public static let u8Vector: Int = 4
+    public static let u8Vector: UInt8 = 4
 
     /// Boolean Variant
-    public static let bool: Int = 5
+    public static let bool: UInt8 = 5
 
     /// UInt16 Variant
-    public static let u16: Int = 6
+    public static let u16: UInt8 = 6
 
     /// UInt32 Variant
-    public static let u32: Int = 7
+    public static let u32: UInt8 = 7
 
     /// UInt256 Variant
-    public static let u256: Int = 8
+    public static let u256: UInt8 = 8
 
     /// The variant value itself
-    public var variant: Int
+    public var variant: UInt8
 
     /// The value itself
     public var value: Any
 
-    init(variant: Int, value: Any) throws {
+    public init(_ variant: UInt8, _ value: Any) throws {
         if variant < 0 || variant > 5 {
             throw AptosError.invalidVariant
         }
@@ -125,7 +125,7 @@ public struct ScriptArgument: KeyProtocol, Equatable {
     }
 
     public static func deserialize(from deserializer: Deserializer) throws -> ScriptArgument {
-        let variant = Int(try Deserializer.u8(deserializer))
+        let variant = try Deserializer.u8(deserializer)
         let value: Any
 
         if variant == ScriptArgument.u8 {
@@ -150,11 +150,11 @@ public struct ScriptArgument: KeyProtocol, Equatable {
             throw AptosError.invalidVariant
         }
 
-        return try ScriptArgument(variant: variant, value: value)
+        return try ScriptArgument(variant, value)
     }
 
     public func serialize(_ serializer: Serializer) throws {
-        try Serializer.u8(serializer, UInt8(self.variant))
+        try Serializer.u8(serializer, self.variant)
 
         if self.variant == ScriptArgument.u8 {
             try Serializer.u8(serializer, self.value as! UInt8)
@@ -168,8 +168,8 @@ public struct ScriptArgument: KeyProtocol, Equatable {
             try Serializer.u128(serializer, self.value as! UInt128)
         } else if self.variant == ScriptArgument.u256 {
             try Serializer.u256(serializer, self.value as! UInt256)
-        } else if self.variant == ScriptArgument.address && self.value.self is KeyProtocol.Type {
-             try Serializer._struct(serializer, value: self.value as! KeyProtocol)
+        } else if self.variant == ScriptArgument.address {
+             try Serializer._struct(serializer, value: self.value as! AccountAddress)
         } else if self.variant == ScriptArgument.u8Vector {
             try Serializer.toBytes(serializer, self.value as! Data)
         } else if self.variant == ScriptArgument.bool {

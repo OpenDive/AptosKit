@@ -7,100 +7,81 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D47B2052A5373A100841117 /* ReadAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D47B2042A5373A100841117 /* ReadAggregator.swift */; };
-		7D47B2072A53742300841117 /* Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D47B2062A53742300841117 /* Example.swift */; };
-		7D47B2092A53749500841117 /* SimpleNFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D47B2082A53749500841117 /* SimpleNFT.swift */; };
-		7D47B20B2A5389D800841117 /* SimulateTransferCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D47B20A2A5389D800841117 /* SimulateTransferCoin.swift */; };
-		7D6E0A0B2A4E2F68009488DB /* TokenClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */; };
-		7D6E0A142A4E2FA1009488DB /* AptosKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D6E0A132A4E2FA1009488DB /* AptosKit */; };
-		7DC0CEFF2A53A3FC00A7292B /* TransferCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */; };
-		7DC0CF012A53A60D00A7292B /* TransferTwoByTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CF002A53A60D00A7292B /* TransferTwoByTwo.swift */; };
-		7DC0CF0C2A53B4A500A7292B /* TwoByTwoTransferMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CF0B2A53B4A500A7292B /* TwoByTwoTransferMove.swift */; };
+		7DC0CF1A2A547FE800A7292B /* TwoByTwoExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CF192A547FE800A7292B /* TwoByTwoExampleApp.swift */; };
+		7DC0CF1C2A547FE800A7292B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CF1B2A547FE800A7292B /* ContentView.swift */; };
+		7DC0CF1E2A547FEA00A7292B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DC0CF1D2A547FEA00A7292B /* Assets.xcassets */; };
+		7DC0CF212A547FEA00A7292B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DC0CF202A547FEA00A7292B /* Preview Assets.xcassets */; };
+		7DC0CF2B2A54803600A7292B /* two_by_two_transfer.mv in Resources */ = {isa = PBXBuildFile; fileRef = 7DC0CF2A2A54803600A7292B /* two_by_two_transfer.mv */; };
+		7DC0CF2F2A5480DB00A7292B /* AptosKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7DC0CF2E2A5480DB00A7292B /* AptosKit */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		7D6E0A052A4E2F68009488DB /* Copy Files */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			name = "Copy Files";
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-		7DC0CF042A53AD4500A7292B /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		7D47B2042A5373A100841117 /* ReadAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAggregator.swift; sourceTree = "<group>"; };
-		7D47B2062A53742300841117 /* Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example.swift; sourceTree = "<group>"; };
-		7D47B2082A53749500841117 /* SimpleNFT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleNFT.swift; sourceTree = "<group>"; };
-		7D47B20A2A5389D800841117 /* SimulateTransferCoin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulateTransferCoin.swift; sourceTree = "<group>"; };
-		7D6E0A072A4E2F68009488DB /* MacOS_Example */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MacOS_Example; sourceTree = BUILT_PRODUCTS_DIR; };
-		7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenClient.swift; sourceTree = "<group>"; };
-		7D6E0A122A4E2F98009488DB /* AptosKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AptosKit; path = ../../..; sourceTree = "<group>"; };
-		7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferCoin.swift; sourceTree = "<group>"; };
-		7DC0CF002A53A60D00A7292B /* TransferTwoByTwo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferTwoByTwo.swift; sourceTree = "<group>"; };
-		7DC0CF0B2A53B4A500A7292B /* TwoByTwoTransferMove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoByTwoTransferMove.swift; sourceTree = "<group>"; };
+		7DC0CF162A547FE800A7292B /* TwoByTwoExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwoByTwoExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DC0CF192A547FE800A7292B /* TwoByTwoExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoByTwoExampleApp.swift; sourceTree = "<group>"; };
+		7DC0CF1B2A547FE800A7292B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7DC0CF1D2A547FEA00A7292B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7DC0CF202A547FEA00A7292B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7DC0CF222A547FEA00A7292B /* TwoByTwoExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TwoByTwoExample.entitlements; sourceTree = "<group>"; };
+		7DC0CF282A54801E00A7292B /* two_by_two_transfer.mv */ = {isa = PBXFileReference; lastKnownFileType = file; path = two_by_two_transfer.mv; sourceTree = "<group>"; };
+		7DC0CF2A2A54803600A7292B /* two_by_two_transfer.mv */ = {isa = PBXFileReference; lastKnownFileType = file; path = two_by_two_transfer.mv; sourceTree = "<group>"; };
+		7DC0CF2D2A5480A400A7292B /* AptosKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AptosKit; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		7D6E0A042A4E2F68009488DB /* Frameworks */ = {
+		7DC0CF132A547FE800A7292B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D6E0A142A4E2FA1009488DB /* AptosKit in Frameworks */,
+				7DC0CF2F2A5480DB00A7292B /* AptosKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7D6E09FE2A4E2F68009488DB = {
+		7DC0CF0D2A547FE800A7292B = {
 			isa = PBXGroup;
 			children = (
-				7D6E0A092A4E2F68009488DB /* MacOS_Example */,
-				7D6E0A082A4E2F68009488DB /* Products */,
-				7D6E0A112A4E2F97009488DB /* Frameworks */,
+				7DC0CF182A547FE800A7292B /* TwoByTwoExample */,
+				7DC0CF172A547FE800A7292B /* Products */,
+				7DC0CF2C2A5480A300A7292B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		7D6E0A082A4E2F68009488DB /* Products */ = {
+		7DC0CF172A547FE800A7292B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7D6E0A072A4E2F68009488DB /* MacOS_Example */,
+				7DC0CF162A547FE800A7292B /* TwoByTwoExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7D6E0A092A4E2F68009488DB /* MacOS_Example */ = {
+		7DC0CF182A547FE800A7292B /* TwoByTwoExample */ = {
 			isa = PBXGroup;
 			children = (
-				7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */,
-				7D47B2042A5373A100841117 /* ReadAggregator.swift */,
-				7D47B2062A53742300841117 /* Example.swift */,
-				7D47B2082A53749500841117 /* SimpleNFT.swift */,
-				7D47B20A2A5389D800841117 /* SimulateTransferCoin.swift */,
-				7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */,
-				7DC0CF002A53A60D00A7292B /* TransferTwoByTwo.swift */,
-				7DC0CF0B2A53B4A500A7292B /* TwoByTwoTransferMove.swift */,
+				7DC0CF2A2A54803600A7292B /* two_by_two_transfer.mv */,
+				7DC0CF192A547FE800A7292B /* TwoByTwoExampleApp.swift */,
+				7DC0CF1B2A547FE800A7292B /* ContentView.swift */,
+				7DC0CF1D2A547FEA00A7292B /* Assets.xcassets */,
+				7DC0CF222A547FEA00A7292B /* TwoByTwoExample.entitlements */,
+				7DC0CF1F2A547FEA00A7292B /* Preview Content */,
 			);
-			path = MacOS_Example;
+			path = TwoByTwoExample;
 			sourceTree = "<group>";
 		};
-		7D6E0A112A4E2F97009488DB /* Frameworks */ = {
+		7DC0CF1F2A547FEA00A7292B /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				7D6E0A122A4E2F98009488DB /* AptosKit */,
+				7DC0CF282A54801E00A7292B /* two_by_two_transfer.mv */,
+				7DC0CF202A547FEA00A7292B /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		7DC0CF2C2A5480A300A7292B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7DC0CF2D2A5480A400A7292B /* AptosKit */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -108,44 +89,42 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7D6E0A062A4E2F68009488DB /* MacOS_Example */ = {
+		7DC0CF152A547FE800A7292B /* TwoByTwoExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7D6E0A0E2A4E2F68009488DB /* Build configuration list for PBXNativeTarget "MacOS_Example" */;
+			buildConfigurationList = 7DC0CF252A547FEA00A7292B /* Build configuration list for PBXNativeTarget "TwoByTwoExample" */;
 			buildPhases = (
-				7D6E0A032A4E2F68009488DB /* Sources */,
-				7D6E0A042A4E2F68009488DB /* Frameworks */,
-				7D6E0A052A4E2F68009488DB /* Copy Files */,
-				7DC0CF042A53AD4500A7292B /* CopyFiles */,
-				7DC0CF052A53ADAC00A7292B /* Resources */,
+				7DC0CF122A547FE800A7292B /* Sources */,
+				7DC0CF132A547FE800A7292B /* Frameworks */,
+				7DC0CF142A547FE800A7292B /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = MacOS_Example;
+			name = TwoByTwoExample;
 			packageProductDependencies = (
-				7D6E0A132A4E2FA1009488DB /* AptosKit */,
+				7DC0CF2E2A5480DB00A7292B /* AptosKit */,
 			);
-			productName = MacOS_Example;
-			productReference = 7D6E0A072A4E2F68009488DB /* MacOS_Example */;
-			productType = "com.apple.product-type.tool";
+			productName = TwoByTwoExample;
+			productReference = 7DC0CF162A547FE800A7292B /* TwoByTwoExample.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		7D6E09FF2A4E2F68009488DB /* Project object */ = {
+		7DC0CF0E2A547FE800A7292B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					7D6E0A062A4E2F68009488DB = {
+					7DC0CF152A547FE800A7292B = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = 7D6E0A022A4E2F68009488DB /* Build configuration list for PBXProject "MacOS_Example" */;
+			buildConfigurationList = 7DC0CF112A547FE800A7292B /* Build configuration list for PBXProject "TwoByTwoExample" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -153,46 +132,43 @@
 				en,
 				Base,
 			);
-			mainGroup = 7D6E09FE2A4E2F68009488DB;
-			productRefGroup = 7D6E0A082A4E2F68009488DB /* Products */;
+			mainGroup = 7DC0CF0D2A547FE800A7292B;
+			productRefGroup = 7DC0CF172A547FE800A7292B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7D6E0A062A4E2F68009488DB /* MacOS_Example */,
+				7DC0CF152A547FE800A7292B /* TwoByTwoExample */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		7DC0CF052A53ADAC00A7292B /* Resources */ = {
+		7DC0CF142A547FE800A7292B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DC0CF2B2A54803600A7292B /* two_by_two_transfer.mv in Resources */,
+				7DC0CF212A547FEA00A7292B /* Preview Assets.xcassets in Resources */,
+				7DC0CF1E2A547FEA00A7292B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		7D6E0A032A4E2F68009488DB /* Sources */ = {
+		7DC0CF122A547FE800A7292B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DC0CF0C2A53B4A500A7292B /* TwoByTwoTransferMove.swift in Sources */,
-				7D47B2092A53749500841117 /* SimpleNFT.swift in Sources */,
-				7D47B2052A5373A100841117 /* ReadAggregator.swift in Sources */,
-				7D47B20B2A5389D800841117 /* SimulateTransferCoin.swift in Sources */,
-				7DC0CF012A53A60D00A7292B /* TransferTwoByTwo.swift in Sources */,
-				7DC0CEFF2A53A3FC00A7292B /* TransferCoin.swift in Sources */,
-				7D6E0A0B2A4E2F68009488DB /* TokenClient.swift in Sources */,
-				7D47B2072A53742300841117 /* Example.swift in Sources */,
+				7DC0CF1C2A547FE800A7292B /* ContentView.swift in Sources */,
+				7DC0CF1A2A547FE800A7292B /* TwoByTwoExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		7D6E0A0C2A4E2F68009488DB /* Debug */ = {
+		7DC0CF232A547FEA00A7292B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -255,7 +231,7 @@
 			};
 			name = Debug;
 		};
-		7D6E0A0D2A4E2F68009488DB /* Release */ = {
+		7DC0CF242A547FEA00A7292B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -310,24 +286,56 @@
 			};
 			name = Release;
 		};
-		7D6E0A0F2A4E2F68009488DB /* Debug */ = {
+		7DC0CF262A547FEA00A7292B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TwoByTwoExample/TwoByTwoExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TwoByTwoExample/Preview Content\"";
 				DEVELOPMENT_TEAM = 8GNE6ML5WX;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.opendive.TwoByTwoExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		7D6E0A102A4E2F68009488DB /* Release */ = {
+		7DC0CF272A547FEA00A7292B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TwoByTwoExample/TwoByTwoExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TwoByTwoExample/Preview Content\"";
 				DEVELOPMENT_TEAM = 8GNE6ML5WX;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.opendive.TwoByTwoExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -335,20 +343,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7D6E0A022A4E2F68009488DB /* Build configuration list for PBXProject "MacOS_Example" */ = {
+		7DC0CF112A547FE800A7292B /* Build configuration list for PBXProject "TwoByTwoExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7D6E0A0C2A4E2F68009488DB /* Debug */,
-				7D6E0A0D2A4E2F68009488DB /* Release */,
+				7DC0CF232A547FEA00A7292B /* Debug */,
+				7DC0CF242A547FEA00A7292B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7D6E0A0E2A4E2F68009488DB /* Build configuration list for PBXNativeTarget "MacOS_Example" */ = {
+		7DC0CF252A547FEA00A7292B /* Build configuration list for PBXNativeTarget "TwoByTwoExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7D6E0A0F2A4E2F68009488DB /* Debug */,
-				7D6E0A102A4E2F68009488DB /* Release */,
+				7DC0CF262A547FEA00A7292B /* Debug */,
+				7DC0CF272A547FEA00A7292B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -356,11 +364,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		7D6E0A132A4E2FA1009488DB /* AptosKit */ = {
+		7DC0CF2E2A5480DB00A7292B /* AptosKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AptosKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 7D6E09FF2A4E2F68009488DB /* Project object */;
+	rootObject = 7DC0CF0E2A547FE800A7292B /* Project object */;
 }

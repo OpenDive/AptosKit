@@ -64,6 +64,7 @@ struct SimpleNFT {
         let bobBalance = try await restClient.accountBalance(
             bob.account.address()
         )
+
         print("Alice: \(aliceBalance)")
         print("Bob: \(bobBalance)")
 

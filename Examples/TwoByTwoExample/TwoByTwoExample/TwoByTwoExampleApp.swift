@@ -1,5 +1,5 @@
 //
-//  Example.swift
+//  TwoByTwoExampleApp.swift
 //  AptosKit
 //
 //  Copyright (c) 2023 OpenDive
@@ -23,24 +23,13 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
+import SwiftUI
 
 @main
-struct Example {
-    static func main() async throws {
-        // MARK: Read Aggregator
-//        try await ReadAggregator.readAggregatorTest()
-
-        // MARK: Simple NFT
-//        try await SimpleNFT.simpleNftTest()
-
-        // MARK: Simulate Transfer Coin
-//        try await SimulateTransferCoin.simulateTransferCoinTest()
-
-        // MARK: Transfer Coin
-//        try await TransferCoin.transferCoinTest()
-
-        // MARK: Token Client
-//        try await TokenClient.tokenClientTest()
+struct TwoByTwoExampleApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
     }
 }

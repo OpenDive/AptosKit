@@ -47,6 +47,24 @@ public struct RawTransaction: KeyProtocol, Equatable {
 
     /// An identifier that distinguishes the Aptos network deployments (to prevent cross-network attacks).
     public var chainId: UInt8
+    
+    public init(
+        sender: AccountAddress,
+        sequenceNumber: UInt64,
+        payload: TransactionPayload,
+        maxGasAmount: UInt64,
+        gasUnitPrice: UInt64,
+        expirationTimestampSecs: UInt64,
+        chainId: UInt8
+    ) {
+        self.sender = sender
+        self.sequenceNumber = sequenceNumber
+        self.payload = payload
+        self.maxGasAmount = maxGasAmount
+        self.gasUnitPrice = gasUnitPrice
+        self.expirationTimestampSecs = expirationTimestampSecs
+        self.chainId = chainId
+    }
 
     public static func == (lhs: RawTransaction, rhs: RawTransaction) -> Bool {
         return
@@ -83,7 +101,7 @@ public struct RawTransaction: KeyProtocol, Equatable {
     public func keyed() throws -> Data {
         let ser = Serializer()
         try self.serialize(ser)
-        var prehash = try prehash()
+        var prehash = try self.prehash()
         prehash.append(ser.output())
         return prehash
     }
@@ -120,12 +138,12 @@ public struct RawTransaction: KeyProtocol, Equatable {
     public static func deserialize(from deserializer: Deserializer) throws -> RawTransaction {
         return RawTransaction(
             sender: try AccountAddress.deserialize(from: deserializer),
-            sequenceNumber: UInt64(try Deserializer.u64(deserializer)),
+            sequenceNumber: try Deserializer.u64(deserializer),
             payload: try TransactionPayload.deserialize(from: deserializer),
-            maxGasAmount: UInt64(try Deserializer.u64(deserializer)),
-            gasUnitPrice: UInt64(try Deserializer.u64(deserializer)),
-            expirationTimestampSecs: UInt64(try Deserializer.u64(deserializer)),
-            chainId: UInt8(try Deserializer.u8(deserializer))
+            maxGasAmount: try Deserializer.u64(deserializer),
+            gasUnitPrice: try Deserializer.u64(deserializer),
+            expirationTimestampSecs: try Deserializer.u64(deserializer),
+            chainId: try Deserializer.u8(deserializer)
         )
     }
 

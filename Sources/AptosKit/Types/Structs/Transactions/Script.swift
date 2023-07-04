@@ -35,6 +35,12 @@ public struct Script: TransactionProtocol, Equatable {
     /// The types used within the script
     public var tyArgs: [TypeTag]
 
+    public init(code: Data, args: [ScriptArgument], tyArgs: [TypeTag]) {
+        self.code = code
+        self.args = args
+        self.tyArgs = tyArgs
+    }
+
     public static func == (lhs: Script, rhs: Script) -> Bool {
         return
             lhs.code == rhs.code &&

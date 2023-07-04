@@ -31,13 +31,13 @@ public class Serializer {
     /// The outputted data itself
     private var _output: Data
 
-    init() {
+    public init() {
         self._output = Data()
     }
 
     /// Returns the `_output` object.
     /// - Returns: `Data` object.
-    func output() -> Data {
+    public func output() -> Data {
         return self._output
     }
 
