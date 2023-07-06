@@ -29,6 +29,11 @@ public struct MultiAgentAuthenticator: AuthenticatorProtocol {
     public var sender: Authenticator
     public var secondarySigner: [(AccountAddress, Authenticator)]
 
+    public init(sender: Authenticator, secondarySigner: [(AccountAddress, Authenticator)]) {
+        self.sender = sender
+        self.secondarySigner = secondarySigner
+    }
+
     /// Returns all of the account addresses of the secondary signers.
     /// - Returns: An array of AccountAddress objects
     public func secondaryAddresses() -> [AccountAddress] {

@@ -48,7 +48,7 @@ public struct RotatingProofChallenge {
     /// The public key of the new account
     let newPublicKey: Data
 
-    init(
+    public init(
         sequence_number: Int,
         originator: AccountAddress,
         currentAuthKey: AccountAddress,

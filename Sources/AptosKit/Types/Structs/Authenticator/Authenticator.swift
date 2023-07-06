@@ -34,7 +34,7 @@ public struct Authenticator: Equatable, KeyProtocol {
     let variant: Int
     let authenticator: any AuthenticatorProtocol
 
-    init(authenticator: any AuthenticatorProtocol) throws {
+    public init(authenticator: any AuthenticatorProtocol) throws {
         if authenticator is Ed25519Authenticator {
             variant = Authenticator.ed25519
         } else if authenticator is MultiEd25519Authenticator {

@@ -76,7 +76,7 @@ public class Serializer {
     ///
     /// - Throws: An AptosError object that's an invalid data value with the supported type of either Data or [Data],
     /// if the provided value does not match either a Data object or an array of Data objects.
-    static func toBytes<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
+    public static func toBytes<T: EncodingContainer>(_ serializer: Serializer, _ value: T) throws {
         if let dataValue = value as? Data {
             try serializer.uleb128(UInt(dataValue.count))
             serializer._output.append(dataValue)

@@ -14,6 +14,7 @@
 		7D6E0A0B2A4E2F68009488DB /* TokenClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */; };
 		7D6E0A142A4E2FA1009488DB /* AptosKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7D6E0A132A4E2FA1009488DB /* AptosKit */; };
 		7D749CB82A54AF3100437267 /* HelloBlockchain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D749CB72A54AF3100437267 /* HelloBlockchain.swift */; };
+		7D749CBA2A55100D00437267 /* Multisig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D749CB92A55100D00437267 /* Multisig.swift */; };
 		7DC0CEFF2A53A3FC00A7292B /* TransferCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +49,7 @@
 		7D6E0A0A2A4E2F68009488DB /* TokenClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenClient.swift; sourceTree = "<group>"; };
 		7D6E0A122A4E2F98009488DB /* AptosKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AptosKit; path = ../../..; sourceTree = "<group>"; };
 		7D749CB72A54AF3100437267 /* HelloBlockchain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloBlockchain.swift; sourceTree = "<group>"; };
+		7D749CB92A55100D00437267 /* Multisig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Multisig.swift; sourceTree = "<group>"; };
 		7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferCoin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -90,6 +92,7 @@
 				7D47B20A2A5389D800841117 /* SimulateTransferCoin.swift */,
 				7DC0CEFE2A53A3FC00A7292B /* TransferCoin.swift */,
 				7D749CB72A54AF3100437267 /* HelloBlockchain.swift */,
+				7D749CB92A55100D00437267 /* Multisig.swift */,
 			);
 			path = MacOS_Example;
 			sourceTree = "<group>";
@@ -182,6 +185,7 @@
 				7DC0CEFF2A53A3FC00A7292B /* TransferCoin.swift in Sources */,
 				7D6E0A0B2A4E2F68009488DB /* TokenClient.swift in Sources */,
 				7D47B2072A53742300841117 /* Example.swift in Sources */,
+				7D749CBA2A55100D00437267 /* Multisig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

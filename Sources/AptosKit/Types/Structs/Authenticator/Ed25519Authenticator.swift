@@ -29,6 +29,11 @@ public struct Ed25519Authenticator: AuthenticatorProtocol {
     public let publicKey: PublicKey
     public let signature: Signature
 
+    public init(publicKey: PublicKey, signature: Signature) {
+        self.publicKey = publicKey
+        self.signature = signature
+    }
+
     public func verify(_ data: Data) throws -> Bool {
         return try self.publicKey.verify(data: data, signature: self.signature)
     }

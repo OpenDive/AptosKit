@@ -30,6 +30,11 @@ public struct MultiEd25519Authenticator: AuthenticatorProtocol {
     public var publicKey: MultiPublicKey
     public var signature: MultiSignature
 
+    public init(publicKey: MultiPublicKey, signature: MultiSignature) {
+        self.publicKey = publicKey
+        self.signature = signature
+    }
+
     public func verify(_ data: Data) throws -> Bool {
         throw AptosError.notImplemented
     }

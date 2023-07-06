@@ -26,14 +26,14 @@
 import Foundation
 
 /// The ED25519 Multi-Signature
-public struct MultiSignature: EncodingProtocol, Equatable {
+public struct MultiSignature: EncodingProtocol, Equatable, KeyProtocol {
     /// The signatures themselves
     public var signatures: [Signature]
 
     /// The compact representation of which keys among a set of N possible keys have signed a given message
     public var bitmap: Data
 
-    init(publicKey: MultiPublicKey, signatureMap: [(PublicKey, Signature)]) {
+    public init(publicKey: MultiPublicKey, signatureMap: [(PublicKey, Signature)]) {
         self.signatures = []
         var bitmap: UInt32 = 0
         
@@ -68,5 +68,9 @@ public struct MultiSignature: EncodingProtocol, Equatable {
     /// - Throws: An error if the serialization fails.
     public func serialize(_ serializer: Serializer) throws {
         try Serializer.toBytes(serializer, self.toBytes())
+    }
+
+    public static func deserialize(from deserializer: Deserializer) throws -> MultiSignature {
+        throw AptosError.notImplemented
     }
 }

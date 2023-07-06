@@ -45,7 +45,7 @@ public struct Signature: Equatable, KeyProtocol, CustomStringConvertible {
         return "0x\(signature.hexEncodedString())"
     }
 
-    func data() -> Data {
+    public func data() -> Data {
         return self.signature
     }
 

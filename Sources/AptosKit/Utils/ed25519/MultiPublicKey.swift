@@ -26,7 +26,7 @@
 import Foundation
 
 /// The ED25519 Multi-Public Key
-public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatable {
+public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatable, KeyProtocol {
     /// The Public Keys themselves
     public var keys: [PublicKey]
 
@@ -42,7 +42,7 @@ public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatab
     /// The minimum threshold amount
     public static let minThreshold: Int = 1
 
-    init(keys: [PublicKey], threshold: Int, checked: Bool = true) throws {
+    public init(keys: [PublicKey], threshold: Int, checked: Bool = true) throws {
         if checked {
             if MultiPublicKey.minKeys > keys.count || MultiPublicKey.maxKeys < keys.count {
                 throw AptosError.keysCountOutOfRange(min: MultiPublicKey.minKeys, max: MultiPublicKey.maxKeys)
@@ -122,5 +122,9 @@ public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatab
     /// - Throws: An error if the serialization fails.
     public func serialize(_ serializer: Serializer) throws {
         try Serializer.toBytes(serializer, self.toBytes())
+    }
+
+    public static func deserialize(from deserializer: Deserializer) throws -> MultiPublicKey {
+        throw AptosError.notImplemented
     }
 }

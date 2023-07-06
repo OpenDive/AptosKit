@@ -29,21 +29,24 @@ import Foundation
 struct Example {
     static func main() async throws {
         // MARK: Read Aggregator
-        try await ReadAggregator.readAggregatorTest()
+//        try await ReadAggregator.readAggregatorTest()
 
         // MARK: Simple NFT
-        try await SimpleNFT.simpleNftTest()
+//        try await SimpleNFT.simpleNftTest()
 
         // MARK: Simulate Transfer Coin
-        try await SimulateTransferCoin.simulateTransferCoinTest()
+//        try await SimulateTransferCoin.simulateTransferCoinTest()
 
         // MARK: Transfer Coin
-        try await TransferCoin.transferCoinTest()
-        
+//        try await TransferCoin.transferCoinTest()
+
         // MARK: Hello Blockchain
-        try await HelloBlockchain.helloBlockchainTest()
+//        try await HelloBlockchain.helloBlockchainTest()
+
+        // MARK: Multisig
+        try await Multisig.multisigTest()
 
         // MARK: Token Client
-        try await TokenClient.tokenClientTest()
+//        try await TokenClient.tokenClientTest()
     }
 }

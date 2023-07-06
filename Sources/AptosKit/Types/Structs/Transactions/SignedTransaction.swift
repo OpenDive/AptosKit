@@ -33,6 +33,11 @@ public struct SignedTransaction: KeyProtocol, Equatable {
     /// The authenticator used to sign the transaction
     public var authenticator: Authenticator
 
+    public init(transaction: RawTransaction, authenticator: Authenticator) {
+        self.transaction = transaction
+        self.authenticator = authenticator
+    }
+
     /// Outputs the SignedTransaction object itself into a serialized Data object output
     /// - Returns: A Data object
     public func bytes() throws -> Data {

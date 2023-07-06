@@ -32,7 +32,7 @@ public struct PublicKey: Equatable, KeyProtocol, CustomStringConvertible {
     public static let LENGTH: Int = 32
 
     /// The key itself
-    let key: Data
+    public let key: Data
 
     public init(data: Data) throws {
         guard data.count <= PublicKey.LENGTH else {
