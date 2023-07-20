@@ -184,4 +184,35 @@ final class BCSTests: XCTestCase {
         
         XCTAssertEqual(input, output)
     }
+
+    func testThatStructureSerializationAndDeserializationWorksWithStructures() throws {
+        struct MyStruct: KeyProtocol, Equatable {
+            let str: String
+            let str2: String
+            let bool: Bool
+            let vector: [UInt8]
+
+            func serialize(_ serializer: Serializer) throws {
+                try Serializer.str(serializer, str)
+                try Serializer.str(serializer, str2)
+                try Serializer.bool(serializer, bool)
+                try serializer.sequence(vector, Serializer.u8)
+            }
+
+            static func deserialize(from deserializer: Deserializer) throws -> MyStruct {
+                return MyStruct(
+                    str: try Deserializer.string(deserializer),
+                    str2: try Deserializer.string(deserializer),
+                    bool: try deserializer.bool(),
+                    vector: try deserializer.sequence(valueDecoder: Deserializer.u8)
+                )
+            }
+        }
+        let input: MyStruct = MyStruct(str: "Hello", str2: "World", bool: true, vector: [0xC0, 0xDE])
+        let ser = Serializer()
+        try Serializer._struct(ser, value: input)
+        let der = Deserializer(data: ser.output())
+        let output: MyStruct = try Deserializer._struct(der)
+        XCTAssertEqual(input, output)
+    }
 }

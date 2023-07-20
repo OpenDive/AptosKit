@@ -188,8 +188,8 @@ public class Deserializer {
     /// - Returns: An instance of type T deserialized from the input data buffer.
     ///
     /// - Throws: Any error that may occur during the deserialization process, such as reading the input data or decoding the structure.
-    public func _struct<T: KeyProtocol>(type: T.Type) throws -> T {
-        return try T.deserialize(from: self)
+    public static func _struct<T: KeyProtocol>(_ deserializer: Deserializer) throws -> T {
+        return try T.deserialize(from: deserializer)
     }
 
     /// Deserialize a UInt8 value from the Deserializer's input data buffer.

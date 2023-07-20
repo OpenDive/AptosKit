@@ -310,7 +310,10 @@ public struct RestClient: AptosKitProtocol {
         return SignedTransaction(transaction: rawTransaction.inner(), authenticator: authenticator)
     }
 
-    public func createBcsTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> RawTransaction {
+    public func createBcsTransaction(
+        _ sender: Account,
+        _ payload: TransactionPayload
+    ) async throws -> RawTransaction {
         return try await RawTransaction(
             sender: sender.address(),
             sequenceNumber: UInt64(self.accountSequenceNumber(sender.address())),
@@ -322,8 +325,43 @@ public struct RestClient: AptosKitProtocol {
         )
     }
 
-    public func createBcsSignedTransaction(_ sender: Account, _ payload: TransactionPayload) async throws -> SignedTransaction {
+    public func createBcsTransaction(
+        _ sender: Account,
+        _ payload: TransactionPayload,
+        _ sequenceNumber: Int
+    ) -> RawTransaction {
+        return RawTransaction(
+            sender: sender.address(),
+            sequenceNumber: UInt64(sequenceNumber),
+            payload: payload,
+            maxGasAmount: UInt64(self.clientConfig.maxGasAmount),
+            gasUnitPrice: UInt64(self.clientConfig.gasUnitPrice),
+            expirationTimestampSecs: UInt64(Date().timeIntervalSince1970 + Double(self.clientConfig.expirationTtl)),
+            chainId: UInt8(self.chainId)
+        )
+    }
+
+    public func createBcsSignedTransaction(
+        _ sender: Account,
+        _ payload: TransactionPayload
+    ) async throws -> SignedTransaction {
         let rawTransaction = try await self.createBcsTransaction(sender, payload)
+        let signature = try sender.sign(try rawTransaction.keyed())
+        let authenticator = try Authenticator(
+            authenticator: Ed25519Authenticator(
+                publicKey: try sender.publicKey(),
+                signature: signature
+            )
+        )
+        return SignedTransaction(transaction: rawTransaction, authenticator: authenticator)
+    }
+
+    public func createBcsSignedTransaction(
+        _ sender: Account,
+        _ payload: TransactionPayload,
+        _ sequenceNumber: Int
+    ) throws -> SignedTransaction {
+        let rawTransaction = self.createBcsTransaction(sender, payload, sequenceNumber)
         let signature = try sender.sign(try rawTransaction.keyed())
         let authenticator = try Authenticator(
             authenticator: Ed25519Authenticator(

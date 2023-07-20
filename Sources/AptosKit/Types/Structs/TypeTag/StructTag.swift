@@ -72,7 +72,7 @@ public struct StructTag: TypeProtcol, Equatable {
     }
 
     public static func deserialize(from deserializer: Deserializer) throws -> StructTag {
-        let address = try deserializer._struct(type: AccountAddress.self)
+        let address: AccountAddress = try Deserializer._struct(deserializer)
         let module = try Deserializer.string(deserializer)
         let name = try Deserializer.string(deserializer)
         let typeArgs: [TypeTag] = try deserializer.sequence(valueDecoder: TypeTag.deserialize)
