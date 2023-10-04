@@ -185,6 +185,24 @@ extension URLSession {
         )
         return try await self.decodeData(with: data)
     }
+    
+    /// Decodes the contents of the specified URL into a `JSON` object using the specified HTTP method and request body.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to decode.
+    ///   - body: The request body as a dictionary of key-value pairs.
+    ///
+    /// - Returns: The decoded `JSON` object.
+    ///
+    /// - Throws: An error if the decoding process fails.
+    public func decodeUrl(with url: URL, _ headers: [String: String], _ body: [String: Any]) async throws -> JSON {
+        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        let data = try await self.asyncData(
+            with: url, method: .post,
+            headers: headers, body: jsonData
+        )
+        return try await self.decodeData(with: data)
+    }
 
     /// Decodes the contents of the specified URL into a `JSON` object using the specified HTTP headers and request body.
     ///
