@@ -38,7 +38,7 @@ final class AccountTests: XCTestCase {
         let load = try Account.load(fileURL.relativePath)
 
         XCTAssertEqual(start, load)
-        XCTAssertEqual(start.address().hex(), try start.authKey())
+        XCTAssertEqual(start.address().description, try start.authKey())
     }
 
     func testThatKeysAreWorkingAsIntended() throws {
