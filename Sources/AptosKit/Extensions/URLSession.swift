@@ -101,7 +101,8 @@ extension URLSession {
         with url: URL,
         method: HTTPMethod = .get,
         headers: [String: String] = [:],
-        body: Data? = nil
+        body: Data? = nil,
+        params: [String: String] = [:]
     ) async throws -> Data {
         var request = URLRequest(url: url)
 
@@ -114,6 +115,12 @@ extension URLSession {
         headers.forEach { key, value in
             request.allHTTPHeaderFields?[key] = value
         }
+
+        var queryItmes: [URLQueryItem] = []
+        params.forEach { (key, value) in
+            queryItmes.append(URLQueryItem(name: key, value: value))
+        }
+        request.url?.append(queryItems: queryItmes)
 
         return try await asyncData(with: request)
     }
@@ -195,11 +202,10 @@ extension URLSession {
     /// - Returns: The decoded `JSON` object.
     ///
     /// - Throws: An error if the decoding process fails.
-    public func decodeUrl(with url: URL, _ headers: [String: String], _ body: [String: Any]) async throws -> JSON {
-        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+    public func decodeUrl(with url: URL, _ headers: [String: String], _ body: Data, _ param: [String: String]) async throws -> JSON {
         let data = try await self.asyncData(
             with: url, method: .post,
-            headers: headers, body: jsonData
+            headers: headers, body: body, params: param
         )
         return try await self.decodeData(with: data)
     }

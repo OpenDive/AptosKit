@@ -28,18 +28,19 @@ import SwiftyJSON
 public struct Object: ReadObjectProtocol {
     public let allowUngatedTransfer: Bool
     public let owner: AccountAddress
-    
+
     public static let structTag: String = "0x1::object::ObjectCore"
-    
+    public let structTag: String = "0x1::object::ObjectCore"
+
     public init(allowUngatedTransfer: Bool, owner: AccountAddress) {
         self.allowUngatedTransfer = allowUngatedTransfer
         self.owner = owner
     }
-    
+
     public static func parse(_ resource: JSON) throws -> Object {
         return Object(
             allowUngatedTransfer: resource["allow_ungated_transfer"].boolValue,
-            owner: try AccountAddress.fromHex(resource["owner"].stringValue)
+            owner: try AccountAddress.fromStrRelaxed(resource["owner"].stringValue)
         )
     }
 }

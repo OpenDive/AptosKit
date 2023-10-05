@@ -215,13 +215,18 @@ public struct RestClient: AptosKitProtocol {
             )
         )
         let signedTransaction = SignedTransaction(transaction: transaction, authenticator: authenticator)
-        let params: [String: Any] = [
-            "estimate_gas_unit_price": true,
-            "estimate_max_gas_amount": true
+        let params: [String: String] = [
+            "estimate_gas_unit_price": "true",
+            "estimate_max_gas_amount": "true"
         ]
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
         guard let request = URL(string: "\(self.baseUrl)/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions/simulate") }
-        return try await self.client.decodeUrl(with: request, header, params)
+        return try await self.client.decodeUrl(
+            with: request,
+            header,
+            try signedTransaction.bytes(),
+            params
+        )
     }
 
     public func submitBcsTransaction(_ signedTransaction: SignedTransaction) async throws -> String {
@@ -293,6 +298,22 @@ public struct RestClient: AptosKitProtocol {
         guard response["success"].exists(), response["success"].boolValue else {
             throw NSError(domain: "\(response["vm_status"].stringValue) - \(txnHash)", code: -1)
         }
+    }
+
+    public func accountTransactionSequenceNumberStatus(_ address: AccountAddress, _ sequenceNumber: Int) async throws -> Bool {
+        guard let url = URL(string: "\(self.baseUrl)/accounts/\(address)/transactions?limit=1&start=\(sequenceNumber)") else {
+            throw NSError(domain: "Invalid URL", code: -1)
+        }
+        let response = try await self.client.decodeUrl(with: url).arrayValue
+        return response.count == 1 && response[0]["type"] != "pending_transaction"
+    }
+
+    public func transactionByHash(_ txnHash: String) async throws -> JSON {
+        guard let url = URL(string: "\(self.baseUrl)/transactions/by_hash/\(txnHash)") else {
+            throw NSError(domain: "Invalid URL", code: -1)
+        }
+        let response = try await self.client.decodeUrl(with: url)
+        return response
     }
 
     public func createMultiAgentBcsTransaction(
@@ -392,8 +413,8 @@ public struct RestClient: AptosKitProtocol {
     public func transfer(_ sender: Account, _ recipient: AccountAddress, _ amount: Int) async throws -> String {
         let payload: [String: Any] = [
             "type": "entry_function_payload",
-            "function": "0x1::aptos_account::transfer_coins",
-            "type_arguments": ["0x1::aptos_coin::AptosCoin"],
+            "function": "0x1::aptos_account::transfer",
+            "type_arguments": [],
             "arguments": [
                 "\(recipient.description)",
                 "\(amount)"
@@ -410,8 +431,8 @@ public struct RestClient: AptosKitProtocol {
         
         let payload = try EntryFunction.natural(
             "0x1::aptos_account",
-            "transfer_coins",
-            [TypeTag(value: try StructTag.fromStr("0x1::aptos_coin::AptosCoin"))],
+            "transfer",
+            [],
             transactionArguments
         )
 
@@ -546,7 +567,7 @@ public struct RestClient: AptosKitProtocol {
         let tokenStoreHandle = resource["data"]["tokens"]["handle"].stringValue
         let tokenId: [String: Any] = [
             "token_data_id": [
-                "creator": creator.hex(),
+                "creator": creator,
                 "collection": collectionName,
                 "name": tokenName
             ],
@@ -575,7 +596,7 @@ public struct RestClient: AptosKitProtocol {
         let resource = try await self.accountResource(creator, "0x3::token::Collections")
         let tokenDataHandle = resource["data"]["token_data"]["handle"].stringValue
         let tokenDataId: [String: Any] = [
-            "creator": creator.hex(),
+            "creator": creator,
             "collection": collectionName,
             "name": tokenName
         ]
@@ -596,6 +617,16 @@ public struct RestClient: AptosKitProtocol {
             "0x3::token::CollectionData",
             collectionName
         )
+    }
+
+    public func transferObject(owner: Account, object: AccountAddress, to: AccountAddress) async throws -> String {
+        let transactionArguments = [
+            AnyTransactionArgument(TransactionArgument(value: object, encoder: Serializer._struct)),
+            AnyTransactionArgument(TransactionArgument(value: to, encoder: Serializer._struct))
+        ]
+        let payload = try EntryFunction.natural("0x1::object", "transfer_call", [], transactionArguments)
+        let signedTransaction = try await self.createBcsSignedTransaction(owner, TransactionPayload(payload: payload))
+        return try await self.submitBcsTransaction(signedTransaction)
     }
 
     public func publishPackage(

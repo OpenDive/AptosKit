@@ -93,7 +93,7 @@ public struct Account: Equatable {
             throw AptosError.missingPrivateKey
         }
 
-        let accountAddress = try AccountAddress.fromHex(accountAddressHex)
+        let accountAddress = try AccountAddress.fromStrRelaxed(accountAddressHex)
         let privateKey = PrivateKey.fromHex(privateKeyHex)
 
         return Account(accountAddress: accountAddress, privateKey: privateKey)
@@ -110,7 +110,7 @@ public struct Account: Equatable {
     /// - Throws: An error of type AptosError if there is an issue writing to the file.
     public func store(_ path: String) throws {
         let data: [String: String] = [
-            "account_address": self.accountAddress.hex(),
+            "account_address": self.accountAddress.description,
             "private_key": self.privateKey.hex()
         ]
 
@@ -128,7 +128,7 @@ public struct Account: Equatable {
     /// Returns the hexadecimal representation of the authorization key for the account
     /// - Returns: A String object
     public func authKey() throws -> String {
-        return try AccountAddress.fromKey(self.privateKey.publicKey()).hex()
+        return try AccountAddress.fromKey(self.privateKey.publicKey()).description
     }
 
     /// Use the private key to sign the data inputted.

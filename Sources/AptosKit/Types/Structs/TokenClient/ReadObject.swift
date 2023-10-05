@@ -26,17 +26,29 @@
 import Foundation
 
 public struct ReadObject {
-    static var resourceMap: [String: any ReadObjectProtocol.Type] = [
+    public static var resourceMap: [String: any ReadObjectProtocol.Type] = [
         Collection.structTag: Collection.self,
         Object.structTag: Object.self,
         PropertyMap.structTag: PropertyMap.self,
         Royalty.structTag: Royalty.self,
         Token.structTag: Token.self,
     ]
-    
-    var resources: [AnyHashableReadObject: Any]
-    
-    init(resources: [AnyHashableReadObject: Any]) {
+
+    public var resources: [AnyHashableReadObject: Any]
+
+    public init(resources: [AnyHashableReadObject: Any]) {
         self.resources = resources
+    }
+
+    public func GetReadObject(_ type: any ReadObjectProtocol.Type) throws -> any ReadObjectProtocol {
+        let returnedObjects = self.resources.filter { (key, value) in
+            if (key._base as! any ReadObjectProtocol).structTag == type.structTag {
+                return true
+            }
+            return false
+        }
+        guard !returnedObjects.isEmpty else { throw AptosError.notImplemented }
+        let returnedObject = returnedObjects[returnedObjects.keys.first!]!
+        return returnedObject as! any ReadObjectProtocol
     }
 }

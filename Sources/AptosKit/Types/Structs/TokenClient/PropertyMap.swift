@@ -28,31 +28,32 @@ import SwiftyJSON
 
 public struct PropertyMap: ReadObjectProtocol {
     public let properties: [Property]
-    
+
     public static let structTag: String = "0x4::property_map::PropertyMap"
-    
+    public let structTag: String = "0x4::property_map::PropertyMap"
+
     public init(properties: [Property]) {
         self.properties = properties
     }
-    
+
     public func toTuple() throws -> ([String], [String], [Data]) {
         var names: [String] = []
         var types: [String] = []
         var values: [Data] = []
-        
+
         for property in self.properties {
             names.append(property.name)
             types.append(property.propertyType)
             values.append(try property.serializeValue())
         }
-        
+
         return (names, types, values)
     }
-    
+
     public static func parse(_ resource: JSON) throws -> PropertyMap {
         let props = resource["inner"]["data"]
         var properties: [Property] = []
-        
+
         for property in props.arrayValue {
             properties.append(
                 Property(
@@ -64,7 +65,7 @@ public struct PropertyMap: ReadObjectProtocol {
                 )
             )
         }
-        
+
         return PropertyMap(properties: properties)
     }
 }

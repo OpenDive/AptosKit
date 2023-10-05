@@ -31,9 +31,10 @@ public struct Token: ReadObjectProtocol {
     public let description: String
     public let name: String
     public let uri: String
-    
+
     public static let structTag: String = "0x4::token::Token"
-    
+    public let structTag: String = "0x4::token::Token"
+
     public init(
         collection: AccountAddress,
         index: Int,
@@ -47,10 +48,10 @@ public struct Token: ReadObjectProtocol {
         self.name = name
         self.uri = uri
     }
-    
+
     public static func parse(_ resource: JSON) throws -> Token {
         return Token(
-            collection: try AccountAddress.fromHex(resource["collection"].stringValue),
+            collection: try AccountAddress.fromStrRelaxed(resource["collection"]["inner"].stringValue),
             index: resource["index"].intValue,
             description: resource["description"].stringValue,
             name: resource["name"].stringValue,

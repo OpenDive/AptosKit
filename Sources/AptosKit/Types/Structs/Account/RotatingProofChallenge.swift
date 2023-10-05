@@ -59,7 +59,7 @@ public struct RotatingProofChallenge {
         self.currentAuthKey = currentAuthKey
         self.newPublicKey = newPublicKey
         
-        self.typeInfoAccountAddress = try AccountAddress.fromHex("0x1")
+        self.typeInfoAccountAddress = try AccountAddress.fromStrRelaxed("0x1")
     }
 
     /// Serialize the account object using a provided Serializer object.

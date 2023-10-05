@@ -26,7 +26,7 @@
 public struct InvalidPropertyType: Error {
     public let propertyType: Any
     public let message: String
-    
+
     public init(propertyType: Any) {
         self.message = "Unknown property type: \(propertyType)"
         self.propertyType = propertyType

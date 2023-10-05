@@ -25,22 +25,22 @@
 
 import Foundation
 
-struct AnyHashableReadObject: Hashable {
-    private let _base: Any
-    private let _hashValue: Int
-    private let _equals: (Any) -> Bool
+public struct AnyHashableReadObject: Hashable {
+    internal let _base: Any
+    internal let _hashValue: Int
+    internal let _equals: (Any) -> Bool
 
-    init<T: ReadObjectProtocol>(_ base: T) where T: Hashable {
+    public init<T: ReadObjectProtocol>(_ base: T) where T: Hashable {
         self._base = base
         self._hashValue = base.hashValue
         self._equals = { ($0 as? T)?.hashValue == base.hashValue }
     }
 
-    static func == (lhs: AnyHashableReadObject, rhs: AnyHashableReadObject) -> Bool {
+    public static func == (lhs: AnyHashableReadObject, rhs: AnyHashableReadObject) -> Bool {
         return lhs._equals(rhs._base)
     }
 
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(_hashValue)
     }
 }

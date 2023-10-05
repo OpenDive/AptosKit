@@ -29,9 +29,10 @@ public struct Royalty: ReadObjectProtocol {
     public let numerator: Int
     public let denominator: Int
     public let payeeAddress: AccountAddress
-    
+
     public static let structTag: String = "0x4::royalty::Royalty"
-    
+    public let structTag: String = "0x4::royalty::Royalty"
+
     public init(
         numerator: Int,
         denominator: Int,
@@ -41,12 +42,12 @@ public struct Royalty: ReadObjectProtocol {
         self.denominator = denominator
         self.payeeAddress = payeeAddress
     }
-    
+
     public static func parse(_ resource: JSON) throws -> Royalty {
         return Royalty(
             numerator: resource["numerator"].intValue,
             denominator: resource["denominator"].intValue,
-            payeeAddress: try AccountAddress.fromHex(resource["payee_address"].stringValue)
+            payeeAddress: try AccountAddress.fromStrRelaxed(resource["payee_address"].stringValue)
         )
     }
 }

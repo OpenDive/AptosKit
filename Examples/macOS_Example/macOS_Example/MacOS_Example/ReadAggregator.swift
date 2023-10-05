@@ -30,7 +30,7 @@ struct ReadAggregator {
     static func readAggregatorTest() async throws {
         let restClient = try await RestClient(baseUrl: "https://fullnode.devnet.aptoslabs.com/v1")
         let totalApt = try await restClient.aggregatorValue(
-            AccountAddress.fromHex("0x1"),
+            AccountAddress.fromStrRelaxed("0x1"),
             "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>",
             ["supply"]
         )

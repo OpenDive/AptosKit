@@ -59,7 +59,7 @@ public struct StructTag: TypeProtcol, Equatable {
         let split = name.components(separatedBy: "::")
         return try StructTag(
             value: StructTagValue(
-                address: AccountAddress.fromHex(String(split[0])),
+                address: AccountAddress.fromStrRelaxed(String(split[0])),
                 module: String(split[1]),
                 name: String(split[2]),
                 typeArgs: []

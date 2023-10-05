@@ -30,9 +30,10 @@ public struct Collection: ReadObjectProtocol {
     public let description: String
     public let name: String
     public let uri: String
-    
+
     public static let structTag: String = "0x4::collection::Collection"
-    
+    public let structTag: String = "0x4::collection::Collection"
+
     public init(
         creator: AccountAddress,
         description: String,
@@ -44,10 +45,10 @@ public struct Collection: ReadObjectProtocol {
         self.name = name
         self.uri = uri
     }
-    
+
     public static func parse(_ resource: JSON) throws -> Collection {
         return Collection(
-            creator: try AccountAddress.fromHex(resource["creator"].stringValue),
+            creator: try AccountAddress.fromStrRelaxed(resource["creator"].stringValue),
             description: resource["description"].stringValue,
             name: resource["name"].stringValue,
             uri: resource["uri"].stringValue

@@ -36,15 +36,21 @@ struct TokenClient {
         let tokenClient = AptosTokenClient(client: restClient)
 
         let alice = try Wallet(mnemonic: Mnemonic(wordcount: 12, wordlist: Wordlists.english))
+        let bob = try Wallet(mnemonic: Mnemonic(wordcount: 12, wordlist: Wordlists.english))
 
         let collectionName = "Alice's"
         let tokenName = "Alice's first token"
 
         print("\n=== Addresses ===")
         print("Alice: \(alice.account.address().description)")
+        print("Bob: \(bob.account.address().description)")
 
         let _ = try await faucetClient.fundAccount(
             alice.account.address().description,
+            100_000_000
+        )
+        let _ = try await faucetClient.fundAccount(
+            bob.account.address().description,
             100_000_000
         )
 
@@ -52,7 +58,11 @@ struct TokenClient {
         let aliceBalance = try await restClient.accountBalance(
             alice.account.address()
         )
+        let bobBalance = try await restClient.accountBalance(
+            bob.account.address()
+        )
         print("Alice: \(aliceBalance)")
+        print("Bob: \(bobBalance)")
 
         print("\n=== Creating Collection and Token ===")
         let txnHashCreateCollection = try await tokenClient.createCollection(
@@ -75,10 +85,6 @@ struct TokenClient {
         )
         try await restClient.waitForTransaction(txnHashCreateCollection)
 
-        // This is a hack, once we add support for reading events or indexer, this will be easier
-        let resp = try await restClient.accountResource(alice.account.address(), "0x1::account::Account")
-        let creationNum = resp["data"]["guid_creation_num"].intValue
-
         let txnHashMintToken = try await tokenClient.mintToken(
             alice.account,
             collectionName,
@@ -97,12 +103,15 @@ struct TokenClient {
             alice.account.address(),
             collectionName
         )
-        let tokenAddr = try AccountAddress.forGuidObject(alice.account.address(), creationNum)
+
+        let mintedTokens = try await tokenClient.tokensMintedFromTransaction(txnHashMintToken)
+        guard mintedTokens.count == 1 else { throw AptosError.notImplemented }
+        let tokenAddr = mintedTokens[0]
 
         let collectionData = try await tokenClient.readObject(address: collectionAddr)
         print("Alice's collection: \(collectionData)\n")
 
-        let tokenData = try await tokenClient.readObject(address: tokenAddr)
+        var tokenData = try await tokenClient.readObject(address: tokenAddr)
         print("Alice's token (Original): \(tokenData)\n")
 
         // MARK: Add Token Property (Bool)
@@ -146,5 +155,23 @@ struct TokenClient {
         try await restClient.waitForTransaction(txnHashAddTokenPropertyData)
         let tokenDataAddPropertyData = try await tokenClient.readObject(address: tokenAddr)
         print("Alice's token (Add Property Data): \(tokenDataAddPropertyData)\n")
+
+        // MARK: Transfer Tokens
+        print("\n=== Transferring the Token from Alice to Bob ===")
+        print("Alice: \(alice.account.address().description)")
+        print("Bob: \(bob.account.address().description)")
+        print("Token: \(tokenAddr)\n")
+        print("Owner: \((try tokenData.GetReadObject(Object.self) as! Object).owner)")
+        print("    ...transferring...    ")
+
+        let txnHashTransferObject = try await restClient.transferObject(
+            owner: alice.account,
+            object: tokenAddr,
+            to: bob.account.accountAddress
+        )
+
+        try await restClient.waitForTransaction(txnHashTransferObject)
+        tokenData = try await tokenClient.readObject(address: tokenAddr)
+        print("Owner: \((try tokenData.GetReadObject(Object.self) as! Object).owner)\n")
     }
 }

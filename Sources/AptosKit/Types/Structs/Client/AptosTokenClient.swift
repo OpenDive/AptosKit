@@ -55,19 +55,19 @@ public struct AptosTokenClient {
     /// you need to use the await keyword.
     public func readObject(address: AccountAddress) async throws -> ReadObject {
         var resources: [AnyHashableReadObject: Any] = [:]
-
         let readResources = try await client.accountResources(address)
         guard readResources["error_code"].string == nil else {
             throw NSError(domain: readResources["error_code"].stringValue, code: -1)
         }
         for resource in readResources.arrayValue {
-            if let type = resource["type"].string,
-               let resourceClass = ReadObject.resourceMap[type] {
+            if
+                let type = resource["type"].string,
+                let resourceClass = ReadObject.resourceMap[type] 
+            {
                 let parsedResource = try resourceClass.parse(resource["data"])
                 resources[AnyHashableReadObject(parsedResource)] = parsedResource
             }
         }
-
         return ReadObject(resources: resources)
     }
 
@@ -599,5 +599,17 @@ public struct AptosTokenClient {
 
         let signedTransaction = try await self.client.createBcsSignedTransaction(creator, TransactionPayload(payload: payload))
         return try await self.client.submitBcsTransaction(signedTransaction)
+    }
+
+    public func tokensMintedFromTransaction(_ txnHash: String) async throws -> [AccountAddress] {
+        let output = try await self.client.transactionByHash(txnHash)
+        var mints: [AccountAddress] = []
+
+        for event in output["events"].arrayValue {
+            if event["type"] != "0x4::collection::MintEvent" { continue }
+            mints.append(try AccountAddress.fromStrRelaxed(event["data"]["token"].stringValue))
+        }
+
+        return mints
     }
 }

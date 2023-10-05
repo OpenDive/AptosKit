@@ -35,7 +35,7 @@ enum AuthKeyScheme {
     static let multiEd25519: UInt8 = 0x01
 
     /// The authorization key scheme value used to derive an object address from a GUID.
-    static let deriveObjectAddressFromGuid: Data = Data([0xFD])
+    static let deriveObjectAddressFromGuid: UInt8 = 0xFD
 
     /// The authorization key scheme value used to derive an object address from a seed.
     static let deriveObjectAddressFromSeed: UInt8 = 0xFE
@@ -61,40 +61,111 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible, H
     }
 
     public var description: String {
-        return self.hex()
+        // Convert the address to a hexadecimal string
+        let suffix = "\(self.address.hexEncodedString())"
+
+        // Check if the address is special and adjust the suffix accordingly
+        var adjustedSuffix: String
+
+        // Check if the address is special and adjust the suffix accordingly
+        if self.isSpecial() {
+            adjustedSuffix = String(suffix.drop(while: { $0 == "0" })) // Remove leading zeros
+            adjustedSuffix = adjustedSuffix.isEmpty ? "0" : adjustedSuffix // Ensure the string is not empty
+        } else {
+            adjustedSuffix = suffix
+        }
+        // Prefix the suffix with "0x" and return the result
+        return "0x\(adjustedSuffix)"
     }
 
-    /// Gives the hex value of the address
-    /// - Returns: A String value represnting the address's hex value
-    public func hex() -> String {
-        return "0x\(address.hexEncodedString())"
+    /// Returns whether the address is a "special" address. 
+    ///
+    /// Addresses are considered
+    /// special if the first 63 characters of the hex string are zero. In other words,
+    /// an address is special if the first 31 bytes are zero and the last byte is
+    /// smaller than `0b10000` (16). In other words, special is defined as an address
+    /// that matches the following regex: `^0x0{63}[0-9a-f]$`. In short form this means
+    /// the addresses in the range from `0x0` to `0xf` (inclusive) are special.
+    ///
+    /// For more details see the v1 address standard defined as part of AIP-40:
+    /// https://github.com/aptos-foundation/AIPs/blob/main/aips/aip-40.md
+    /// - Returns: A boolean that represents whether the address meets the criteria above or not.
+    public func isSpecial() -> Bool {
+        return self.address.dropLast().allSatisfy { $0 == 0 } && self.address.last! < 16
     }
 
-    /// Create an AccountAddress instance from a hexadecimal string.
+    /// Creates an instance of AccountAddress from a hex string.
     ///
-    /// This function creates an AccountAddress instance from a hexadecimal string representing the account address. If the provided hexadecimal string starts with "0x",
-    /// the function removes it before attempting to create the AccountAddress instance. If the length of the hexadecimal string is less than AccountAddress.length times 2,
-    /// the function pads it with leading zeros to reach the required length.
+    /// This function allows only the strictest formats defined by AIP-40. In short this
+    /// means only the following formats are accepted:
+    /// - LONG
+    /// - SHORT for special addresses
     ///
-    /// - Parameters:
-    ///    - address: A string representing the hexadecimal account address to create the AccountAddress instance from.
+    /// Where:
+    /// - LONG is defined as 0x + 64 hex characters.
+    ///- SHORT for special addresses is 0x0 to 0xf inclusive without padding zeroes.
     ///
-    /// - Returns: An AccountAddress instance created from the provided hexadecimal string.
+    /// This means the following are not accepted:
+    /// - SHORT for non-special addresses.
+    /// - Any address without a leading 0x.
     ///
-    /// - Throws: An error of type AptosError indicating that the provided hexadecimal string is invalid and cannot be converted to an AccountAddress instance.
-    public static func fromHex(_ address: String) throws -> AccountAddress {
+    /// Learn more about the different address formats by reading AIP-40:
+    /// https://github.com/aptos-foundation/AIPs/blob/main/aips/aip-40.md.
+    /// - Parameter address: A hex string representing an account address.
+    /// - Returns: An instance of `AccountAddress`.
+    /// - Note: This function has strict parsing behavior. For relaxed behavior, please use `from_string_relaxed` function.
+    public static func fromStr(_ address: String) throws -> AccountAddress {
+        guard address.hasPrefix("0x") else { throw AptosError.notImplemented }
+        let out = try AccountAddress.fromStrRelaxed(address)
+
+        if address.count != AccountAddress.length * 2 + 2 {
+            if !out.isSpecial() { throw AptosError.notImplemented }
+            else {
+                if address.count != 3 { throw AptosError.notImplemented }
+            }
+        }
+
+        if String(address.suffix(from: address.index(address.startIndex, offsetBy: 2))).count != AccountAddress.length * 2 && !out.isSpecial() {
+            throw AptosError.notImplemented
+        }
+
+        return out
+    }
+
+    /// Creates an instance of AccountAddress from a hex string.
+    ///
+    /// This function allows all formats defined by AIP-40. In short, this means the
+    /// following formats are accepted:
+    /// - LONG, with or without leading 0x
+    /// - SHORT, with or without leading 0x
+    ///
+    /// Where:
+    /// - LONG is 64 hex characters.
+    /// - SHORT is 1 to 63 hex characters inclusive.
+    /// - Padding zeroes are allowed, e.g., 0x0123 is valid.
+    ///
+    /// Learn more about the different address formats by reading AIP-40:
+    /// https://github.com/aptos-foundation/AIPs/blob/main/aips/aip-40.md.
+    /// - Parameter address: A hex string representing an account address.
+    /// - Returns: An instance of `AccountAddress`.
+    /// - Note: This function has relaxed parsing behavior. For strict behavior, please use
+    /// the `from_string` function. Where possible, use `from_string` rather than this function. 
+    /// `from_string_relaxed` is only provided for backwards compatibility.
+    public static func fromStrRelaxed(_ address: String) throws -> AccountAddress {
         var addr = address
 
         if address.hasPrefix("0x") {
-            addr = String(address.dropFirst(2))
+            addr = String(address.suffix(from: address.index(address.startIndex, offsetBy: 2)))
         }
+
+        guard addr.count >= 1, addr.count <= 64 else { throw AptosError.notImplemented }
 
         if addr.count < AccountAddress.length * 2 {
-            let pad = String(repeating: "0", count: AccountAddress.length * 2 - addr.count)
-            addr = pad + addr
+            let padding = String(repeating: "0", count: (AccountAddress.length * 2) - addr.count)
+            addr = padding + addr
         }
 
-        return try AccountAddress(address: Data(hex: addr))
+        return try AccountAddress(address: Data.init(hex: addr))
     }
 
     /// Create an AccountAddress instance from a PublicKey.
@@ -186,7 +257,7 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible, H
         var addressBytes = Data(count: ser.output().count + creator.address.count + 1)
         addressBytes[0..<ser.output().count] = ser.output()[0..<ser.output().count]
         addressBytes[ser.output().count..<ser.output().count + creator.address.count] = creator.address[0..<creator.address.count]
-        addressBytes[ser.output().count + creator.address.count..<ser.output().count + creator.address.count + 1] = AuthKeyScheme.deriveObjectAddressFromGuid
+        addressBytes[ser.output().count + creator.address.count] = AuthKeyScheme.deriveObjectAddressFromGuid
         let result = addressBytes.sha3(.sha256)
 
         return try AccountAddress(address: result)

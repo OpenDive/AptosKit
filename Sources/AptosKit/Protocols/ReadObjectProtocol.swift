@@ -27,5 +27,6 @@ import SwiftyJSON
 
 public protocol ReadObjectProtocol: Hashable {
     static var structTag: String { get }
+    var structTag: String { get }
     static func parse(_ resource: JSON) throws -> Self
 }
