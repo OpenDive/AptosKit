@@ -26,10 +26,10 @@
 import Foundation
 
 public struct Ed25519Authenticator: AuthenticatorProtocol {
-    public let publicKey: PublicKey
+    public let publicKey: ED25519PublicKey
     public let signature: Signature
 
-    public init(publicKey: PublicKey, signature: Signature) {
+    public init(publicKey: ED25519PublicKey, signature: Signature) {
         self.publicKey = publicKey
         self.signature = signature
     }
@@ -39,7 +39,7 @@ public struct Ed25519Authenticator: AuthenticatorProtocol {
     }
 
     public static func deserialize(from deserializer: Deserializer) throws -> Ed25519Authenticator {
-        let key: PublicKey = try Deserializer._struct(deserializer)
+        let key: ED25519PublicKey = try Deserializer._struct(deserializer)
         let signature: Signature = try Deserializer._struct(deserializer)
         return Ed25519Authenticator(publicKey: key, signature: signature)
     }

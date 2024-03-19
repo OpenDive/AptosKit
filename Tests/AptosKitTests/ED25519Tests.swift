@@ -33,7 +33,7 @@ final class ED25519Tests: XCTestCase {
             return
         }
 
-        let privateKey = try PrivateKey.random()
+        let privateKey = try ED25519PrivateKey.random()
         let publicKey = try privateKey.publicKey()
 
         let signature = try privateKey.sign(data: input)
@@ -41,26 +41,26 @@ final class ED25519Tests: XCTestCase {
     }
 
     func testThatPrivateKeySerializationWorksAsIntended() throws {
-        let privateKey = try PrivateKey.random()
+        let privateKey = try ED25519PrivateKey.random()
         let ser = Serializer()
 
         try privateKey.serialize(ser)
-        let serPrivateKey = try PrivateKey.deserialize(from: Deserializer(data: ser.output()))
+        let serPrivateKey = try ED25519PrivateKey.deserialize(from: Deserializer(data: ser.output()))
         XCTAssertEqual(privateKey, serPrivateKey)
     }
 
     func testThatPublicKeySerializationWorksAsIntended() throws {
-        let privateKey = try PrivateKey.random()
+        let privateKey = try ED25519PrivateKey.random()
         let publicKey = try privateKey.publicKey()
 
         let ser = Serializer()
         try publicKey.serialize(ser)
-        let serPublicKey = try PublicKey.deserialize(from: Deserializer(data: ser.output()))
+        let serPublicKey = try ED25519PublicKey.deserialize(from: Deserializer(data: ser.output()))
         XCTAssertEqual(publicKey, serPublicKey)
     }
 
     func testThatSignatureSerializationWorksAsIntended() throws {
-        let privateKey = try PrivateKey.random()
+        let privateKey = try ED25519PrivateKey.random()
         guard let input: Data = "another_message".data(using: .utf8) else {
             XCTFail("Invalid Input")
             return
@@ -75,13 +75,13 @@ final class ED25519Tests: XCTestCase {
     }
 
     func testThatMultiSignatureWorksAsIntended() throws {
-        let privateKey1 = PrivateKey.fromHex("4e5e3be60f4bbd5e98d086d932f3ce779ff4b58da99bf9e5241ae1212a29e5fe")
-        let privateKey2 = PrivateKey.fromHex("1e70e49b78f976644e2c51754a2f049d3ff041869c669523ba95b172c7329901")
+        let privateKey1 = ED25519PrivateKey.fromHex("4e5e3be60f4bbd5e98d086d932f3ce779ff4b58da99bf9e5241ae1212a29e5fe")
+        let privateKey2 = ED25519PrivateKey.fromHex("1e70e49b78f976644e2c51754a2f049d3ff041869c669523ba95b172c7329901")
 
         let publicKey1 = try privateKey1.publicKey()
         let publicKey2 = try privateKey2.publicKey()
 
-        var multisigPublicKey = try MultiPublicKey(
+        var multisigPublicKey = try MultiED25519PublicKey(
             keys: [publicKey1, publicKey2], threshold: 1
         )
 
@@ -93,7 +93,7 @@ final class ED25519Tests: XCTestCase {
         XCTAssertEqual(publicKeyBcs, expectedPublicKeyBcs)
 
         let publicKeyBytes = multisigPublicKey.toBytes()
-        multisigPublicKey = try MultiPublicKey.fromBytes(publicKeyBytes)
+        multisigPublicKey = try MultiED25519PublicKey.fromBytes(publicKeyBytes)
         ser = Serializer()
         try multisigPublicKey.serialize(ser)
         publicKeyBcs = ser.output().hexEncodedString()
@@ -117,10 +117,10 @@ final class ED25519Tests: XCTestCase {
     }
 
     func testThatMultisigRangeFunctionsAsIntended() throws {
-        let keys: [PublicKey] = try (0..<MultiPublicKey.maxKeys + 1).map { _ in try PrivateKey.random().publicKey() }
+        let keys: [ED25519PublicKey] = try (0..<MultiED25519PublicKey.maxKeys + 1).map { _ in try ED25519PrivateKey.random().publicKey() }
 
         do {
-            _ = try MultiPublicKey(keys: [keys[0]], threshold: 1)
+            _ = try MultiED25519PublicKey(keys: [keys[0]], threshold: 1)
             XCTFail("Key index is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
@@ -129,7 +129,7 @@ final class ED25519Tests: XCTestCase {
         }
 
         do {
-            _ = try MultiPublicKey(keys: keys, threshold: 1)
+            _ = try MultiED25519PublicKey(keys: keys, threshold: 1)
             XCTFail("Key index is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
@@ -138,7 +138,7 @@ final class ED25519Tests: XCTestCase {
         }
 
         do {
-            _ = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 0)
+            _ = try MultiED25519PublicKey(keys: [ED25519PublicKey](keys[0..<4]), threshold: 0)
             XCTFail("Key threshold is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))
@@ -147,7 +147,7 @@ final class ED25519Tests: XCTestCase {
         }
 
         do {
-            _ = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 5)
+            _ = try MultiED25519PublicKey(keys: [ED25519PublicKey](keys[0..<4]), threshold: 5)
             XCTFail("Key threshold is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))
@@ -156,8 +156,8 @@ final class ED25519Tests: XCTestCase {
         }
 
         do {
-            let error = try MultiPublicKey(keys: [keys[0]], threshold: 1, checked: false)
-            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            let error = try MultiED25519PublicKey(keys: [keys[0]], threshold: 1, checked: false)
+            _ = try MultiED25519PublicKey.fromBytes(error.toBytes())
             XCTFail("Key index is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
@@ -166,8 +166,8 @@ final class ED25519Tests: XCTestCase {
         }
 
         do {
-            let error = try MultiPublicKey(keys: keys, threshold: 1, checked: false)
-            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            let error = try MultiED25519PublicKey(keys: keys, threshold: 1, checked: false)
+            _ = try MultiED25519PublicKey.fromBytes(error.toBytes())
             XCTFail("Key index is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.keysCountOutOfRange(min: 2, max: 32))
@@ -176,8 +176,8 @@ final class ED25519Tests: XCTestCase {
         }
 
         do {
-            let error = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 0, checked: false)
-            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            let error = try MultiED25519PublicKey(keys: [ED25519PublicKey](keys[0..<4]), threshold: 0, checked: false)
+            _ = try MultiED25519PublicKey.fromBytes(error.toBytes())
             XCTFail("Key threshold is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))
@@ -186,8 +186,8 @@ final class ED25519Tests: XCTestCase {
         }
 
         do {
-            let error = try MultiPublicKey(keys: [PublicKey](keys[0..<4]), threshold: 5, checked: false)
-            _ = try MultiPublicKey.fromBytes(error.toBytes())
+            let error = try MultiED25519PublicKey(keys: [ED25519PublicKey](keys[0..<4]), threshold: 5, checked: false)
+            _ = try MultiED25519PublicKey.fromBytes(error.toBytes())
             XCTFail("Key threshold is out of range.")
         } catch let error as AptosError {
             XCTAssertEqual(error, AptosError.thresholdOutOfRange(min: 1, max: 4))

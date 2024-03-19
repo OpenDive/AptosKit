@@ -48,5 +48,8 @@ struct Example {
 
         // MARK: Token Client
         try await TokenClient.tokenClientTest()
+
+        // MARK: Rotating Key
+        try await RotateKey.rotateKeyTest()
     }
 }

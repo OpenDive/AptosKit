@@ -1,5 +1,5 @@
 //
-//  PrivateKey.swift
+//  ED25519PrivateKey.swift
 //  AptosKit
 //
 //  Copyright (c) 2023 OpenDive
@@ -27,18 +27,20 @@ import Foundation
 import ed25519swift
 
 /// The ED25519 Private Key
-public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
+public struct ED25519PrivateKey: PrivateKeyProtocol {    
+    public typealias PublicKeyType = ED25519PublicKey
+
     /// The length of the key in bytes
     public static let LENGTH: Int = 32
 
     /// The key itself
-    public let key: Data
+    public var key: Data
 
     public init(key: Data) {
         self.key = key
     }
 
-    public static func == (lhs: PrivateKey, rhs: PrivateKey) -> Bool {
+    public static func == (lhs: ED25519PrivateKey, rhs: ED25519PrivateKey) -> Bool {
         return lhs.key == rhs.key
     }
 
@@ -62,13 +64,13 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
     /// - Returns: A PrivateKey instance representing the private key.
     ///
     /// - Note: The input string can optionally start with "0x". The string is converted into a Data instance using the hex initializer, and then used to create a new PrivateKey instance.
-    public static func fromHex(_ value: String) -> PrivateKey {
+    public static func fromHex(_ value: String) -> ED25519PrivateKey {
         var hexValue = value
         if value.hasPrefix("0x") {
             hexValue = String(value.dropFirst(2))
         }
         let hexData = Data(hex: hexValue)
-        return PrivateKey(key: hexData)
+        return ED25519PrivateKey(key: hexData)
     }
 
     /// Calculates the corresponding public key for this private key instance using the Ed25519 algorithm.
@@ -78,9 +80,9 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
     /// - Throws: An error if the calculation of the public key fails, or if the public key cannot be used to create a PublicKey instance.
     ///
     /// - Note: The private key is converted into a UInt8 array and passed to the calcPublicKey function of the Ed25519 implementation. The resulting public key is then used to create a new PublicKey instance.
-    public func publicKey() throws -> PublicKey {
+    public func publicKey() throws -> ED25519PublicKey {
         let key = Ed25519.calcPublicKey(secretKey: [UInt8](self.key))
-        return try PublicKey(data: Data(key))
+        return try ED25519PublicKey(data: Data(key))
     }
 
     /// Generates a new random private key using the Ed25519 algorithm.
@@ -90,9 +92,9 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
     /// - Throws: An error if the generation of the key pair fails or if the generated private key cannot be used to create a PrivateKey instance.
     ///
     /// - Note: The generateKeyPair function of the Ed25519 implementation is called to generate a new key pair, and the secret key is extracted and used to create a new PrivateKey instance.
-    public static func random() throws -> PrivateKey {
+    public static func random() throws -> ED25519PrivateKey {
         let privateKeyArray = Ed25519.generateKeyPair().secretKey
-        return PrivateKey(key: Data(privateKeyArray))
+        return ED25519PrivateKey(key: Data(privateKeyArray))
     }
 
     /// Signs a message using this private key and the Ed25519 algorithm.
@@ -109,12 +111,12 @@ public struct PrivateKey: Equatable, KeyProtocol, CustomStringConvertible {
         return Signature(signature: Data(signedMessage))
     }
 
-    public static func deserialize(from deserializer: Deserializer) throws -> PrivateKey {
+    public static func deserialize(from deserializer: Deserializer) throws -> ED25519PrivateKey {
         let key = try Deserializer.toBytes(deserializer)
-        if key.count != PrivateKey.LENGTH {
+        if key.count != ED25519PrivateKey.LENGTH {
             throw AptosError.lengthMismatch
         }
-        return PrivateKey(key: key)
+        return ED25519PrivateKey(key: key)
     }
 
     public func serialize(_ serializer: Serializer) throws {

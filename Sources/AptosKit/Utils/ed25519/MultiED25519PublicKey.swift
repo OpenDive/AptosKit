@@ -26,9 +26,9 @@
 import Foundation
 
 /// The ED25519 Multi-Public Key
-public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatable, KeyProtocol {
+public struct MultiED25519PublicKey: EncodingProtocol, PublicKeyProtocol, Equatable {
     /// The Public Keys themselves
-    public var keys: [PublicKey]
+    public var key: [ED25519PublicKey]
 
     /// The current amount of keys in the keys array
     public var threshold: Int
@@ -42,22 +42,27 @@ public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatab
     /// The minimum threshold amount
     public static let minThreshold: Int = 1
 
-    public init(keys: [PublicKey], threshold: Int, checked: Bool = true) throws {
+    public init(keys: [ED25519PublicKey], threshold: Int, checked: Bool = true) throws {
         if checked {
-            if MultiPublicKey.minKeys > keys.count || MultiPublicKey.maxKeys < keys.count {
-                throw AptosError.keysCountOutOfRange(min: MultiPublicKey.minKeys, max: MultiPublicKey.maxKeys)
+            if MultiED25519PublicKey.minKeys > keys.count || MultiED25519PublicKey.maxKeys < keys.count {
+                throw AptosError.keysCountOutOfRange(min: MultiED25519PublicKey.minKeys, max: MultiED25519PublicKey.maxKeys)
             }
-            if MultiPublicKey.minThreshold > threshold || threshold > keys.count {
-                throw AptosError.thresholdOutOfRange(min: MultiPublicKey.minThreshold, max: keys.count)
+            if MultiED25519PublicKey.minThreshold > threshold || threshold > keys.count {
+                throw AptosError.thresholdOutOfRange(min: MultiED25519PublicKey.minThreshold, max: keys.count)
             }
         }
 
-        self.keys = keys
+        self.key = keys
         self.threshold = threshold
     }
 
     public var description: String {
-        return "\(self.threshold)-of-\(self.keys.count) Multi-Ed25519 public key"
+        return "\(self.threshold)-of-\(self.key.count) Multi-Ed25519 public key"
+    }
+
+    // TODO: Implement function
+    public func verify(data: Data, signature: Signature) throws -> Bool {
+        throw AptosError.notImplemented
     }
 
     /// Serialize the threshold and concatenated keys of a given threshold signature scheme instance to a Data object.
@@ -67,7 +72,7 @@ public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatab
     /// - Returns: A Data object containing the serialized threshold and concatenated keys.
     public func toBytes() -> Data {
         var concatenatedKeys: Data = Data()
-        for key in self.keys {
+        for key in self.key {
             concatenatedKeys += key.key
         }
         return concatenatedKeys + Data([UInt8(self.threshold)])
@@ -83,12 +88,12 @@ public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatab
     /// - Returns: A MultiPublicKey instance initialized with the deserialized keys and threshold.
     ///
     /// - Throws: An AptosError object indicating that the given Data object is invalid or cannot be deserialized to a MultiPublicKey instance.
-    public static func fromBytes(_ key: Data) throws -> MultiPublicKey {
-        let minKeys = MultiPublicKey.minKeys
-        let maxKeys = MultiPublicKey.maxKeys
-        let minThreshold = MultiPublicKey.minThreshold
+    public static func fromBytes(_ key: Data) throws -> MultiED25519PublicKey {
+        let minKeys = MultiED25519PublicKey.minKeys
+        let maxKeys = MultiED25519PublicKey.maxKeys
+        let minThreshold = MultiED25519PublicKey.minThreshold
 
-        let nSigners = Int(key.count / PublicKey.LENGTH)
+        let nSigners = Int(key.count / ED25519PublicKey.LENGTH)
 
         if minKeys > nSigners || nSigners > maxKeys {
             throw AptosError.keysCountOutOfRange(min: minKeys, max: maxKeys)
@@ -104,15 +109,15 @@ public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatab
             throw AptosError.thresholdOutOfRange(min: minThreshold, max: nSigners)
         }
 
-        var keys: [PublicKey] = []
+        var keys: [ED25519PublicKey] = []
 
         for i in 0..<nSigners {
-            let startByte = i * PublicKey.LENGTH
-            let endByte = (i + 1) * PublicKey.LENGTH
-            keys.append(try PublicKey(data: Data(key[startByte..<endByte])))
+            let startByte = i * ED25519PublicKey.LENGTH
+            let endByte = (i + 1) * ED25519PublicKey.LENGTH
+            keys.append(try ED25519PublicKey(data: Data(key[startByte..<endByte])))
         }
 
-        return try MultiPublicKey(keys: keys, threshold: threshold)
+        return try MultiED25519PublicKey(keys: keys, threshold: threshold)
     }
 
     /// Serializes an output instance using the given Serializer.
@@ -124,7 +129,7 @@ public struct MultiPublicKey: EncodingProtocol, CustomStringConvertible, Equatab
         try Serializer.toBytes(serializer, self.toBytes())
     }
 
-    public static func deserialize(from deserializer: Deserializer) throws -> MultiPublicKey {
+    public static func deserialize(from deserializer: Deserializer) throws -> MultiED25519PublicKey {
         throw AptosError.notImplemented
     }
 }

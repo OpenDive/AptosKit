@@ -76,8 +76,8 @@ public class Wallet: Hashable {
         }
 
         self.account = Account(
-            accountAddress: try AccountAddress.fromKey(try PublicKey(data: publicKey)),
-            privateKey: PrivateKey(key: privateKey)
+            accountAddress: try AccountAddress.fromKey(try ED25519PublicKey(data: publicKey)),
+            privateKey: ED25519PrivateKey(key: privateKey)
         )
     }
 
@@ -107,8 +107,8 @@ public class Wallet: Hashable {
         }
 
         self.account = Account(
-            accountAddress: try AccountAddress.fromKey(try PublicKey(data: publicKey)),
-            privateKey: PrivateKey(key: privateKey)
+            accountAddress: try AccountAddress.fromKey(try ED25519PublicKey(data: publicKey)),
+            privateKey: ED25519PrivateKey(key: privateKey)
         )
     }
 
@@ -138,8 +138,8 @@ public class Wallet: Hashable {
         }
 
         self.account = Account(
-            accountAddress: try AccountAddress.fromKey(try PublicKey(data: publicKey)),
-            privateKey: PrivateKey(key: privateKey)
+            accountAddress: try AccountAddress.fromKey(try ED25519PublicKey(data: publicKey)),
+            privateKey: ED25519PrivateKey(key: privateKey)
         )
     }
 
@@ -167,8 +167,8 @@ public class Wallet: Hashable {
         }
 
         self.account = Account(
-            accountAddress: try AccountAddress.fromKey(try PublicKey(data: publicKey)),
-            privateKey: PrivateKey(key: privateKey)
+            accountAddress: try AccountAddress.fromKey(try ED25519PublicKey(data: publicKey)),
+            privateKey: ED25519PrivateKey(key: privateKey)
         )
     }
 
@@ -203,8 +203,8 @@ public class Wallet: Hashable {
         (key: account, chainCode: _) = try _ed25519Bip32.derivePath(path: path)
         (privateKey: privateKey, publicKey: publicKey) = Wallet.edKeyPairFromSeed(seed: account)
         return Account(
-            accountAddress: try AccountAddress.fromKey(try PublicKey(data: publicKey)),
-            privateKey: PrivateKey(key: privateKey)
+            accountAddress: try AccountAddress.fromKey(try ED25519PublicKey(data: publicKey)),
+            privateKey: ED25519PrivateKey(key: privateKey)
         )
     }
     
@@ -233,8 +233,8 @@ public class Wallet: Hashable {
                 var publicKey: Data = Data()
                 (privateKey: privateKey, publicKey: publicKey) = Wallet.edKeyPairFromSeed(seed: _seed[0..<32])
                 self.account = Account(
-                    accountAddress: try AccountAddress.fromKey(try PublicKey(data: publicKey)),
-                    privateKey: PrivateKey(key: privateKey)
+                    accountAddress: try AccountAddress.fromKey(try ED25519PublicKey(data: publicKey)),
+                    privateKey: ED25519PrivateKey(key: privateKey)
                 )
             }
         }

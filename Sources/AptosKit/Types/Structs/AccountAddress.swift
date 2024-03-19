@@ -180,7 +180,7 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible, H
     /// - Returns: An AccountAddress instance created from the provided PublicKey.
     ///
     /// - Throws: An error of type AptosError indicating that the provided PublicKey is invalid and cannot be converted to an AccountAddress instance.
-    public static func fromKey(_ key: PublicKey) throws -> AccountAddress {
+    public static func fromKey(_ key: ED25519PublicKey) throws -> AccountAddress {
         var addressBytes = Data(count: key.key.count + 1)
         addressBytes[0..<key.key.count] = key.key[0..<key.key.count]
         addressBytes[key.key.count] = AuthKeyScheme.ed25519
@@ -201,7 +201,7 @@ public struct AccountAddress: KeyProtocol, Equatable, CustomStringConvertible, H
     /// - Returns: An AccountAddress instance created from the provided MultiPublicKey.
     ///
     /// - Throws: An error of type AptosError indicating that the provided MultiPublicKey is invalid and cannot be converted to an AccountAddress instance.
-    public static func fromMultiEd25519(keys: MultiPublicKey) throws -> AccountAddress {
+    public static func fromMultiEd25519(keys: MultiED25519PublicKey) throws -> AccountAddress {
         let keysBytes = keys.toBytes()
         var addressBytes = Data(count: keysBytes.count + 1)
         addressBytes[0..<keysBytes.count] = keysBytes[0..<keysBytes.count]

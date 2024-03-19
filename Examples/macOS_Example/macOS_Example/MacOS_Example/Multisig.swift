@@ -57,7 +57,7 @@ struct Multisig {
         // MARK: Section 2
         let threshold = 2
 
-        let multisigPublicKey = try MultiPublicKey(
+        let multisigPublicKey = try MultiED25519PublicKey(
             keys: [
                 try alice.account.publicKey(),
                 try bob.account.publicKey(),

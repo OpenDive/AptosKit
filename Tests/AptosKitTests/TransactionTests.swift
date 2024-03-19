@@ -60,11 +60,11 @@ final class TransactionTests: XCTestCase {
     }
 
     func testThatEntryFunctionWorksAsExpected() throws {
-        let privateKeyFrom = try PrivateKey.random()
+        let privateKeyFrom = try ED25519PrivateKey.random()
         let publicKeyFrom = try privateKeyFrom.publicKey()
         let accountAddressFrom = try AccountAddress.fromKey(publicKeyFrom)
 
-        let privateKeyTo = try PrivateKey.random()
+        let privateKeyTo = try ED25519PrivateKey.random()
         let publicKeyTo = try privateKeyTo.publicKey()
         let accountAddressTo = try AccountAddress.fromKey(publicKeyTo)
 
@@ -127,11 +127,11 @@ final class TransactionTests: XCTestCase {
         let chainIdInput: UInt8 = 4
         let amountInput: UInt64 = 5000
 
-        let senderPrivateKey = PrivateKey.fromHex(senderKeyInput)
+        let senderPrivateKey = ED25519PrivateKey.fromHex(senderKeyInput)
         let senderPublicKey = try senderPrivateKey.publicKey()
         let senderAccountAddress = try AccountAddress.fromKey(senderPublicKey)
 
-        let receiverPrivateKey = PrivateKey.fromHex(receiverKeyInput)
+        let receiverPrivateKey = ED25519PrivateKey.fromHex(receiverKeyInput)
         let receiverPublicKey = try receiverPrivateKey.publicKey()
         let receiverAccountAddress =
             try AccountAddress.fromKey(receiverPublicKey)
@@ -205,11 +205,11 @@ final class TransactionTests: XCTestCase {
         let expirationTimestampsSecsInput: UInt64 = 1234567890
         let chainIdInput: UInt8 = 4
 
-        let senderPrivateKey = PrivateKey.fromHex(senderKeyInput)
+        let senderPrivateKey = ED25519PrivateKey.fromHex(senderKeyInput)
         let senderPublicKey = try senderPrivateKey.publicKey()
         let senderAccountAddress = try AccountAddress.fromKey(senderPublicKey)
 
-        let receiverPrivateKey = PrivateKey.fromHex(receiverKeyInput)
+        let receiverPrivateKey = ED25519PrivateKey.fromHex(receiverKeyInput)
         let receiverPublicKey = try receiverPrivateKey.publicKey()
         let receiverAccountAddress =
             try AccountAddress.fromKey(receiverPublicKey)

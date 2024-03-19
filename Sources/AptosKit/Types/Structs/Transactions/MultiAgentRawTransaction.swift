@@ -81,7 +81,7 @@ public struct MultiAgentRawTransaction {
     /// - Returns: A Signature object containing the signature of the multi-agent raw transaction.
     ///
     /// - Throws: An error of type Ed25519Error indicating that the signing operation has failed.
-    public func sign(_ key: PrivateKey) throws -> Signature {
+    public func sign(_ key: ED25519PrivateKey) throws -> Signature {
         return try key.sign(data: self.keyed())
     }
 
@@ -96,7 +96,7 @@ public struct MultiAgentRawTransaction {
     /// - Returns: A Boolean value indicating whether the signature is valid or not.
     ///
     /// - Throws: An error of type Ed25519Error indicating that the verification operation has failed.
-    public func verify(_ key: PublicKey, _ signature: Signature) throws -> Bool {
+    public func verify(_ key: ED25519PublicKey, _ signature: Signature) throws -> Bool {
         return try key.verify(data: self.keyed(), signature: signature)
     }
 }

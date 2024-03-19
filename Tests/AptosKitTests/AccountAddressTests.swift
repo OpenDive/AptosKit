@@ -37,16 +37,16 @@ final class AccountAddressTests: XCTestCase {
 
     func testThatFromKeyWillCreateTheProperKeysForTheAccount() throws {
         let account = try AccountAddress.fromKey(
-            PrivateKey.fromHex("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c").publicKey()
+            ED25519PrivateKey.fromHex("64f57603b58af16907c18a866123286e1cbce89790613558dc1775abb3fc5c8c").publicKey()
         )
 
         XCTAssertEqual(account.description, "0x9f628c43d1c1c0f54683cf5ccbd2b944608df4ff2649841053b1790a4d7c187d")
     }
 
     func testThatMultiED25519WillCreateTheProperKeysForTheAccount() throws {
-        let privateKey1 = PrivateKey.fromHex("4e5e3be60f4bbd5e98d086d932f3ce779ff4b58da99bf9e5241ae1212a29e5fe")
-        let privateKey2 = PrivateKey.fromHex("1e70e49b78f976644e2c51754a2f049d3ff041869c669523ba95b172c7329901")
-        let multisigPublicKey = try MultiPublicKey(
+        let privateKey1 = ED25519PrivateKey.fromHex("4e5e3be60f4bbd5e98d086d932f3ce779ff4b58da99bf9e5241ae1212a29e5fe")
+        let privateKey2 = ED25519PrivateKey.fromHex("1e70e49b78f976644e2c51754a2f049d3ff041869c669523ba95b172c7329901")
+        let multisigPublicKey = try MultiED25519PublicKey(
             keys: [try privateKey1.publicKey(), try privateKey2.publicKey()],
             threshold: 1
         )

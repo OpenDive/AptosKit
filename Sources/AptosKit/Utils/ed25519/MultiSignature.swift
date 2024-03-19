@@ -33,13 +33,13 @@ public struct MultiSignature: EncodingProtocol, Equatable, KeyProtocol {
     /// The compact representation of which keys among a set of N possible keys have signed a given message
     public var bitmap: Data
 
-    public init(publicKey: MultiPublicKey, signatureMap: [(PublicKey, Signature)]) {
+    public init(publicKey: MultiED25519PublicKey, signatureMap: [(ED25519PublicKey, Signature)]) {
         self.signatures = []
         var bitmap: UInt32 = 0
         
         for entry in signatureMap {
             self.signatures.append(entry.1)
-            if let index = publicKey.keys.firstIndex(of: entry.0) {
+            if let index = publicKey.key.firstIndex(of: entry.0) {
                 let shift = 31 - index
                 bitmap = bitmap | (1 << shift)
             }

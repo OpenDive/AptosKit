@@ -47,6 +47,16 @@ public struct Authenticator: Equatable, KeyProtocol {
         self.authenticator = authenticator
     }
 
+    public static func fromKey(key: any PublicKeyProtocol) throws -> Int {
+        if key is ED25519PublicKey {
+            return Authenticator.ed25519
+        } else if key is MultiED25519PublicKey {
+            return Authenticator.multiEd25519
+        } else {
+            throw AptosError.invalidAuthenticatorType
+        }
+    }
+
     public static func == (lhs: Authenticator, rhs: Authenticator) -> Bool {
         return lhs.variant == rhs.variant && lhs.authenticator.isEqualTo(rhs.authenticator)
     }
