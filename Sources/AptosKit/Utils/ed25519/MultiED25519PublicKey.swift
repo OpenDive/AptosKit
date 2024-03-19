@@ -61,8 +61,34 @@ public struct MultiED25519PublicKey: EncodingProtocol, PublicKeyProtocol, Equata
     }
 
     // TODO: Implement function
-    public func verify(data: Data, signature: Signature) throws -> Bool {
-        throw AptosError.notImplemented
+    public func verify(data: Data, signature: MultiSignature) throws -> Bool {
+        // Step 1: Ensure that the bitmap matches the expected number of signers based on the threshold
+        let signerCount = self.key.count
+        let bitmap = UInt32(bigEndian: signature.bitmap.withUnsafeBytes { $0.load(as: UInt32.self) })
+        var validSignaturesCount = 0
+
+        for index in 0..<signerCount {
+            // If the bit at the index's position is set, it indicates the presence of a signature
+            if bitmap & (1 << (31 - index)) != 0 {
+                // Try to verify the signature at this index
+                let publicKey = self.key[index]
+                let individualSignature = signature.signatures[validSignaturesCount]
+                
+                if try publicKey.verify(data: data, signature: individualSignature) {
+                    validSignaturesCount += 1
+                } else {
+                    // If any signature fails to verify, the entire verification fails
+                    return false
+                }
+            }
+        }
+
+        // Check if the number of valid signatures meets or exceeds the threshold
+        if validSignaturesCount >= self.threshold {
+            return true
+        } else {
+            return false
+        }
     }
 
     /// Serialize the threshold and concatenated keys of a given threshold signature scheme instance to a Data object.

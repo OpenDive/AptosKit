@@ -33,10 +33,15 @@ public struct MultiSignature: EncodingProtocol, Equatable, KeyProtocol {
     /// The compact representation of which keys among a set of N possible keys have signed a given message
     public var bitmap: Data
 
+    public init(signatures: [Signature], bitmap: Data) {
+        self.signatures = signatures
+        self.bitmap = bitmap
+    }
+
     public init(publicKey: MultiED25519PublicKey, signatureMap: [(ED25519PublicKey, Signature)]) {
         self.signatures = []
         var bitmap: UInt32 = 0
-        
+
         for entry in signatureMap {
             self.signatures.append(entry.1)
             if let index = publicKey.key.firstIndex(of: entry.0) {
@@ -44,7 +49,7 @@ public struct MultiSignature: EncodingProtocol, Equatable, KeyProtocol {
                 bitmap = bitmap | (1 << shift)
             }
         }
-        
+
         self.bitmap = withUnsafeBytes(of: (bitmap.bigEndian, UInt32.self)) { Data($0) }.prefix(4)
     }
 
@@ -71,6 +76,20 @@ public struct MultiSignature: EncodingProtocol, Equatable, KeyProtocol {
     }
 
     public static func deserialize(from deserializer: Deserializer) throws -> MultiSignature {
-        throw AptosError.notImplemented
+        let signatureBytes = try Deserializer.toBytes(deserializer)
+        let bitmapOffset = signatureBytes.count - MemoryLayout<UInt32>.size
+        let bitmapData = signatureBytes[bitmapOffset...]
+        let bitmap = UInt32(bigEndian: bitmapData.withUnsafeBytes { $0.load(as: UInt32.self) })
+
+        var signatures: [Signature] = []
+        var currentByteIndex = 0
+
+        for position in 0..<32 where (bitmap & (1 << (31 - position))) != 0 {
+            let signatureData = signatureBytes[currentByteIndex..<(currentByteIndex + Signature.LENGTH)]
+            signatures.append(Signature(signature: Data(signatureData)))
+            currentByteIndex += Signature.LENGTH
+        }
+
+        return MultiSignature(signatures: signatures, bitmap: Data(bitmapData))
     }
 }
