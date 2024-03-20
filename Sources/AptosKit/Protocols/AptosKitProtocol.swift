@@ -122,6 +122,8 @@ public protocol AptosKitProtocol {
     /// - Throws: An error of type Error if the request fails for any reason, such as an invalid URL or a network error.
     func info() async throws -> InfoResponse
 
+    func simulateBcsTransaction(_ signedTransaction: SignedTransaction, estimateGasUsage: Bool) async throws -> JSON
+
     /// Simulate a transaction on the Aptos blockchain using the given RawTransaction object and sender account.
     ///
     /// This function sends a POST request to the blockchain's REST API /simulate endpoint with the serialized RawTransaction

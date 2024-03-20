@@ -197,6 +197,19 @@ public struct RestClient: AptosKitProtocol {
         return try await self.client.decodeUrl(with: url)
     }
 
+    public func simulateBcsTransaction(_ signedTransaction: SignedTransaction, estimateGasUsage: Bool = false) async throws -> JSON {
+        let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
+        var params: [String: String] = [:]
+        if estimateGasUsage {
+            params = [
+                "estimate_gas_unit_price": "true",
+                "estimate_max_gas_amount": "true"
+            ]
+        }
+        guard let request = URL(string: "\(self.baseUrl)/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions/simulate") }
+        return try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes(), params)
+    }
+
     public func simulateTransaction(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON {
         let signature = Data(repeating: 0, count: 64)
         let authenticator = try Authenticator(authenticator: Ed25519Authenticator(publicKey: try sender.publicKey(), signature: Signature(signature: signature)))
