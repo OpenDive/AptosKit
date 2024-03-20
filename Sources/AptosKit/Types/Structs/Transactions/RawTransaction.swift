@@ -26,7 +26,7 @@
 import Foundation
 import CryptoSwift
 
-public struct RawTransaction: KeyProtocol, Equatable {
+public struct RawTransaction: RawTransactionInternal, Equatable {
     /// The sender of the transaction
     public var sender: AccountAddress
 
@@ -47,7 +47,7 @@ public struct RawTransaction: KeyProtocol, Equatable {
 
     /// An identifier that distinguishes the Aptos network deployments (to prevent cross-network attacks).
     public var chainId: UInt8
-    
+
     public init(
         sender: AccountAddress,
         sequenceNumber: UInt64,
@@ -89,50 +89,6 @@ public struct RawTransaction: KeyProtocol, Equatable {
             throw AptosError.stringToDataFailure(value: "APTOS::RawTransaction")
         }
         return data.sha3(.sha256)
-    }
-
-    /// Serialize and hash a transaction for signing.
-    ///
-    /// This function serializes the transaction using a Serializer instance, computes the SHA3-256 hash of the serialized transaction concatenated with a prehash, and returns the result.
-    ///
-    /// - Returns: A Data object containing the SHA3-256 hash of the serialized transaction concatenated with a prehash.
-    ///
-    /// - Throws: An error of type AptosError indicating that the serialization or prehash computation has failed.
-    public func keyed() throws -> Data {
-        let ser = Serializer()
-        try self.serialize(ser)
-        var prehash = try self.prehash()
-        prehash.append(ser.output())
-        return prehash
-    }
-
-    /// Sign the transaction using the provided private key.
-    ///
-    /// This function signs the transaction using the provided private key and returns the resulting signature.
-    ///
-    /// - Parameters:
-    /// - key: A PrivateKey object to be used for signing the transaction.
-    ///
-    /// - Returns: A Signature object containing the signature of the transaction.
-    ///
-    /// - Throws: An error of type Ed25519Error indicating that the signing operation has failed.
-    public func sign(_ key: ED25519PrivateKey) throws -> Signature {
-        return try key.sign(data: self.keyed())
-    }
-
-    /// Verify the signature of the transaction using the provided public key.
-    ///
-    /// This function verifies the signature of the transaction using the provided public key and returns a Boolean value indicating whether the signature is valid or not.
-    ///
-    /// - Parameters:
-    /// - key: A PublicKey object to be used for verifying the signature of the transaction.
-    /// - signature: A Signature object containing the signature to be verified.
-    ///
-    /// - Returns: A Boolean value indicating whether the signature is valid or not.
-    ///
-    /// - Throws: An error of type Ed25519Error indicating that the verification operation has failed.
-    public func verify(_ key: ED25519PublicKey, _ signature: Signature) throws -> Bool {
-        return try key.verify(data: self.keyed(), signature: signature)
     }
 
     public static func deserialize(from deserializer: Deserializer) throws -> RawTransaction {

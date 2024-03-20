@@ -95,10 +95,10 @@ final class TransactionTests: XCTestCase {
             chainId: 4
         )
 
-        let signature = try rawTransaction.sign(privateKeyFrom)
+        let signature = try rawTransaction.sign(key: privateKeyFrom)
 
         XCTAssertTrue(
-            try rawTransaction.verify(publicKeyFrom, signature)
+            try rawTransaction.verify(key: publicKeyFrom, signature: signature)
         )
 
         let authenticator = try Authenticator(
@@ -165,8 +165,8 @@ final class TransactionTests: XCTestCase {
             chainId: chainIdInput
         )
 
-        let signature = try rawTransactionGenerated.sign(senderPrivateKey)
-        XCTAssertTrue(try rawTransactionGenerated.verify(senderPublicKey, signature))
+        let signature = try rawTransactionGenerated.sign(key: senderPrivateKey)
+        XCTAssertTrue(try rawTransactionGenerated.verify(key: senderPublicKey, signature: signature))
 
         let authenticator = try Authenticator(
             authenticator: Ed25519Authenticator(
@@ -241,13 +241,13 @@ final class TransactionTests: XCTestCase {
             secondarySigners: [receiverAccountAddress]
         )
 
-        let senderSignature = try rawTransactionGenerated.sign(senderPrivateKey)
-        let receiverSignature = try rawTransactionGenerated.sign(receiverPrivateKey)
+        let senderSignature = try rawTransactionGenerated.sign(key: senderPrivateKey)
+        let receiverSignature = try rawTransactionGenerated.sign(key: receiverPrivateKey)
         XCTAssertTrue(
-            try rawTransactionGenerated.verify(senderPublicKey, senderSignature)
+            try rawTransactionGenerated.verify(key: senderPublicKey, signature: senderSignature)
         )
         XCTAssertTrue(
-            try rawTransactionGenerated.verify(receiverPublicKey, receiverSignature)
+            try rawTransactionGenerated.verify(key: receiverPublicKey, signature: receiverSignature)
         )
 
         let authenticator = try Authenticator(authenticator:
@@ -287,5 +287,21 @@ final class TransactionTests: XCTestCase {
             signedTransactionInput,
             signedTransactionGenerated
         )
+    }
+
+    func testThatFeePayerWorksAsIntended() throws {
+        let signedTransactionInput = "4629fa78b6a7810c6c3a45565707896944c4936a5583f9d3981c0692beb9e3fe010000000000000002915efe6647e0440f927d46e39bcb5eb040a7e567e1756e002073bc6e26f2cd230c63616e7661735f746f6b656e04647261770004205d45bb2a6f391440ba10444c7734559bd5ef9053930e3ef53d05be332518522bc90164850086008700880089008a008b008c008d008e008f0090009100920093009400950096009700980099009a009b009c009d009e009f00a000a100a200a300a400a500a600a700a800a900aa00ab00ac00ad00ae00af00b000b100b200b300b400b500b600b700b800b900ba00bb00bc00bd00be00bf00c000c100c200c300c4009f00a000a100a200a300a400a500a600a700a800a900aa00ab00ac00ad00ae00af00b000b100b200b300b400b500b600b700b800b900ba00bb00bc00bd00be00bf00c000c100c200c90164b701b701b701b701b701b701b701b701b701b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601b601130213021302130213021302130213021302130213021302130213021302130213021302130213021302130213021302130213021302130213021302130213021302130213021302656400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400d030000000000640000000000000043663065000000000103002076585d13da61c3d65f786b082e75ef790be66639fa066e0fc3b6f427d6ceb89340e137736ee1a0b60e8bdac8d0c75f29f1e6c6e7378689928125ea7a13164f96244d98ed3584df98643f5db00624f0271931498ff19492558737fbd4dcd0e99c040000af621023eaa26d6f1139da3e146a43aa4757fd77552f73ceba34b00295c340ce0020c245d6e4f0ce0867b80f9b901c00be5d790ed73272f4e5126ce02a5a7d55a15c4002fbb70e7d79b536d692953e4bdc3f762b5a288839ab974f03c8597ebb1c51d1d7e0920991bd79ca8c0acd02a7fb7c38b9c1f4d7e53f19f88b130555b20ef60d"
+
+        let der = Deserializer(data: Data(hex: signedTransactionInput))
+        let signedTxn: SignedTransaction = try Deserializer._struct(der)
+
+        let ser = Serializer()
+        try Serializer._struct(ser, value: signedTxn)
+        XCTAssertEqual(ser.output().hexEncodedString(), signedTransactionInput)
+
+        XCTAssertTrue(
+            signedTxn.authenticator.authenticator is FeePayerAuthenticator
+        )
+        XCTAssertTrue(try signedTxn.verify())
     }
 }

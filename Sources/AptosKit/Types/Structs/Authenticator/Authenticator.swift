@@ -30,6 +30,7 @@ public struct Authenticator: Equatable, KeyProtocol {
     public static let ed25519: Int = 0
     public static let multiEd25519: Int = 1
     public static let multiAgent: Int = 2
+    public static let feePayer: Int = 3
 
     let variant: Int
     let authenticator: any AuthenticatorProtocol
@@ -41,6 +42,8 @@ public struct Authenticator: Equatable, KeyProtocol {
             variant = Authenticator.multiEd25519
         } else if authenticator is MultiAgentAuthenticator {
             variant = Authenticator.multiAgent
+        } else if authenticator is FeePayerAuthenticator {
+            variant = Authenticator.feePayer
         } else {
             throw AptosError.invalidAuthenticatorType
         }
@@ -85,6 +88,8 @@ public struct Authenticator: Equatable, KeyProtocol {
             authenticator = try MultiEd25519Authenticator.deserialize(from: deserializer)
         } else if variant == Authenticator.multiAgent {
             authenticator = try MultiAgentAuthenticator.deserialize(from: deserializer)
+        } else if variant == Authenticator.feePayer {
+            authenticator = try FeePayerAuthenticator.deserialize(from: deserializer)
         } else {
             throw AptosError.invalidType(type: String(variant))
         }

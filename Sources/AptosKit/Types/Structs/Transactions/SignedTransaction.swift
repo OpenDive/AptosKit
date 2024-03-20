@@ -62,6 +62,13 @@ public struct SignedTransaction: KeyProtocol, Equatable {
                 secondarySigners: (self.authenticator.authenticator as! MultiAgentAuthenticator).secondaryAddresses()
             )
             keyed = try transaction.keyed()
+        } else if self.authenticator.authenticator is FeePayerAuthenticator {
+            let transaction = FeePayerRawTransaction(
+                rawTransaction: self.transaction,
+                secondarySigners: (self.authenticator.authenticator as! FeePayerAuthenticator).secondaryAddresses(),
+                feePayer: (self.authenticator.authenticator as! FeePayerAuthenticator).feePayerAddress()
+            )
+            keyed = try transaction.keyed()
         } else {
             keyed = try self.transaction.keyed()
         }

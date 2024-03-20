@@ -60,7 +60,6 @@ public struct MultiED25519PublicKey: EncodingProtocol, PublicKeyProtocol, Equata
         return "\(self.threshold)-of-\(self.key.count) Multi-Ed25519 public key"
     }
 
-    // TODO: Implement function
     public func verify(data: Data, signature: MultiSignature) throws -> Bool {
         // Step 1: Ensure that the bitmap matches the expected number of signers based on the threshold
         let signerCount = self.key.count
