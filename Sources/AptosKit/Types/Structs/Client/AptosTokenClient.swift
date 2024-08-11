@@ -606,7 +606,10 @@ public struct AptosTokenClient {
         var mints: [AccountAddress] = []
 
         for event in output["events"].arrayValue {
-            if event["type"] != "0x4::collection::MintEvent" { continue }
+            if
+                event["type"] != "0x4::collection::MintEvent" ||
+                event["type"] != "0x4::collection::Mint"
+            { continue }
             mints.append(try AccountAddress.fromStrRelaxed(event["data"]["token"].stringValue))
         }
 
