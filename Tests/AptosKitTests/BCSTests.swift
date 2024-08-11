@@ -34,7 +34,7 @@ final class BCSTests: XCTestCase {
         try Serializer.bool(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try der.bool()
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -44,7 +44,7 @@ final class BCSTests: XCTestCase {
         try Serializer.bool(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try der.bool()
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -53,7 +53,7 @@ final class BCSTests: XCTestCase {
         let ser = Serializer()
         try Serializer.u8(ser, UInt8(input))
         let der = Deserializer(data: ser.output())
-        
+
         XCTAssertThrowsError(try der.bool())
     }
 
@@ -80,7 +80,7 @@ final class BCSTests: XCTestCase {
         try ser.map(input, keyEncoder: Serializer.str, valueEncoder: Serializer.u32)
         let der = Deserializer(data: ser.output())
         let output = try der.map(keyDecoder: Deserializer.string, valueDecoder: Deserializer.u32)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -90,7 +90,7 @@ final class BCSTests: XCTestCase {
         try ser.sequence(input, Serializer.str)
         let der = Deserializer(data: ser.output())
         let output = try der.sequence(valueDecoder: Deserializer.string)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -101,7 +101,7 @@ final class BCSTests: XCTestCase {
         try seqSer(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try der.sequence(valueDecoder: Deserializer.string)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -111,7 +111,7 @@ final class BCSTests: XCTestCase {
         try Serializer.str(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.string(der)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -121,7 +121,7 @@ final class BCSTests: XCTestCase {
         try Serializer.u8(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u8(der)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -131,7 +131,7 @@ final class BCSTests: XCTestCase {
         try Serializer.u16(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u16(der)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -141,7 +141,7 @@ final class BCSTests: XCTestCase {
         try Serializer.u32(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u32(der)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -151,7 +151,7 @@ final class BCSTests: XCTestCase {
         try Serializer.u64(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u64(der)
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -161,9 +161,7 @@ final class BCSTests: XCTestCase {
         try Serializer.u128(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u128(der)
-        
-        print("MARCUS::: OUTPUT - \(output.toHexString())")
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -173,9 +171,7 @@ final class BCSTests: XCTestCase {
         try Serializer.u256(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u256(der)
-        
-        print("MARCUS::: OUTPUT - \(output.toHexString())")
-        
+
         XCTAssertEqual(input, output)
     }
 
@@ -185,7 +181,7 @@ final class BCSTests: XCTestCase {
         try ser.uleb128(input)
         let der = Deserializer(data: ser.output())
         let output = try der.uleb128()
-        
+
         XCTAssertEqual(input, output)
     }
 
