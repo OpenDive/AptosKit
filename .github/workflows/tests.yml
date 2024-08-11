@@ -21,26 +21,29 @@ jobs:
 
       - name: Build and test
         run: |
-          TEST_OUTPUT=$(xcodebuild clean build test \
+          xcodebuild clean build test \
           -scheme AptosKit \
           -sdk macosx15.0 \
           -destination 'platform=macOS,arch=arm64' \
-          -enableCodeCoverage YES | tee xcodebuild.log)
+          -enableCodeCoverage YES | tee xcodebuild.log
 
-          # Extract the .xcresult path from the output
-          XCRESULT_PATH=$(echo "$TEST_OUTPUT" | grep -oE '/Users/[^\"]+\.xcresult')
-
-          # Create a directory for the output results
-          mkdir -p output
-
-          # Copy the .xcresult file to the output directory
-          cp -R "$XCRESULT_PATH" output/
-
-          # Copy the xcodebuild log file as well
-          cp xcodebuild.log output/
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: xcresult-files
-          path: output/
+#          # Locate the Derived Data directory
+#          DERIVED_DATA_DIR=$(xcodebuild -showBuildSettings | grep -m1 ' OBJROOT=' | sed 's/^.*OBJROOT = //')
+#          
+#          # Find the .xcresult file
+#          RESULT_FILE=$(find "$DERIVED_DATA_DIR" -type d -name "*.xcresult" | head -n 1)
+#          
+#          # Create a directory for the output results
+#          mkdir -p output
+#        
+#          # Copy the .xcresult file to the output directory
+#          cp -R "$RESULT_FILE" output/
+#        
+#          # Copy the xcodebuild log file as well
+#          cp xcodebuild.log output/
+#
+#      - name: Upload test results
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: xcresult-files
+#          path: output/
