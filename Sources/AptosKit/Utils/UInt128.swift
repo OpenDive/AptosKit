@@ -722,4 +722,8 @@ extension UInt128 {
         default: return 10
         }
     }
+    
+    public func toHexString() -> String {
+        return String(format: "%0.16lx%0.16lx", value.upperBits, value.lowerBits)
+    }
 }

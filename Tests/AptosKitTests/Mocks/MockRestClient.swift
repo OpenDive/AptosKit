@@ -2,7 +2,7 @@
 //  MockRestClient.swift
 //  AptosKit
 //
-//  Copyright (c) 2023 OpenDive
+//  Copyright (c) 2024 OpenDive
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,10 @@ import SwiftyJSON
 @testable import AptosKit
 
 public struct MockRestClient: AptosKitProtocol {
+    public func simulateBcsTransaction(_ signedTransaction: AptosKit.SignedTransaction, estimateGasUsage: Bool) async throws -> SwiftyJSON.JSON {
+        throw AptosError.notImplemented
+    }
+    
     func getDecodedData<T: Decodable>(_ type: T.Type = T.self, with jsonData: String) async throws -> T {
         guard let url = Bundle.test.url(forResource: jsonData, withExtension: "json") else {
             throw NSError(domain: "Getting Url for bundle has failed.", code: -1)

@@ -2,7 +2,7 @@
 //  BCSTests.swift
 //  AptosKit
 //
-//  Copyright (c) 2023 OpenDive
+//  Copyright (c) 2024 OpenDive
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -162,6 +162,8 @@ final class BCSTests: XCTestCase {
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u128(der)
         
+        print("MARCUS::: OUTPUT - \(output.toHexString())")
+        
         XCTAssertEqual(input, output)
     }
 
@@ -171,6 +173,8 @@ final class BCSTests: XCTestCase {
         try Serializer.u256(ser, input)
         let der = Deserializer(data: ser.output())
         let output = try Deserializer.u256(der)
+        
+        print("MARCUS::: OUTPUT - \(output.toHexString())")
         
         XCTAssertEqual(input, output)
     }

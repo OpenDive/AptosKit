@@ -2,7 +2,7 @@
 //  Data.swift
 //  AptosKit
 //
-//  Copyright (c) 2023 OpenDive
+//  Copyright (c) 2024 OpenDive
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -47,5 +47,39 @@ public extension Data {
 
     func hexEncodedString() -> String {
         return map { String(format: "%02hhx", $0) }.joined()
+    }
+    
+    func setLengthLeft(_ toBytes: UInt64, isNegative: Bool = false) -> Data? {
+        let existingLength = UInt64(self.count)
+        if existingLength == toBytes {
+            return Data(self)
+        } else if existingLength > toBytes {
+            return nil
+        }
+        var data: Data
+        if isNegative {
+            data = Data(repeating: UInt8(255), count: Int(toBytes - existingLength))
+        } else {
+            data = Data(repeating: UInt8(0), count: Int(toBytes - existingLength))
+        }
+        data.append(self)
+        return data
+    }
+
+    func setLengthRight(_ toBytes: UInt64, isNegative: Bool = false) -> Data? {
+        let existingLength = UInt64(self.count)
+        if existingLength == toBytes {
+            return Data(self)
+        } else if existingLength > toBytes {
+            return nil
+        }
+        var data: Data = Data()
+        data.append(self)
+        if isNegative {
+            data.append(Data(repeating: UInt8(255), count: Int(toBytes - existingLength)))
+        } else {
+            data.append(Data(repeating: UInt8(0), count: Int(toBytes - existingLength)))
+        }
+        return data
     }
 }

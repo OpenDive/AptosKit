@@ -2,7 +2,7 @@
 //  AptosError.swift
 //  AptosKit
 //
-//  Copyright (c) 2023 OpenDive
+//  Copyright (c) 2024 OpenDive
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -58,4 +58,14 @@ public enum AptosError: Swift.Error, Equatable {
     case invalidSequenceNumber
     case transactionTimedOut(hash: String)
     case restError
+    case invalidContext
+    case invalidParsedPublicKey
+    case invalidParsedSignature
+    case invalidGeneratedKey
+    case invalidMnemonicSeed
+    case invalidHDNode
+    case invalidPubKeyCreation
+    case invalidSignature
+    case invalidSerializedSignature
+    case DataError
 }
