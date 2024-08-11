@@ -21,7 +21,16 @@ jobs:
 
       - name: Build and test
         run: |
+          set -eo pipefail
+
+          # Check if the workspace or project exists
+          if [ ! -f "AptosKit.xcworkspace" ] && [ ! -f "AptosKit.xcodeproj" ]; then
+            echo "Error: Workspace or project not found."
+            exit 1
+          fi
+
           xcodebuild clean build test \
+          -workspace AptosKit.xcodeproj \
           -scheme AptosKit \
           -sdk macosx15.0 \
           -destination 'platform=macOS,arch=arm64' \
