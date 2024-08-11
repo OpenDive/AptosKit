@@ -19,43 +19,8 @@ jobs:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
 
-      - name: Clean derived data
-        run: |
-          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+      - name: Build the package
+        run: swift build
 
-      - name: Reset SPM cache
-        run: |
-          rm -rf ~/.swiftpm
-          swift package resolve
-
-      - name: Show buildable schemes
-        run: xcodebuild -list -project AptosKit.xcodeproj -verbose
-
-#      - name: Build and test
-#        run: |
-#          xcodebuild clean build test \
-#          -scheme AptosKit \
-#          -sdk macosx15.0 \
-#          -destination 'platform=macOS,arch=arm64' \
-#          -enableCodeCoverage YES | tee xcodebuild.log | xcpretty
-#
-#          # Locate the Derived Data directory
-#          DERIVED_DATA_DIR=$(xcodebuild -showBuildSettings | grep -m1 ' OBJROOT=' | sed 's/^.*OBJROOT = //')
-#          
-#          # Find the .xcresult file
-#          RESULT_FILE=$(find "$DERIVED_DATA_DIR" -type d -name "*.xcresult" | head -n 1)
-#          
-#          # Create a directory for the output results
-#          mkdir -p output
-#        
-#          # Copy the .xcresult file to the output directory
-#          cp -R "$RESULT_FILE" output/
-#        
-#          # Copy the xcodebuild log file as well
-#          cp xcodebuild.log output/
-#
-#      - name: Upload test results
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: xcresult-files
-#          path: output/
+      - name: Run tests
+        run: swift test
