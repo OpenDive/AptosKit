@@ -27,20 +27,26 @@ import Foundation
 
 /// Client Configuration for the REST client
 public struct ClientConfig {
+    public var expirationTtl: Int
+    public var gasUnitPrice: Int
+    public var maxGasAmount: Int
+    public var transactionWaitInSeconds: Int
+    public var http2: Bool
+    public var apiKey: String?
+    
     public init(
         expirationTtl: Int = 600,
         gasUnitPrice: Int = 100,
         maxGasAmount: Int = 100_000,
-        transactionWaitInSeconds: Int = 20
+        transactionWaitInSeconds: Int = 20,
+        http2: Bool = false,
+        apiKey: String? = nil
     ) {
         self.expirationTtl = expirationTtl
         self.gasUnitPrice = gasUnitPrice
         self.maxGasAmount = maxGasAmount
         self.transactionWaitInSeconds = transactionWaitInSeconds
+        self.http2 = http2
+        self.apiKey = apiKey
     }
-
-    public var expirationTtl: Int
-    public var gasUnitPrice: Int
-    public var maxGasAmount: Int
-    public var transactionWaitInSeconds: Int
 }

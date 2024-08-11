@@ -43,6 +43,10 @@ public struct RestClient: AptosKitProtocol {
         self.client = client
         self.clientConfig = clientConfig
         self.chainId = try await self.client.decodeUrl(with: url)["chain_id"].intValue
+        
+        if clientConfig.apiKey != nil {
+            self.client.configuration.httpAdditionalHeaders = ["Authorization": clientConfig.apiKey!]
+        }
     }
 
     public func account(
