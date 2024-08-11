@@ -38,12 +38,12 @@ public struct RestClient: AptosKitProtocol {
         clientConfig: ClientConfig = ClientConfig()
     ) async throws {
         guard let url = URL(string: baseUrl) else { throw AptosError.invalidUrl(url: baseUrl) }
-        
+
         self.baseUrl = baseUrl
         self.client = client
         self.clientConfig = clientConfig
         self.chainId = try await self.client.decodeUrl(with: url)["chain_id"].intValue
-        
+
         if clientConfig.apiKey != nil {
             self.client.configuration.httpAdditionalHeaders = ["Authorization": clientConfig.apiKey!]
         }
@@ -327,6 +327,14 @@ public struct RestClient: AptosKitProtocol {
 
     public func transactionByHash(_ txnHash: String) async throws -> JSON {
         guard let url = URL(string: "\(self.baseUrl)/transactions/by_hash/\(txnHash)") else {
+            throw NSError(domain: "Invalid URL", code: -1)
+        }
+        let response = try await self.client.decodeUrl(with: url)
+        return response
+    }
+
+    public func transactionByVersion(_ version: Int) async throws -> JSON {
+        guard let url = URL(string: "\(self.baseUrl)/transactions/by_version/\(version)") else {
             throw NSError(domain: "Invalid URL", code: -1)
         }
         let response = try await self.client.decodeUrl(with: url)

@@ -33,7 +33,7 @@ public struct ClientConfig {
     public var transactionWaitInSeconds: Int
     public var http2: Bool
     public var apiKey: String?
-    
+
     public init(
         expirationTtl: Int = 600,
         gasUnitPrice: Int = 100,
