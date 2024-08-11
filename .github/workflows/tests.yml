@@ -23,7 +23,7 @@ jobs:
         run: |
           xcodebuild clean build test \
           -scheme AptosKit \
-          -sdk macosx14.0 \
+          -sdk macosx15.0 \
           -destination 'platform=macOS,arch=arm64' \
           -enableCodeCoverage YES | tee xcodebuild.log | xcpretty
 
