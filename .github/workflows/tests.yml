@@ -29,7 +29,7 @@ jobs:
           swift package resolve
 
       - name: Show buildable schemes
-        run: xcodebuild -list -verbose
+        run: xcodebuild -list -project AptosKit.xcodeproj -verbose
 
 #      - name: Build and test
 #        run: |
