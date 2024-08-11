@@ -35,7 +35,6 @@ public struct Ed25519Authenticator: AuthenticatorProtocol {
     }
 
     public func verify(_ data: Data) throws -> Bool {
-        print("DEBUG: SIG - \(data.hexEncodedString())")
         return try self.publicKey.verify(data: data, signature: self.signature)
     }
 
