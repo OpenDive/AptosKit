@@ -39,8 +39,8 @@ let package = Package(
         .package(url: "https://github.com/pebble8888/ed25519swift.git", from: "1.2.7"),
         .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "4.0.0"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.4.2"),
-        .package(url: "https://github.com/tesseract-one/Bip39.swift.git", from: "0.1.1"),
-        .package(url: "https://github.com/tesseract-one/Blake2.swift.git", from: "0.2.0"),
+        .package(url: "https://github.com/tesseract-one/Bip39%2eswift.git", from: "0.1.1"),
+        .package(url: "https://github.com/tesseract-one/Blake2%2eswift.git", from: "0.2.0"),
         .package(url: "https://github.com/attaswift/BigInt.git", from: "5.3.0"),
         .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.0.0")
     ],
@@ -56,8 +56,8 @@ let package = Package(
                 .product(name: "ed25519swift", package: "ed25519swift"),
                 .product(name: "SwiftyJSON", package: "swiftyjson"),
                 .product(name: "CryptoSwift", package: "cryptoswift"),
-                .product(name: "Bip39", package: "Bip39.swift"),
-                .product(name: "Blake2", package: "Blake2.swift"),
+                .product(name: "Bip39", package: "Bip39%2eswift"),
+                .product(name: "Blake2", package: "Blake2%2eswift"),
                 "secp256k1"
             ]
         ),
