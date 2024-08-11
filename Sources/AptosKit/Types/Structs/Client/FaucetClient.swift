@@ -46,16 +46,21 @@ public struct FaucetClient {
     ///    - address: The address of the account to fund.
     ///    - amount: The amount of currency to deposit into the account.
     ///
+    /// - Returns: A `String` value representing the transaction's hash.
     /// - Throws: An error if the provided URL is invalid, or if the REST client fails to decode the response,
     /// or if the transaction fails to be confirmed by the blockchain.
-    public func fundAccount(_ address: String, _ amount: Int) async throws {
-        guard let url = URL(string: "\(self.baseUrl)/mint?amount=\(amount)&address=\(address)") else { throw NSError(domain: "Invalid URL", code: -1) }
+    public func fundAccount(_ address: String, _ amount: Int, _ wait_for_transaction: Bool = true) async throws -> String {
+        guard let url = URL(string: "\(self.baseUrl)/mint?amount=\(amount)&address=\(address)") else {
+            throw NSError(domain: "Invalid URL", code: -1)
+        }
         let response = try await self.restClient.client.decodeUrl(with: url, .post)
         if response.null != nil {
             throw AptosError.restError
         }
-        for txnHash in response.arrayValue {
-            try await self.restClient.waitForTransaction(txnHash.stringValue)
+        let txnHash: String = response.arrayValue[0].stringValue
+        if wait_for_transaction {
+            try await self.restClient.waitForTransaction(txnHash)
         }
+        return txnHash
     }
 }
