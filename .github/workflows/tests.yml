@@ -18,9 +18,18 @@ jobs:
 
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
-        
+
+      - name: Clean derived data
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+
+      - name: Reset SPM cache
+        run: |
+          rm -rf ~/.swiftpm
+          swift package resolve
+
       - name: Show buildable schemes
-        run: xcodebuild -list
+        run: xcodebuild -list -verbose
 
 #      - name: Build and test
 #        run: |
