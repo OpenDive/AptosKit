@@ -31,14 +31,13 @@ jobs:
         uses: fwcd/swift-docc-action@v1
         with:
           target: AptosKit
-          output: ./public
-          hosting-base-path: AptosKit
+          output: ./
           disable-indexing: 'true'
           transform-for-static-hosting: 'true'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./
 
   deploy:
     environment:
