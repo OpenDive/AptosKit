@@ -25,7 +25,7 @@ jobs:
           -scheme AptosKit \
           -sdk macosx15.0 \
           -destination 'platform=macOS,arch=arm64' \
-          -enableCodeCoverage YES | tee xcodebuild.log | xcpretty)
+          -enableCodeCoverage YES | tee xcodebuild.log)
 
           # Extract the .xcresult path from the output
           XCRESULT_PATH=$(echo "$TEST_OUTPUT" | grep -oE '/Users/[^\"]+\.xcresult')
