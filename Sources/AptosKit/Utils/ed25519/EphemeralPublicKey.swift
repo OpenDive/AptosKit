@@ -33,6 +33,8 @@ public struct EphemeralPublicKey: PublicKeyProtocol {
 
     public var description: String { "\([UInt8](self.key))" }
 
+    public var hex: String { "0x\(self.key.hexEncodedString())" }
+
     public init(data: Data, variant: EphemeralPublicKeyVariant = .Ed25519) throws {
         switch variant {
         case .Ed25519:

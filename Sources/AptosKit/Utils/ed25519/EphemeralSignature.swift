@@ -35,6 +35,8 @@ public struct EphemeralSignature: AptosSignatureProtocol {
 
     public var description: String  { "\([UInt8](self.signature))" }
 
+    public var hex: String { "0x\(self.signature.hexEncodedString())" }
+
     public init(signature: Data, variant: EphemeralSignatureVariant = .Ed25519) {
         switch variant {
         case .Ed25519:
@@ -49,7 +51,7 @@ public struct EphemeralSignature: AptosSignatureProtocol {
         self.init(signature: result.signature, variant: result.variant)
     }
 
-    public init (rawSignature: Signature, variant: EphemeralSignatureVariant) {
+    public init (rawSignature: Signature, variant: EphemeralSignatureVariant = .Ed25519) {
         self.signature = rawSignature.signature
         self.variant = variant
     }

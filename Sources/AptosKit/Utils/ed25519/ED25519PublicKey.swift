@@ -46,7 +46,7 @@ public struct ED25519PublicKey: PublicKeyProtocol {
     }
 
     public var description: String {
-        return "0x\(key.hexEncodedString())"
+        return "0x\(self.key.hexEncodedString())"
     }
 
     /// Verify a digital signature for a given data using Ed25519 algorithm.

@@ -68,4 +68,9 @@ public enum AptosError: Swift.Error, Equatable {
     case invalidSignature
     case invalidSerializedSignature
     case dataError
+    case byteSizeExceeded(length: Int, maximum: Int)
+    case padSizeError(expectedMoreThan: Int, actual: Int)
+    case packedBytesExceeded(length: Int, maximum: Int)
+    case invalidEphemeralPublicKeyVariant(variant: Int)
+    case expiredEpheremalKeyPair
 }
