@@ -67,5 +67,5 @@ public enum AptosError: Swift.Error, Equatable {
     case invalidPubKeyCreation
     case invalidSignature
     case invalidSerializedSignature
-    case DataError
+    case dataError
 }

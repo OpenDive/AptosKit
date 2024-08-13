@@ -1,5 +1,5 @@
 //
-//  Signature.swift
+//  EphemeralSignature.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -25,37 +25,45 @@
 
 import Foundation
 
-/// The ED25519 Signature
-public struct Signature: AptosSignatureProtocol {
-    /// The length of the key in bytes
-    static let LENGTH: Int = 64
-
+/// Represents ephemeral signatures used in Aptos Keyless accounts.
+/// These signatures are used inside of KeylessSignature
+public struct EphemeralSignature: AptosSignatureProtocol {
     /// The signature itself
     public var signature: Data
 
-    public init(signature: Data) {
+    public var variant: EphemeralSignatureVariant
+
+    public var description: String  { "\([UInt8](self.signature))" }
+
+    public init(signature: Data, variant: EphemeralSignatureVariant = .Ed25519) {
         self.signature = signature
+        self.variant = variant
     }
 
-    public static func == (lhs: Signature, rhs: Signature) -> Bool {
-        return lhs.signature == rhs.signature
+    public init(hexSignature: String) throws {
+        let der = Deserializer(data: Data(hex: hexSignature))
+        let result = try EphemeralSignature.deserialize(from: der)
+        self.init(signature: result.signature, variant: result.variant)
     }
 
-    public var description: String { "\([UInt8](self.signature))" }
-
-    public func data() -> Data {
-        return self.signature
-    }
-
-    public static func deserialize(from deserializer: Deserializer) throws -> Signature {
-        let signatureBytes = try Deserializer.toBytes(deserializer)
-        if signatureBytes.count != LENGTH {
-            throw AptosError.lengthMismatch
-        }
-        return Signature(signature: signatureBytes)
+    public init (rawSignature: Signature) {
+        self.signature = rawSignature.signature
+        self.variant = .Ed25519
     }
 
     public func serialize(_ serializer: Serializer) throws {
+        try serializer.uleb128(UInt(self.variant.rawValue))
         try Serializer.toBytes(serializer, self.signature)
+    }
+
+    public static func deserialize(from deserializer: Deserializer) throws -> EphemeralSignature {
+        let index = try deserializer.uleb128()
+
+        switch index {
+        case 0:
+            return EphemeralSignature(rawSignature: try Signature.deserialize(from: deserializer))
+        default:
+            throw AptosError.invalidSerializedSignature
+        }
     }
 }

@@ -26,12 +26,14 @@
 import Foundation
 
 /// The ED25519 Multi-Signature
-public struct MultiSignature: EncodingProtocol, Equatable, KeyProtocol {
+public struct MultiSignature: AptosSignatureProtocol {
     /// The signatures themselves
     public var signatures: [Signature]
 
     /// The compact representation of which keys among a set of N possible keys have signed a given message
     public var bitmap: Data
+    
+    public var description: String { "\([UInt8](self.bitmap))" }
 
     public init(signatures: [Signature], bitmap: Data) {
         self.signatures = signatures

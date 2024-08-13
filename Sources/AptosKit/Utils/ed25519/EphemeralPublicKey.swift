@@ -1,5 +1,5 @@
 //
-//  Signature.swift
+//  EphemeralPublicKey.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -24,38 +24,25 @@
 //
 
 import Foundation
+import ed25519swift
 
-/// The ED25519 Signature
-public struct Signature: AptosSignatureProtocol {
-    /// The length of the key in bytes
-    static let LENGTH: Int = 64
+public struct EphemeralPublicKey: PublicKeyProtocol {
+    public var key: Data
 
-    /// The signature itself
-    public var signature: Data
+    public var description: String { "\([UInt8](self.key))" }
 
-    public init(signature: Data) {
-        self.signature = signature
-    }
-
-    public static func == (lhs: Signature, rhs: Signature) -> Bool {
-        return lhs.signature == rhs.signature
-    }
-
-    public var description: String { "\([UInt8](self.signature))" }
-
-    public func data() -> Data {
-        return self.signature
-    }
-
-    public static func deserialize(from deserializer: Deserializer) throws -> Signature {
-        let signatureBytes = try Deserializer.toBytes(deserializer)
-        if signatureBytes.count != LENGTH {
-            throw AptosError.lengthMismatch
+    public init(data: Data) throws {
+        guard data.count <= ED25519PublicKey.LENGTH else {
+            throw AptosError.invalidPublicKey
         }
-        return Signature(signature: signatureBytes)
+        self.key = data
     }
 
     public func serialize(_ serializer: Serializer) throws {
-        try Serializer.toBytes(serializer, self.signature)
+        throw AptosError.notImplemented
+    }
+
+    public static func deserialize(from deserializer: Deserializer) throws -> EphemeralPublicKey {
+        throw AptosError.notImplemented
     }
 }

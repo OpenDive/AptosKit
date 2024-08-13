@@ -1,5 +1,5 @@
 //
-//  Signature.swift
+//  EphemeralSignatureVariant.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -23,39 +23,6 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-
-/// The ED25519 Signature
-public struct Signature: AptosSignatureProtocol {
-    /// The length of the key in bytes
-    static let LENGTH: Int = 64
-
-    /// The signature itself
-    public var signature: Data
-
-    public init(signature: Data) {
-        self.signature = signature
-    }
-
-    public static func == (lhs: Signature, rhs: Signature) -> Bool {
-        return lhs.signature == rhs.signature
-    }
-
-    public var description: String { "\([UInt8](self.signature))" }
-
-    public func data() -> Data {
-        return self.signature
-    }
-
-    public static func deserialize(from deserializer: Deserializer) throws -> Signature {
-        let signatureBytes = try Deserializer.toBytes(deserializer)
-        if signatureBytes.count != LENGTH {
-            throw AptosError.lengthMismatch
-        }
-        return Signature(signature: signatureBytes)
-    }
-
-    public func serialize(_ serializer: Serializer) throws {
-        try Serializer.toBytes(serializer, self.signature)
-    }
+public enum EphemeralSignatureVariant: Int {
+    case Ed25519 = 0
 }
