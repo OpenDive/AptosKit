@@ -36,8 +36,11 @@ public struct EphemeralSignature: AptosSignatureProtocol {
     public var description: String  { "\([UInt8](self.signature))" }
 
     public init(signature: Data, variant: EphemeralSignatureVariant = .Ed25519) {
-        self.signature = signature
-        self.variant = variant
+        switch variant {
+        case .Ed25519:
+            self.signature = signature
+            self.variant = variant
+        }
     }
 
     public init(hexSignature: String) throws {
@@ -46,9 +49,9 @@ public struct EphemeralSignature: AptosSignatureProtocol {
         self.init(signature: result.signature, variant: result.variant)
     }
 
-    public init (rawSignature: Signature) {
+    public init (rawSignature: Signature, variant: EphemeralSignatureVariant) {
         self.signature = rawSignature.signature
-        self.variant = .Ed25519
+        self.variant = variant
     }
 
     public func serialize(_ serializer: Serializer) throws {
@@ -61,7 +64,7 @@ public struct EphemeralSignature: AptosSignatureProtocol {
 
         switch index {
         case 0:
-            return EphemeralSignature(rawSignature: try Signature.deserialize(from: deserializer))
+            return EphemeralSignature(rawSignature: try Signature.deserialize(from: deserializer), variant: .Ed25519)
         default:
             throw AptosError.invalidSerializedSignature
         }
