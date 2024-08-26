@@ -1,5 +1,5 @@
 //
-//  EphemeralCertificate.swift
+//  Groth16VerificationKey.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -23,35 +23,34 @@
 //  THE SOFTWARE.
 //
 
-public struct EphemeralCertificate: AptosSignatureProtocol {
-    public var signature: Signature
+/// A representation of the verification key stored on chain used to verify Groth16 proofs
+public struct Groth16VerificationKey {
+    /// The `alpha * G`, where `G` is the generator of G1
+    public var alphaG1: G1Bytes
 
-    /// Index of the underlying enum variant
-    public var variant: EphemeralSignatureVariant
+    /// The `alpha * H`, where `H` is the generator of G2
+    public var betaG2: G2Bytes
 
-    public var description: String { self.signature.description }
+    /// The `delta * H`, where `H` is the generator of G2
+    public var deltaG2: G2Bytes
 
-    public init(signature: Signature, variant: EphemeralSignatureVariant) {
-        self.signature = signature
-        self.variant = variant
-    }
+    /// The `gamma^{-1} * (beta * a_i + alpha * b_i + c_i) * H`, where H is the generator of G1
+    public var gammaAbcG1: [G1Bytes]
 
-    public func serialize(_ serializer: Serializer) throws {
-        try serializer.uleb128(UInt(self.variant.rawValue))
-        try self.signature.serialize(serializer)
-    }
+    /// The `gamma * H`, where `H` is the generator of G2
+    public var gammaG2: G2Bytes
 
-    public static func deserialize(from deserializer: Deserializer) throws -> EphemeralCertificate {
-        let index = try deserializer.uleb128()
-
-        switch (index) {
-        case 0:
-            return EphemeralCertificate(
-                signature: try Signature.deserialize(from: deserializer),
-                variant: .Ed25519
-            )
-        default:
-            throw AptosError.invalidVariant
-        }
+    public init(
+        alphaG1: G1Bytes,
+        betaG2: G2Bytes,
+        deltaG2: G2Bytes,
+        gammaAbcG1: [G1Bytes],
+        gammaG2: G2Bytes
+    ) {
+        self.alphaG1 = alphaG1
+        self.betaG2 = betaG2
+        self.deltaG2 = deltaG2
+        self.gammaAbcG1 = gammaAbcG1
+        self.gammaG2 = gammaG2
     }
 }

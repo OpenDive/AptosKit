@@ -274,6 +274,14 @@ public class Deserializer {
         return result
     }
 
+    public func optional<T>(valueDecoder: (Deserializer) throws -> T) throws -> T? {
+        let isNil = try self.readInt(length: 1)
+        if UInt8(isNil) != 0 {
+            return try valueDecoder(self)
+        }
+        return nil
+    }
+
     /// Deserialize an unsigned LEB128-encoded integer from the Deserializer's input data buffer.
     ///
     /// This function reads bytes from the input data buffer and reconstructs the original unsigned integer using LEB128 encoding. LEB128 is a compact representation for variable-length integers, particularly for small values.

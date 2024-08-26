@@ -1,5 +1,5 @@
 //
-//  EphemeralCertificate.swift
+//  KeylessConfiguration.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -23,35 +23,16 @@
 //  THE SOFTWARE.
 //
 
-public struct EphemeralCertificate: AptosSignatureProtocol {
-    public var signature: Signature
+/// A class which represents the on-chain configuration for how Keyless accounts work
+public struct KeylessConfiguration {
+    /// The verification key used to verify Groth16 proofs on chain
+    public var verificationKey: Groth16VerificationKey
 
-    /// Index of the underlying enum variant
-    public var variant: EphemeralSignatureVariant
+    /// The maximum lifespan of an ephemeral key pair.  This is configured on chain.
+    public var maxExpHorizonSecs: Int
 
-    public var description: String { self.signature.description }
-
-    public init(signature: Signature, variant: EphemeralSignatureVariant) {
-        self.signature = signature
-        self.variant = variant
-    }
-
-    public func serialize(_ serializer: Serializer) throws {
-        try serializer.uleb128(UInt(self.variant.rawValue))
-        try self.signature.serialize(serializer)
-    }
-
-    public static func deserialize(from deserializer: Deserializer) throws -> EphemeralCertificate {
-        let index = try deserializer.uleb128()
-
-        switch (index) {
-        case 0:
-            return EphemeralCertificate(
-                signature: try Signature.deserialize(from: deserializer),
-                variant: .Ed25519
-            )
-        default:
-            throw AptosError.invalidVariant
-        }
+    public init(verificationKey: Groth16VerificationKey, maxExpHorizonSecs: Int) {
+        self.verificationKey = verificationKey
+        self.maxExpHorizonSecs = maxExpHorizonSecs
     }
 }

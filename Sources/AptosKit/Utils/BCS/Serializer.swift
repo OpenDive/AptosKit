@@ -191,6 +191,14 @@ public class Serializer {
         }
     }
 
+    public func optional<T: EncodingContainer>(_ valueEncoder: (Serializer, T) throws -> (), _ value: T?) throws {
+        if let value {
+            return try valueEncoder(self, value)
+        } else {
+            self.writeInt(UInt8(0), length: 1)
+        }
+    }
+
     /// Serialize a String value or an array of String values using a custom Serializer.
     ///
     /// This function takes a custom Serializer and a generic value conforming to the EncodingContainer protocol,
