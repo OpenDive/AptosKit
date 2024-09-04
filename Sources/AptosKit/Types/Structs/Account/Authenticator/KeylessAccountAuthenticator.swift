@@ -25,9 +25,9 @@
 
 /// KeylessAccountAuthenticator for a keyless signer.
 public struct KeylessAccountAuthenticator: AccountAuthenticatorProtocol {
-    public typealias PublicKeyType = ED25519PublicKey
+    public typealias PublicKeyType = KeylessPublicKey
 
-    public typealias SignatureType = Signature
+    public typealias SignatureType = KeylessSignature
 
     public var publicKey: PublicKeyType
 

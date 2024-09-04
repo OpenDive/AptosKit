@@ -128,7 +128,7 @@ public struct KeylessAccount: KeyProtocol {
             jwt: jwt
         )
     }
-    
+
     /// Checks if the proof is expired.  If so the account must be rederived with a new EphemeralKeyPair
     /// and JWT token.
     /// - Returns: Bool
@@ -136,103 +136,77 @@ public struct KeylessAccount: KeyProtocol {
         return self.ephemeralKeyPair.isExpired()
     }
 
-//    public func signWithAuthenticator(message: Data) throws ->
+    /// Sign a message using Keyless.
+    /// - Parameter message: The message to sign, as binary input.
+    /// - Returns: The AccountAuthenticator containing the signature, together with the account's public key.
+    public func signWithAuthenticator(message: Data) throws -> KeylessAccountAuthenticator {
+        let signature = try self.sign(data: message)
+        let publicKey = self.publicKey
 
-//
-//      /**
-//       * Sign a message using Keyless.
-//       * @param message the message to sign, as binary input
-//       * @return the AccountAuthenticator containing the signature, together with the account's public key
-//       */
-//      signWithAuthenticator(message: HexInput): AccountAuthenticatorSingleKey {
-//        const signature = new AnySignature(this.sign(message));
-//        const publicKey = new AnyPublicKey(this.publicKey);
-//        return new AccountAuthenticatorSingleKey(publicKey, signature);
-//      }
-//
-//      /**
-//       * Sign a transaction using Keyless.
-//       * @param transaction the raw transaction
-//       * @return the AccountAuthenticator containing the signature of the transaction, together with the account's public key
-//       */
-//      signTransactionWithAuthenticator(transaction: AnyRawTransaction): AccountAuthenticatorSingleKey {
-//        const signature = new AnySignature(this.signTransaction(transaction));
-//        const publicKey = new AnyPublicKey(this.publicKey);
-//        return new AccountAuthenticatorSingleKey(publicKey, signature);
-//      }
-//
-//      /**
-//       * Waits for asyncronous proof fetching to finish.
-//       * @return
-//       */
-//      async waitForProofFetch() {
-//        if (this.proofOrPromise instanceof Promise) {
-//          await this.proofOrPromise;
-//        }
-//      }
-//
-//      /**
-//       * Sign the given message using Keyless.
-//       * @param message in HexInput format
-//       * @returns Signature
-//       */
-//      sign(data: HexInput): KeylessSignature {
-//        const { expiryDateSecs } = this.ephemeralKeyPair;
-//        if (this.isExpired()) {
-//          throw new Error("EphemeralKeyPair is expired");
-//        }
-//        if (this.proof === undefined) {
-//          throw new Error("Proof not defined");
-//        }
-//        const ephemeralPublicKey = this.ephemeralKeyPair.getPublicKey();
-//        const ephemeralSignature = this.ephemeralKeyPair.sign(data);
-//
-//        return new KeylessSignature({
-//          jwtHeader: base64UrlDecode(this.jwt.split(".")[0]),
-//          ephemeralCertificate: new EphemeralCertificate(this.proof, EphemeralCertificateVariant.ZkProof),
-//          expiryDateSecs,
-//          ephemeralPublicKey,
-//          ephemeralSignature,
-//        });
-//      }
-//
-//      /**
-//       * Sign the given transaction with Keyless.
-//       * Signs the transaction and proof to guard against proof malleability.
-//       * @param transaction the transaction to be signed
-//       * @returns KeylessSignature
-//       */
-//      signTransaction(transaction: AnyRawTransaction): KeylessSignature {
-//        if (this.proof === undefined) {
-//          throw new Error("Proof not found");
-//        }
-//        const raw = deriveTransactionType(transaction);
-//        const txnAndProof = new TransactionAndProof(raw, this.proof.proof);
-//        const signMess = txnAndProof.hash();
-//        return this.sign(signMess);
-//      }
-//
-//      /**
-//       * Note - This function is currently incomplete and should only be used to verify ownership of the KeylessAccount
-//       *
-//       * Verifies a signature given the message.
-//       *
-//       * TODO: Groth16 proof verification
-//       *
-//       * @param args.message the message that was signed.
-//       * @param args.signature the KeylessSignature to verify
-//       * @returns boolean
-//       */
-//      verifySignature(args: { message: HexInput; signature: KeylessSignature }): boolean {
-//        const { message, signature } = args;
-//        if (this.isExpired()) {
-//          return false;
-//        }
-//        if (!this.ephemeralKeyPair.getPublicKey().verifySignature({ message, signature: signature.ephemeralSignature })) {
-//          return false;
-//        }
-//        return true;
-//      }
+        return KeylessAccountAuthenticator(publicKey: publicKey, signature: signature)
+    }
+
+    /// Sign a message using Keyless.
+    /// - Parameter transaction: The raw transaction.
+    /// - Returns: The AccountAuthenticator containing the signature of the transaction, together with the account's public key.
+    public func signWithTransactionAuthenticator(
+        transaction: RawTransaction
+    ) throws -> KeylessAccountAuthenticator {
+        let signature = try self.signTransaction(transaction: transaction)
+        let publicKey = self.publicKey
+
+        return KeylessAccountAuthenticator(publicKey: publicKey, signature: signature)
+    }
+
+    /// Sign the given message using Keyless.
+    /// - Parameter data: Message in Data format.
+    /// - Returns: KeylessSignature
+    public func sign(data: Data) throws -> KeylessSignature {
+        let expiraryDateSeconds = self.ephemeralKeyPair.expiryDateSecs
+        guard self.isExpired() == false else {
+            throw AptosError.expiredEpheremalKeyPair
+        }
+        guard let proof = self.proof else {
+            throw AptosError.undefinedProof
+        }
+        let ephemeralPublicKey = self.ephemeralKeyPair.publicKey
+        let ephemeralSignature = try self.ephemeralKeyPair.sign(data: data)
+
+        return KeylessSignature(
+            ephemeralCertificate: EphemeralCertificate(signature: proof, variant: .ZkProof),
+            jwtHeader: String(self.jwt.split(separator: ".")[0]),
+            expiryDateSecs: expiraryDateSeconds,
+            ephemeralPublicKey: ephemeralPublicKey,
+            ephemeralSignature: ephemeralSignature
+        )
+    }
+
+    public func signTransaction(transaction: RawTransaction) throws -> KeylessSignature {
+        guard let proof = self.proof else {
+            throw AptosError.undefinedProof
+        }
+        let txAndProof = TransactionAndProof(transaction: transaction, proof: proof.proof)
+        let signedMessage = try txAndProof.sign(key: self.ephemeralKeyPair.privateKey)
+        return try self.sign(data: signedMessage.signature)
+    }
+
+    // TODO: Groth16 proof verification
+    /// Verifies a signature given the message.
+    ///
+    /// - Note: This function is currently incomplete and should only be used to verify ownership of the KeylessAccount
+    /// - Parameters:
+    ///   - message: The message that was signed.
+    ///   - signature: The KeylessSignature to verify.
+    /// - Returns: Bool
+    public func verifySignature(message: Data, signature: KeylessSignature) throws -> Bool {
+        guard self.isExpired() == false else {
+            return false
+        }
+        return self.ephemeralKeyPair.publicKey.verifySignature(
+            withMessage: message,
+            andSignature: signature.ephemeralSignature
+        )
+    }
 
     public func serialize(_ serializer: Serializer) throws {
         try Serializer.str(serializer, self.jwt)

@@ -24,14 +24,14 @@
 //
 
 public struct EphemeralCertificate: AptosSignatureProtocol {
-    public var signature: Signature
+    public var signature: any AptosSignatureProtocol
 
     /// Index of the underlying enum variant
-    public var variant: EphemeralSignatureVariant
+    public var variant: EphemeralCertificateVariant
 
     public var description: String { self.signature.description }
 
-    public init(signature: Signature, variant: EphemeralSignatureVariant) {
+    public init(signature: any AptosSignatureProtocol, variant: EphemeralCertificateVariant) {
         self.signature = signature
         self.variant = variant
     }
@@ -48,10 +48,16 @@ public struct EphemeralCertificate: AptosSignatureProtocol {
         case 0:
             return EphemeralCertificate(
                 signature: try Signature.deserialize(from: deserializer),
-                variant: .Ed25519
+                variant: .ZkProof
             )
         default:
             throw AptosError.invalidVariant
         }
+    }
+
+    public static func ==(lhs: EphemeralCertificate, rhs: EphemeralCertificate) -> Bool {
+        return try!
+            lhs.variant == rhs.variant &&
+            lhs.signature.bcsBytes() == rhs.signature.bcsBytes()
     }
 }
