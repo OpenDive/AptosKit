@@ -1,5 +1,5 @@
 //
-//  KeyProtocol.swift
+//  AccountAuthenticatorVariant.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -22,30 +22,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
-import Foundation
 
-public protocol KeyProtocol: EncodingProtocol {
-    /// Serializes an output instance using the given Serializer.
-    ///
-    /// - Parameter serializer: The Serializer instance used to serialize the data.
-    ///
-    /// - Throws: An error if the serialization fails.
-    func serialize(_ serializer: Serializer) throws
-    
-    /// Deserializes an output instance from a Deserializer.
-    ///
-    /// - Parameter deserializer: The Deserializer instance used to deserialize the data.
-    ///
-    /// - Returns: A new PrivateKey instance with the deserialized key data.
-    ///
-    /// - Throws: An error if the deserialization fails.
-    static func deserialize(from deserializer: Deserializer) throws -> Self
-}
-
-public extension KeyProtocol {
-    func bcsBytes() throws -> Data {
-        let ser = Serializer()
-        try self.serialize(ser)
-        return ser.output()
-    }
+public enum AccountAuthenticatorVariant: Int {
+    case Ed25519 = 0
+    case MultiEd25519 = 1
+    case Keyless = 2
 }

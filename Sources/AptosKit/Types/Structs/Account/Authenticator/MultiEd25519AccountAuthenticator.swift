@@ -1,5 +1,5 @@
 //
-//  KeyProtocol.swift
+//  MultiEd25519AcocuntAuthenticator.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -22,30 +22,30 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
-import Foundation
 
-public protocol KeyProtocol: EncodingProtocol {
-    /// Serializes an output instance using the given Serializer.
-    ///
-    /// - Parameter serializer: The Serializer instance used to serialize the data.
-    ///
-    /// - Throws: An error if the serialization fails.
-    func serialize(_ serializer: Serializer) throws
-    
-    /// Deserializes an output instance from a Deserializer.
-    ///
-    /// - Parameter deserializer: The Deserializer instance used to deserialize the data.
-    ///
-    /// - Returns: A new PrivateKey instance with the deserialized key data.
-    ///
-    /// - Throws: An error if the deserialization fails.
-    static func deserialize(from deserializer: Deserializer) throws -> Self
-}
+public struct MultiEd25519AcocuntAuthenticator: AccountAuthenticatorProtocol {
+    public typealias PublicKeyType = MultiED25519PublicKey
 
-public extension KeyProtocol {
-    func bcsBytes() throws -> Data {
-        let ser = Serializer()
-        try self.serialize(ser)
-        return ser.output()
+    public typealias SignatureType = MultiSignature
+
+    public var publicKey: PublicKeyType
+
+    public var signature: SignatureType
+
+    public init(publicKey: MultiED25519PublicKey, signature: MultiSignature) {
+        self.publicKey = publicKey
+        self.signature = signature
+    }
+
+    public func serialize(_ serializer: Serializer) throws {
+        try self.publicKey.serialize(serializer)
+        try self.signature.serialize(serializer)
+    }
+
+    public static func deserialize(from deserializer: Deserializer) throws -> MultiEd25519AcocuntAuthenticator {
+        return try MultiEd25519AcocuntAuthenticator(
+            publicKey: MultiED25519PublicKey.deserialize(from: deserializer),
+            signature: MultiSignature.deserialize(from: deserializer)
+        )
     }
 }

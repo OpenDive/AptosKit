@@ -1,5 +1,5 @@
 //
-//  KeyProtocol.swift
+//  AccountAuthenticatorProtocol.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -22,30 +22,18 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
-import Foundation
 
-public protocol KeyProtocol: EncodingProtocol {
-    /// Serializes an output instance using the given Serializer.
-    ///
-    /// - Parameter serializer: The Serializer instance used to serialize the data.
-    ///
-    /// - Throws: An error if the serialization fails.
-    func serialize(_ serializer: Serializer) throws
-    
-    /// Deserializes an output instance from a Deserializer.
-    ///
-    /// - Parameter deserializer: The Deserializer instance used to deserialize the data.
-    ///
-    /// - Returns: A new PrivateKey instance with the deserialized key data.
-    ///
-    /// - Throws: An error if the deserialization fails.
-    static func deserialize(from deserializer: Deserializer) throws -> Self
-}
+/// The authentication protocol used for authenticating accounts.
+public protocol AccountAuthenticatorProtocol: KeyProtocol, Equatable {
+    /// The type of the public key that corresponds to this Account.
+    associatedtype PublicKeyType: PublicKeyProtocol
 
-public extension KeyProtocol {
-    func bcsBytes() throws -> Data {
-        let ser = Serializer()
-        try self.serialize(ser)
-        return ser.output()
-    }
+    /// The type of the signature that corresponds to this Account.
+    associatedtype SignatureType: AptosSignatureProtocol
+
+    /// The public key associated with the account.
+    var publicKey: PublicKeyType { get set }
+
+    /// The signature associated with the account.
+    var signature: SignatureType { get set }
 }

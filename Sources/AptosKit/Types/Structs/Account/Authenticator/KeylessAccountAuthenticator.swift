@@ -1,5 +1,5 @@
 //
-//  KeyProtocol.swift
+//  KeylessAccountAuthenticator.swift
 //  AptosKit
 //
 //  Copyright (c) 2024 OpenDive
@@ -22,30 +22,31 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
-import Foundation
 
-public protocol KeyProtocol: EncodingProtocol {
-    /// Serializes an output instance using the given Serializer.
-    ///
-    /// - Parameter serializer: The Serializer instance used to serialize the data.
-    ///
-    /// - Throws: An error if the serialization fails.
-    func serialize(_ serializer: Serializer) throws
-    
-    /// Deserializes an output instance from a Deserializer.
-    ///
-    /// - Parameter deserializer: The Deserializer instance used to deserialize the data.
-    ///
-    /// - Returns: A new PrivateKey instance with the deserialized key data.
-    ///
-    /// - Throws: An error if the deserialization fails.
-    static func deserialize(from deserializer: Deserializer) throws -> Self
-}
+/// KeylessAccountAuthenticator for a keyless signer.
+public struct KeylessAccountAuthenticator: AccountAuthenticatorProtocol {
+    public typealias PublicKeyType = ED25519PublicKey
 
-public extension KeyProtocol {
-    func bcsBytes() throws -> Data {
-        let ser = Serializer()
-        try self.serialize(ser)
-        return ser.output()
+    public typealias SignatureType = Signature
+
+    public var publicKey: PublicKeyType
+
+    public var signature: SignatureType
+
+    public init(publicKey: PublicKeyType, signature: SignatureType) {
+        self.publicKey = publicKey
+        self.signature = signature
+    }
+
+    public func serialize(_ serializer: Serializer) throws {
+        try self.publicKey.serialize(serializer)
+        try self.signature.serialize(serializer)
+    }
+
+    public static func deserialize(from deserializer: Deserializer) throws -> KeylessAccountAuthenticator {
+        return try KeylessAccountAuthenticator(
+            publicKey: PublicKeyType.deserialize(from: deserializer),
+            signature: SignatureType.deserialize(from: deserializer)
+        )
     }
 }

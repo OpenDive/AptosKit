@@ -73,4 +73,5 @@ public enum AptosError: Swift.Error, Equatable {
     case packedBytesExceeded(length: Int, maximum: Int)
     case invalidEphemeralPublicKeyVariant(variant: Int)
     case expiredEpheremalKeyPair
+    case undefinedProof
 }
