@@ -23,6 +23,9 @@
 //  THE SOFTWARE.
 //
 
+import Foundation
+import SwiftyJSON
+
 /// A class which represents the on-chain configuration for how Keyless accounts work
 public struct KeylessConfiguration {
     /// The verification key used to verify Groth16 proofs on chain
@@ -34,5 +37,20 @@ public struct KeylessConfiguration {
     public init(verificationKey: Groth16VerificationKey, maxExpHorizonSecs: Int) {
         self.verificationKey = verificationKey
         self.maxExpHorizonSecs = maxExpHorizonSecs
+    }
+
+    public static func create(verificationKey: JSON, maxExpHorizonSecs: Int) throws -> KeylessConfiguration {
+        return try KeylessConfiguration(
+            verificationKey: Groth16VerificationKey(
+                alphaG1: G1Bytes(data: verificationKey["alpha_g1"].rawData()),
+                betaG2: G2Bytes(data: verificationKey["beta_g2"].rawData()),
+                deltaG2: G2Bytes(data: verificationKey["delta_g2"].rawData()),
+                gammaAbcG1: verificationKey["gamma_abc_g1"].arrayValue.map {
+                    try G1Bytes(data: $0.rawData())
+                },
+                gammaG2: G2Bytes(data: verificationKey["gamma_g2"].rawData())
+            ),
+            maxExpHorizonSecs: maxExpHorizonSecs
+        )
     }
 }
