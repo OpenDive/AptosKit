@@ -33,6 +33,7 @@ public struct ClientConfig {
     public var transactionWaitInSeconds: Int
     public var http2: Bool
     public var apiKey: String?
+    public var nodeNetwork: NodeApi
 
     public init(
         expirationTtl: Int = 600,
@@ -40,7 +41,8 @@ public struct ClientConfig {
         maxGasAmount: Int = 100_000,
         transactionWaitInSeconds: Int = 20,
         http2: Bool = false,
-        apiKey: String? = nil
+        apiKey: String? = nil,
+        nodeNetwork: NodeApi? = nil
     ) {
         self.expirationTtl = expirationTtl
         self.gasUnitPrice = gasUnitPrice
@@ -48,5 +50,6 @@ public struct ClientConfig {
         self.transactionWaitInSeconds = transactionWaitInSeconds
         self.http2 = http2
         self.apiKey = apiKey
+        self.nodeNetwork = nodeNetwork ?? NodeApi(mode: .devnet)
     }
 }

@@ -25,6 +25,7 @@
 
 import Foundation
 import SwiftyJSON
+import AnyCodable
 
 extension URLSession {
     /// Uses URLRequest to set up a HTTPMethod, and implement default values for the method cases.
@@ -185,14 +186,24 @@ extension URLSession {
     ///
     /// - Throws: An error if the decoding process fails.
     public func decodeUrl(with url: URL, _ body: [String: Any]) async throws -> JSON {
-        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        let jsonData: Data?
+
+        // Check if all values in the dictionary are of type AnyCodable
+        if body.values.allSatisfy({ $0 is AnyCodable }) {
+            let encodableBody = body.mapValues { $0 as! AnyCodable }
+            jsonData = try? JSONEncoder().encode(encodableBody)
+        } else {
+            // Use JSONSerialization if any of the values are not AnyCodable
+            jsonData = try? JSONSerialization.data(withJSONObject: body)
+        }
+
         let data = try await self.asyncData(
             with: url, method: .post,
             body: jsonData
         )
         return try await self.decodeData(with: data)
     }
-    
+
     /// Decodes the contents of the specified URL into a `JSON` object using the specified HTTP method and request body.
     ///
     /// - Parameters:

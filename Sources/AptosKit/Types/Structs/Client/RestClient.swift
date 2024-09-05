@@ -30,16 +30,13 @@ public struct RestClient: AptosKitProtocol {
     public var chainId: Int
     public var client: URLSession
     public var clientConfig: ClientConfig
-    public var baseUrl: String
 
     public init(
-        baseUrl: String,
         client: URLSession = URLSession.shared,
         clientConfig: ClientConfig = ClientConfig()
     ) async throws {
-        guard let url = URL(string: baseUrl) else { throw AptosError.invalidUrl(url: baseUrl) }
+        guard let url = URL(string: try clientConfig.nodeNetwork.getUrl()) else { throw AptosError.invalidEndpoint }
 
-        self.baseUrl = baseUrl
         self.client = client
         self.clientConfig = clientConfig
         self.chainId = try await self.client.decodeUrl(with: url)["chain_id"].intValue
@@ -55,9 +52,9 @@ public struct RestClient: AptosKitProtocol {
     ) async throws -> AccountResponse {
         var request: String = ""
         if ledgerVersion == nil {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/accounts/\(accountAddress)"
         } else {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)?ledger_version=\(ledgerVersion!)"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/accounts/\(accountAddress)?ledger_version=\(ledgerVersion!)"
         }
         guard let url = URL(string: request) else { throw AptosError.invalidUrl(url: request) }
         let result: JSON = try await self.client.decodeUrl(with: url)
@@ -97,9 +94,9 @@ public struct RestClient: AptosKitProtocol {
     ) async throws -> JSON {
         var request: String = ""
         if ledgerVersion == nil {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)"
         } else {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)?ledger_version=\(ledgerVersion!)"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/accounts/\(accountAddress)/resource/\(resourceType.urlEncoded)?ledger_version=\(ledgerVersion!)"
         }
         guard let url = URL(string: request) else { throw AptosError.invalidUrl(url: request) }
         return try await self.client.decodeUrl(with: url)
@@ -111,9 +108,9 @@ public struct RestClient: AptosKitProtocol {
     ) async throws -> JSON {
         var request: String = ""
         if ledgerVersion == nil {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resources"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/accounts/\(accountAddress)/resources"
         } else {
-            request = "\(self.baseUrl)/accounts/\(accountAddress)/resources?ledger_version=\(ledgerVersion!)"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/accounts/\(accountAddress)/resources?ledger_version=\(ledgerVersion!)"
         }
         guard let url = URL(string: request) else { throw AptosError.invalidUrl(url: request) }
         return try await self.client.decodeUrl(with: url)
@@ -128,9 +125,9 @@ public struct RestClient: AptosKitProtocol {
     ) async throws -> JSON {
         var request = ""
         if let ledgerVersion {
-            request = "\(self.baseUrl)/tables/\(handle)/item?ledger_version=\(ledgerVersion)"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/tables/\(handle)/item?ledger_version=\(ledgerVersion)"
         } else {
-            request = "\(self.baseUrl)/tables/\(handle)/item"
+            request = "\(try clientConfig.nodeNetwork.getUrl())/tables/\(handle)/item"
         }
         guard let url = URL(string: request) else { throw AptosError.invalidUrl(url: request) }
         return try await self.client.decodeUrl(with: url, [
@@ -197,7 +194,7 @@ public struct RestClient: AptosKitProtocol {
     }
 
     public func info() async throws -> InfoResponse {
-        guard let url = URL(string: self.baseUrl) else { throw AptosError.invalidUrl(url: self.baseUrl) }
+        guard let url = URL(string: try clientConfig.nodeNetwork.getUrl()) else { throw AptosError.invalidUrl(url: try clientConfig.nodeNetwork.getUrl()) }
         return try await self.client.decodeUrl(with: url)
     }
 
@@ -210,7 +207,7 @@ public struct RestClient: AptosKitProtocol {
                 "estimate_max_gas_amount": "true"
             ]
         }
-        guard let request = URL(string: "\(self.baseUrl)/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions/simulate") }
+        guard let request = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") }
         return try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes(), params)
     }
 
@@ -220,7 +217,7 @@ public struct RestClient: AptosKitProtocol {
         let signedTransaction = SignedTransaction(transaction: transaction, authenticator: authenticator)
         
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
-        guard let request = URL(string: "\(self.baseUrl)/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions/simulate") }
+        guard let request = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") }
         return try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
     }
 
@@ -237,7 +234,7 @@ public struct RestClient: AptosKitProtocol {
             "estimate_max_gas_amount": "true"
         ]
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
-        guard let request = URL(string: "\(self.baseUrl)/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions/simulate") }
+        guard let request = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") }
         return try await self.client.decodeUrl(
             with: request,
             header,
@@ -248,8 +245,8 @@ public struct RestClient: AptosKitProtocol {
 
     public func submitBcsTransaction(_ signedTransaction: SignedTransaction) async throws -> String {
         let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
-        guard let request = URL(string: "\(self.baseUrl)/transactions") else {
-            throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions")
+        guard let request = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions") else {
+            throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions")
         }
         let response = try await self.client.decodeUrl(with: request, header, try signedTransaction.bytes())
         guard response["error_code"].string == nil else {
@@ -274,7 +271,7 @@ public struct RestClient: AptosKitProtocol {
             "expiration_timestamp_secs": String(Int(Date().timeIntervalSince1970) + self.clientConfig.expirationTtl),
             "payload": payload
         ]
-        guard let request = URL(string: "\(self.baseUrl)/transactions/encode_submission") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions/encode_submission") }
+        guard let request = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/encode_submission") else { throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions/encode_submission") }
         var response = try await self.client.decodeUrl(with: request, txnRequest)
         let toSign = Data(hex: response.stringValue)
         let signature = try sender.sign(toSign)
@@ -283,14 +280,14 @@ public struct RestClient: AptosKitProtocol {
             "public_key": try sender.publicKey().description,
             "signature": signature.description
         ]
-        guard let requestFinal = URL(string: "\(self.baseUrl)/transactions") else { throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions") }
+        guard let requestFinal = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions") else { throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions") }
         response = try await self.client.decodeUrl(with: requestFinal, txnRequest)
         return response["hash"].stringValue
     }
 
     public func transactionPending(_ txnHash: String) async throws -> Bool {
-        guard let url = URL(string: "\(self.baseUrl)/transactions/by_hash/\(txnHash)") else {
-            throw AptosError.invalidUrl(url: "\(self.baseUrl)/transactions/by_hash/\(txnHash)")
+        guard let url = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/by_hash/\(txnHash)") else {
+            throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions/by_hash/\(txnHash)")
         }
 
         let response = try await self.client.decodeUrl(with: url)
@@ -308,7 +305,7 @@ public struct RestClient: AptosKitProtocol {
             count += 1
         } while try await self.transactionPending(txnHash)
         
-        guard let url = URL(string: "\(self.baseUrl)/transactions/by_hash/\(txnHash)") else {
+        guard let url = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/by_hash/\(txnHash)") else {
             throw NSError(domain: "Invalid URL", code: -1)
         }
         let response = try await self.client.decodeUrl(with: url)
@@ -318,7 +315,7 @@ public struct RestClient: AptosKitProtocol {
     }
 
     public func accountTransactionSequenceNumberStatus(_ address: AccountAddress, _ sequenceNumber: Int) async throws -> Bool {
-        guard let url = URL(string: "\(self.baseUrl)/accounts/\(address)/transactions?limit=1&start=\(sequenceNumber)") else {
+        guard let url = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/accounts/\(address)/transactions?limit=1&start=\(sequenceNumber)") else {
             throw NSError(domain: "Invalid URL", code: -1)
         }
         let response = try await self.client.decodeUrl(with: url).arrayValue
@@ -326,7 +323,7 @@ public struct RestClient: AptosKitProtocol {
     }
 
     public func transactionByHash(_ txnHash: String) async throws -> JSON {
-        guard let url = URL(string: "\(self.baseUrl)/transactions/by_hash/\(txnHash)") else {
+        guard let url = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/by_hash/\(txnHash)") else {
             throw NSError(domain: "Invalid URL", code: -1)
         }
         let response = try await self.client.decodeUrl(with: url)
@@ -334,7 +331,7 @@ public struct RestClient: AptosKitProtocol {
     }
 
     public func transactionByVersion(_ version: Int) async throws -> JSON {
-        guard let url = URL(string: "\(self.baseUrl)/transactions/by_version/\(version)") else {
+        guard let url = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/by_version/\(version)") else {
             throw NSError(domain: "Invalid URL", code: -1)
         }
         let response = try await self.client.decodeUrl(with: url)

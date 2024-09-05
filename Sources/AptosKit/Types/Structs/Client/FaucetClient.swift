@@ -27,11 +27,11 @@ import Foundation
 
 /// Aptos Blockchain Faucet Client
 public struct FaucetClient {
-    public let baseUrl: String
-    public let restClient: RestClient
+    public var faucetApi: FaucetApi
+    public var restClient: RestClient
 
-    public init(baseUrl: String, restClient: RestClient) {
-        self.baseUrl = baseUrl
+    public init(restClient: RestClient, faucetApi: FaucetApi? = nil) {
+        self.faucetApi = faucetApi ?? FaucetApi(mode: .devnet)
         self.restClient = restClient
     }
 
@@ -50,7 +50,7 @@ public struct FaucetClient {
     /// - Throws: An error if the provided URL is invalid, or if the REST client fails to decode the response,
     /// or if the transaction fails to be confirmed by the blockchain.
     public func fundAccount(_ address: String, _ amount: Int, _ wait_for_transaction: Bool = true) async throws -> String {
-        guard let url = URL(string: "\(self.baseUrl)/mint?amount=\(amount)&address=\(address)") else {
+        guard let url = URL(string: "\(try self.faucetApi.getUrl())/mint?amount=\(amount)&address=\(address)") else {
             throw NSError(domain: "Invalid URL", code: -1)
         }
         let response = try await self.restClient.client.decodeUrl(with: url, .post)

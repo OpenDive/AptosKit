@@ -43,6 +43,7 @@ let package = Package(
         .package(url: "https://github.com/tesseract-one/Blake2%2eswift.git", from: "0.2.0"),
         .package(url: "https://github.com/attaswift/BigInt.git", from: "5.3.0"),
         .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.0.0"),
+        .package(url: "https://github.com/Flight-School/AnyCodable", from: "0.6.0"),
         .package(url: "https://github.com/auth0/JWTDecode.swift", from: "3.1.0")
     ],
     targets: [
@@ -58,6 +59,7 @@ let package = Package(
                 .product(name: "SwiftyJSON", package: "swiftyjson"),
                 .product(name: "CryptoSwift", package: "cryptoswift"),
                 .product(name: "Bip39", package: "Bip39%2eswift"),
+                .product(name: "AnyCodable", package: "AnyCodable"),
                 .product(name: "Blake2", package: "Blake2%2eswift"),
                 .product(name: "JWTDecode", package: "JWTDecode.swift"),
                 "secp256k1"
