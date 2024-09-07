@@ -26,7 +26,15 @@ final class KeylessTests: XCTestCase {
 
     public func testPepperFetch() async throws {
         let client = try await KeylessClient(restClient: RestClient())
-        let pepper = try await client.getPepper(jwt: testJwtTokens[0], ephemeralKeyPair: ephemeralKeyPair)
-        print("PEPPER RESULT - \([UInt8](pepper))")
+        let jwt = testJwtTokens[0]
+        let pepper = try await client.getPepper(jwt: jwt, ephemeralKeyPair: ephemeralKeyPair)
+        
+        let pubKey = try KeylessPublicKey.fromJwtAndPepper(jwt, pepper)
+        let address = try await client.restClient.lookupOriginalAccountAddress(
+            pubKey.authKey().derivedAddress()
+        )
+        let proof = try await client.getProof(jwt: jwt, ephemeralKeyPair: ephemeralKeyPair, pepperIn: pepper)
+
+        print("PROOF RESULT - \(proof)")
     }
 }

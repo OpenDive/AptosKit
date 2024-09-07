@@ -1,8 +1,26 @@
 //
 //  KeylessClient.swift
-//  
+//  AptosKit
 //
-//  Created by Marcus Arnett on 9/4/24.
+//  Copyright (c) 2024 OpenDive
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 import Foundation
@@ -53,7 +71,7 @@ public struct KeylessClient {
     ) async throws -> ZeroKnowledgeSignature {
         let uidKey = uidKeyIn ?? "sub"
         var pepper: Data = Data()
-        
+
         if pepperIn == nil {
             pepper = try await self.getPepper(jwt: jwt, ephemeralKeyPair: ephemeralKeyPair, uidKey: uidKey)
         } else {
@@ -111,6 +129,42 @@ public struct KeylessClient {
         return signedProof
     }
 
+    public func getKeylessAccount(
+        jwt: String,
+        ephemeralKeyPair: EphemeralKeyPair,
+        uidKey: String? = nil,
+        pepperIn: Data? = nil
+    ) async throws -> KeylessAccount {
+        let pepper: Data
+        if pepperIn == nil {
+            pepper = try await self.getPepper(
+                jwt: jwt, 
+                ephemeralKeyPair: ephemeralKeyPair,
+                uidKey: uidKey
+            )
+        } else {
+            pepper = pepperIn!
+        }
+        let proof = try await self.getProof(
+            jwt: jwt,
+            ephemeralKeyPair: ephemeralKeyPair,
+            pepperIn: pepper,
+            uidKeyIn: uidKey
+        )
+        let pubKey = try KeylessPublicKey.fromJwtAndPepper(jwt, pepper, uidKey)
+        let address = try await self.restClient.lookupOriginalAccountAddress(
+            pubKey.authKey().derivedAddress()
+        )
+        return try KeylessAccount.create(
+            address: address,
+            proof: proof,
+            jwt: jwt,
+            ephemeralKeyPair: ephemeralKeyPair,
+            pepper: pepper,
+            uidKeyRaw: uidKey
+        )
+    }
+
     public func getKeylessConfig(
         ledgerVersion: Int? = nil
     ) async throws -> KeylessConfiguration {
@@ -154,25 +208,3 @@ public struct KeylessClient {
         return try await self.restClient.accountResource(AccountAddress.fromStr("0x1"), resourceType, ledgerVersion)
     }
 }
-
-//public func simulateTransactionWithGasEstimate(_ transaction: RawTransaction, _ sender: Account) async throws -> JSON {
-//    let authenticator = try Authenticator(
-//        authenticator: Ed25519Authenticator(
-//            publicKey: try sender.publicKey(),
-//            signature: Signature(signature: Data(repeating: 0, count: 64))
-//        )
-//    )
-//    let signedTransaction = SignedTransaction(transaction: transaction, authenticator: authenticator)
-//    let params: [String: String] = [
-//        "estimate_gas_unit_price": "true",
-//        "estimate_max_gas_amount": "true"
-//    ]
-//    let header = ["Content-Type": "application/x.aptos.signed_transaction+bcs"]
-//    guard let request = URL(string: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") else { throw AptosError.invalidUrl(url: "\(try clientConfig.nodeNetwork.getUrl())/transactions/simulate") }
-//    return try await self.client.decodeUrl(
-//        with: request,
-//        header,
-//        try signedTransaction.bytes(),
-//        params
-//    )
-//}

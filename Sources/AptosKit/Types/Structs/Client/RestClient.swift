@@ -116,6 +116,29 @@ public struct RestClient: AptosKitProtocol {
         return try await self.client.decodeUrl(with: url)
     }
 
+    public func lookupOriginalAccountAddress(
+        _ authenticationKey: AccountAddress,
+        _ minimumLedgerVersion: Int? = nil
+    ) async throws -> AccountAddress {
+        let originatingAddress = try await self.accountResource(
+            AccountAddress.fromStr("0x1"),
+            "0x1::account::OriginatingAddress",
+            minimumLedgerVersion
+        )
+
+        let handle = originatingAddress["address_map"]["handle"].stringValue
+
+        let originalAddress = try await self.getTableItem(
+            handle,
+            "address",
+            "address",
+            authenticationKey.description,
+            minimumLedgerVersion
+        )
+
+        return try AccountAddress.fromStr(originalAddress.stringValue)
+    }
+
     public func getTableItem(
         _ handle: String,
         _ keyType: String,
